@@ -67,6 +67,9 @@ export const dimensions = {
   doors: {
     height: 2.1, // [ASSUMED] standard door height
     leafThickness: 0.04,
+    frameWidth: 0.04, // [ASSUMED] jamb/head lining visible face
+    frameProud: 0.01, // [ASSUMED] how far the lining sits proud of each wall face
+    handleHeight: 1.0, // [ASSUMED] lever handle height
     // Openings, [SCALE] from door-swing arcs on the plan
     main: { x0: 0.22, x1: 1.24 }, // ~1.0 m leaf, swings in against left wall
     bed1: { x0: 3.18, x1: 4.03 }, // in bedroom-1 south wall, swings into bedroom 1

@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { dimensions as D } from '../data/dimensions'
 import type { Rect } from '../data/floorplan'
+import { doorColliders } from '../scene/doorState'
 import { colliders } from '../scene/wallGeometry'
 
 const { eyeHeight, speed, radius } = D.walkthrough
@@ -18,7 +19,7 @@ function blocked(x: number, z: number, rects: Rect[]) {
   })
 }
 
-/** Eye-level walk: WASD / arrows to move, drag to look. Simple circle-vs-wall collision. */
+/** Eye-level walk: WASD / arrows to move, drag to look. Simple circle-vs-wall collision (closed doors block too). */
 export function WalkControls() {
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera
   const dom = useThree((s) => s.gl.domElement)
@@ -80,8 +81,9 @@ export function WalkControls() {
       const dx = (Math.sin(yaw) * fwd + Math.cos(yaw) * side) * step
       const dz = (-Math.cos(yaw) * fwd + Math.sin(yaw) * side) * step
       const p = camera.position
-      if (!blocked(p.x + dx, p.z, colliders)) p.x += dx
-      if (!blocked(p.x, p.z + dz, colliders)) p.z += dz
+      const rects = [...colliders, ...doorColliders()]
+      if (!blocked(p.x + dx, p.z, rects)) p.x += dx
+      if (!blocked(p.x, p.z + dz, rects)) p.z += dz
     }
     camera.rotation.set(-pitch, -yaw, 0, 'YXZ')
   })

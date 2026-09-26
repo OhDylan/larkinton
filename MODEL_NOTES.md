@@ -72,7 +72,10 @@ All numbers live in `src/data/dimensions.ts` (metres). Layout topology is in `sr
   - A dropped ceiling over the hallway (IMG_5219/5220), modelled at 2.45 m.
   - A beam across the dining → kitchen transition (IMG_5219), assumed to line up with the Bedroom 2 bottom wall.
   - Both depths are guesses.
-- **Doors:** the main door is mid-grey (IMG_5219). Interior doors are light grey. All are shown open, as drawn on the plan.
+- **Doors:** the main door is mid-grey (IMG_5219). Interior doors are light grey. All start open, as drawn on the plan.
+  - Click a door (any view) to swing it open/closed; the panel's **Close Doors / Open Doors** button toggles all of them.
+  - Closed doors block movement in Walkthrough.
+  - Each door opening has a light grey jamb + head lining, and each leaf has lever handles on both sides (main door also has a peephole). Frame and handle sizes are [ASSUMED].
 
 ## Assumptions (not determinable from the references)
 

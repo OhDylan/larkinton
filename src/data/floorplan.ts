@@ -40,6 +40,8 @@ export type DoorLeaf = {
   hinge: [number, number]
   /** unit direction the OPEN leaf extends from the hinge (as drawn on the plan) */
   openDir: [number, number]
+  /** unit direction the CLOSED leaf extends from the hinge (across the opening) */
+  closedDir: [number, number]
   width: number
   color: 'main' | 'interior'
 }
@@ -147,19 +149,19 @@ export const walls: Wall[] = [
     height: D.acLedge.screenHeight },
 ]
 
-// ---------------------------------------------------------------- door leaves (shown open, as drawn)
+// ---------------------------------------------------------------- door leaves (default open, as drawn)
 const t = D.doors.leafThickness
 export const doorLeaves: DoorLeaf[] = [
   // main door: hinge bottom-left, opens against left wall
-  { id: 'leaf-main', hinge: [ext + t / 2, Z.entryDoorN], openDir: [0, -1], width: D.doors.main.x1 - D.doors.main.x0, color: 'main' },
+  { id: 'leaf-main', hinge: [ext + t / 2, Z.entryDoorN], openDir: [0, -1], closedDir: [1, 0], width: D.doors.main.x1 - D.doors.main.x0, color: 'main' },
   // bedroom 1: hinge at left of opening, swings north into bedroom 1
-  { id: 'leaf-bed1', hinge: [D.doors.bed1.x0 + t / 2, Z.bed1South], openDir: [0, -1], width: D.doors.bed1.x1 - D.doors.bed1.x0, color: 'interior' },
+  { id: 'leaf-bed1', hinge: [D.doors.bed1.x0 + t / 2, Z.bed1South], openDir: [0, -1], closedDir: [1, 0], width: D.doors.bed1.x1 - D.doors.bed1.x0, color: 'interior' },
   // bedroom 2: hinge at left of opening, swings south into bedroom 2
-  { id: 'leaf-bed2', hinge: [D.doors.bed2.x0 + t / 2, Z.corridorSouth], openDir: [0, 1], width: D.doors.bed2.x1 - D.doors.bed2.x0, color: 'interior' },
+  { id: 'leaf-bed2', hinge: [D.doors.bed2.x0 + t / 2, Z.corridorSouth], openDir: [0, 1], closedDir: [1, 0], width: D.doors.bed2.x1 - D.doors.bed2.x0, color: 'interior' },
   // bath: hinge at top of opening, swings east into the bath
-  { id: 'leaf-bath', hinge: [X.bathWestE, D.doors.bath.z0 - t / 2], openDir: [1, 0], width: D.doors.bath.z1 - D.doors.bath.z0, color: 'interior' },
+  { id: 'leaf-bath', hinge: [X.bathWestE, D.doors.bath.z0 - t / 2], openDir: [1, 0], closedDir: [0, 1], width: D.doors.bath.z1 - D.doors.bath.z0, color: 'interior' },
   // yard: hinge at top of opening, swings east into the yard
-  { id: 'leaf-yard', hinge: [X.kitchenYardE, D.doors.yard.z0 - t / 2], openDir: [1, 0], width: D.doors.yard.z1 - D.doors.yard.z0, color: 'interior' },
+  { id: 'leaf-yard', hinge: [X.kitchenYardE, D.doors.yard.z0 - t / 2], openDir: [1, 0], closedDir: [0, 1], width: D.doors.yard.z1 - D.doors.yard.z0, color: 'interior' },
 ]
 
 // ---------------------------------------------------------------- floors

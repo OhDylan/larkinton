@@ -1,4 +1,5 @@
 import type { CameraMode } from '../controls/CameraRig'
+import { setAllDoors, useDoorState } from '../scene/doorState'
 
 type Props = {
   mode: CameraMode
@@ -17,6 +18,8 @@ const modes: { id: CameraMode; label: string }[] = [
 ]
 
 export function ControlPanel(p: Props) {
+  const doors = useDoorState()
+  const allOpen = Object.values(doors).every(Boolean)
   return (
     <div className="panel">
       <div className="row">
@@ -34,13 +37,14 @@ export function ControlPanel(p: Props) {
         <button className={p.showLabels ? 'active' : ''} onClick={() => p.setShowLabels(!p.showLabels)}>
           Labels
         </button>
+        <button onClick={() => setAllDoors(!allOpen)}>{allOpen ? 'Close Doors' : 'Open Doors'}</button>
       </div>
       <div className="hint">
         {p.mode === 'walkthrough'
-          ? 'WASD / arrows to move · drag to look'
+          ? 'WASD / arrows to move · drag to look · click a door to open/close'
           : p.mode === 'topdown'
             ? 'Drag to pan · scroll to zoom'
-            : 'Drag to orbit · right-drag to pan · scroll to zoom'}
+            : 'Drag to orbit · right-drag to pan · scroll to zoom · click a door to open/close'}
       </div>
     </div>
   )

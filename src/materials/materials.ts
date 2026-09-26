@@ -20,6 +20,7 @@ export const palette = {
   frame: '#3a3935',
   doorMain: '#8e8f8c',
   doorInterior: '#c9c9c5',
+  doorFrame: '#d8d7d3',
   stainless: '#c3c6c8',
   sanitary: '#fafafa',
 }
@@ -85,6 +86,7 @@ function make() {
     }),
     doorMain: new THREE.MeshStandardMaterial({ color: palette.doorMain, roughness: 0.6 }),
     doorInterior: new THREE.MeshStandardMaterial({ color: palette.doorInterior, roughness: 0.6 }),
+    doorFrame: new THREE.MeshStandardMaterial({ color: palette.doorFrame, roughness: 0.55 }),
     stainless: new THREE.MeshStandardMaterial({ color: palette.stainless, roughness: 0.35, metalness: 0.25 }),
     sanitary: new THREE.MeshStandardMaterial({ color: palette.sanitary, roughness: 0.15 }),
     ground: new THREE.MeshStandardMaterial({ color: '#b9bec2', roughness: 1 }),
