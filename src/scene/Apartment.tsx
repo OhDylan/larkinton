@@ -5,14 +5,14 @@ import { Walls } from './Walls'
 import { Windows } from './Windows'
 
 /** The empty architectural shell (Phase 1). Furniture is layered on separately. */
-export function Apartment({ showCeiling }: { showCeiling: boolean }) {
+export function Apartment({ showCeiling, designed }: { showCeiling: boolean; designed: boolean }) {
   return (
     <group>
       <Floors />
       <Walls />
       <Windows />
       <Doors />
-      <Fixtures />
+      <Fixtures designed={designed} />
       {showCeiling && <Ceiling />}
     </group>
   )

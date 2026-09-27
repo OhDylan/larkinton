@@ -106,3 +106,25 @@ All numbers live in `src/data/dimensions.ts` (metres). Layout topology is in `sr
 - [ ] Is the yard open to the outside (grille or louvres), or enclosed?
 - [ ] Which way is real north? This only matters for sunlight.
 - [ ] Door swing directions. They are taken from the plan arcs; please check against the real unit.
+
+---
+
+# Phase 2 — Interior design
+
+Style: cozy · Nordic · natural oak · a touch of wabi-sabi · "designer studio". Floors keep the existing porcelain tiles; walls turn a warm limewash off-white.
+All positions live in `src/furniture/layout.ts` (metres, same coordinates as above). The **Design** button in the panel switches between the empty shell and the furnished design.
+
+| Space | What's there |
+|---|---|
+| Entrance | Floating oak shoe cabinet (0.88 × 0.35 × 0.9 m, 15 cm off the floor) on the face of the block right of the main door, round oak-rim mirror above. No screen/divider. |
+| Kitchen | Lower run along the bottom wall (oak fronts, warm stone top, sink kept at the existing plumbing position, induction hob). Upper run in warm white, stopping at x = 4.2 m so the small kitchen window stays clear. Slim hood + under-cabinet light strip. |
+| Island | Peninsula off the right-hand wall as you walk out of the kitchen: 1.30 × 0.75 m, 0.92 m high, stone top, fluted oak body. 2 counter stools on the living-room side. Leaves ~1.57 m clear walkway along the left. |
+| Living | Window seat (飘窗) along the full 4-panel window, seat height = sill (0.45 m), with drawers. 1.5 m 2-seater facing the window seat, round oak coffee table, jute rug, low oak sideboard + art on the partition wall (no TV wall), paper floor lamp, paper lantern pendant, tall plant. Open oak shelving on the left wall of the dining zone. |
+| Master | Full-height oak wardrobe (0.9 m wide) straight ahead as you walk in, left of the window. Queen bed right beside it (Malaysian queen mattress 152 × 190 cm; frame 162 × 205 cm) with a low headboard under the sill. Nightstand + lamp on the right. |
+| Bathroom | Toilet kept. Basin kept as a floating oak vanity with a ceramic vessel basin. One long horizontal mirror (1.48 × 0.72 m) across the basin/toilet wall. Existing shower glass door kept (pull handle shown). |
+| Studio (Bedroom 2) | 1.8 m oak-top workbench on the far wall, right-hand side as you walk in; pegboard behind it with shelves, bins and tools; 2 desktop robot arms; task lamp; chair. Rolling cart beside the bench. Small sofa bed (1.6 m) opposite the bench against the bath wall. Window stays clear in the middle. |
+
+Open design questions:
+- [ ] Fridge and washing machine are not placed yet (the yard is the usual spot for the washer).
+- [ ] The master wardrobe is only 0.9 m wide because of the window position. Is that enough?
+- [ ] Sofa bed opened out needs ~2 m depth; the desk chair must move when it's unfolded.

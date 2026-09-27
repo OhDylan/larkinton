@@ -1,23 +1,38 @@
 /**
- * Phase 2 hook: interior design / furniture lives here, completely separate from
- * the architectural shell in /scene. Nothing is placed yet.
+ * Phase 2: interior design / furniture, kept separate from the architectural
+ * shell in /scene. Positions live in ./layout.ts.
  *
- * Planned items (see brief): projector setup, living-room window bench,
- * 2-person kitchen island + bar stools, kitchen storage, entry shoe cabinet,
- * queen bed (master), desk + robotics workbench (bedroom 2).
+ * Style: cozy · Nordic · natural oak · a touch of wabi-sabi · "designer studio".
  */
-export type FurnitureItem = {
-  id: string
-  kind: string
-  /** plan position (x, z) in metres, same coordinate system as data/dimensions.ts */
-  position: [number, number]
-  /** rotation about the vertical axis, radians */
-  rotation?: number
-  size: [number, number, number] // width, height, depth
-}
+import { useEffect } from 'react'
+import { materials, palette } from '../materials/materials'
+import { Bath, Master, Studio } from './Bedrooms'
+import { designPalette } from './designMaterials'
+import { Entry, Island, Kitchen } from './Kitchen'
+import { furnitureColliders } from './layout'
+import { Living } from './Living'
 
-export const furniture: FurnitureItem[] = []
+/** Read by walkthrough collision: furniture only blocks the way while it's shown. */
+export const designState = { enabled: true }
+export const activeFurnitureColliders = () => (designState.enabled ? furnitureColliders : [])
 
-export function Furniture() {
-  return null
+export function Furniture({ show }: { show: boolean }) {
+  useEffect(() => {
+    designState.enabled = show
+    // warm limewash-toned walls with the design; builder white without it
+    materials().wall.color.set(show ? designPalette.wallWarm : palette.wall)
+  }, [show])
+
+  if (!show) return null
+  return (
+    <group>
+      <Entry />
+      <Kitchen />
+      <Island />
+      <Living />
+      <Master />
+      <Bath />
+      <Studio />
+    </group>
+  )
 }

@@ -3,6 +3,7 @@ import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { dimensions as D } from '../data/dimensions'
 import type { Rect } from '../data/floorplan'
+import { activeFurnitureColliders } from '../furniture'
 import { doorColliders } from '../scene/doorState'
 import { colliders } from '../scene/wallGeometry'
 
@@ -81,7 +82,7 @@ export function WalkControls() {
       const dx = (Math.sin(yaw) * fwd + Math.cos(yaw) * side) * step
       const dz = (-Math.cos(yaw) * fwd + Math.sin(yaw) * side) * step
       const p = camera.position
-      const rects = [...colliders, ...doorColliders()]
+      const rects = [...colliders, ...doorColliders(), ...activeFurnitureColliders()]
       if (!blocked(p.x + dx, p.z, rects)) p.x += dx
       if (!blocked(p.x, p.z + dz, rects)) p.z += dz
     }

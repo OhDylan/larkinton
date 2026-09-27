@@ -71,7 +71,7 @@ function Backsplash() {
   )
 }
 
-function Bathroom() {
+function Bathroom({ designed }: { designed: boolean }) {
   const m = materials()
   const b = D.bath
   const glassLen = Z.showerSouth - Z.corridorNorth
@@ -91,20 +91,21 @@ function Bathroom() {
           <boxGeometry args={[0.38, 0.4, 0.17]} />
         </mesh>
       </group>
-      {/* basin — ASSUMED placeholder, not visible in any reference photo */}
-      <mesh position={[b.basin.x, 0.82, tz - 0.21]} material={m.sanitary} castShadow>
+      {/* basin — ASSUMED placeholder, not visible in any reference photo (replaced by the vanity in design mode) */}
+      {!designed && <mesh position={[b.basin.x, 0.82, tz - 0.21]} material={m.sanitary} castShadow>
         <boxGeometry args={[0.5, 0.12, 0.4]} />
-      </mesh>
+      </mesh>}
     </group>
   )
 }
 
-export function Fixtures() {
+/** `designed`: the Phase 2 design replaces the sink slab and the basin placeholder. */
+export function Fixtures({ designed }: { designed: boolean }) {
   return (
     <group>
-      <KitchenSink />
+      {!designed && <KitchenSink />}
       <Backsplash />
-      <Bathroom />
+      <Bathroom designed={designed} />
     </group>
   )
 }

@@ -9,6 +9,8 @@ type Props = {
   setShowCeiling: (v: boolean) => void
   showLabels: boolean
   setShowLabels: (v: boolean) => void
+  showDesign: boolean
+  setShowDesign: (v: boolean) => void
 }
 
 const modes: { id: CameraMode; label: string }[] = [
@@ -36,6 +38,9 @@ export function ControlPanel(p: Props) {
         </button>
         <button className={p.showLabels ? 'active' : ''} onClick={() => p.setShowLabels(!p.showLabels)}>
           Labels
+        </button>
+        <button className={p.showDesign ? 'active' : ''} onClick={() => p.setShowDesign(!p.showDesign)}>
+          Design
         </button>
         <button onClick={() => setAllDoors(!allOpen)}>{allOpen ? 'Close Doors' : 'Open Doors'}</button>
       </div>

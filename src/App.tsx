@@ -16,6 +16,7 @@ export default function App() {
   const [resetKey, setResetKey] = useState(0)
   const [showCeiling, setShowCeiling] = useState(false)
   const [showLabels, setShowLabels] = useState(true)
+  const [showDesign, setShowDesign] = useState(true)
   const labelLayer = useRef<HTMLDivElement>(null!)
 
   const setMode = (m: CameraMode) => {
@@ -31,8 +32,8 @@ export default function App() {
       >
         <color attach="background" args={['#e4e8ec']} />
         <Lighting />
-        <Apartment showCeiling={showCeiling} />
-        <Furniture />
+        <Apartment showCeiling={showCeiling} designed={showDesign} />
+        <Furniture show={showDesign} />
         {showLabels && <RoomLabels layer={labelLayer} height={mode === 'walkthrough' ? 2.0 : 0.05} />}
         <CameraRig mode={mode} resetKey={resetKey} />
       </Canvas>
@@ -45,6 +46,8 @@ export default function App() {
         setShowCeiling={setShowCeiling}
         showLabels={showLabels}
         setShowLabels={setShowLabels}
+        showDesign={showDesign}
+        setShowDesign={setShowDesign}
       />
     </>
   )
