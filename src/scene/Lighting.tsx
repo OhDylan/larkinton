@@ -3,7 +3,6 @@ import { useEffect } from 'react'
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { planCenter } from '../data/floorplan'
-import { materials } from '../materials/materials'
 import { useLightMode } from '../state/lightMode'
 
 const [cx, cz] = planCenter
@@ -46,7 +45,7 @@ export function Lighting() {
         intensity={evening ? 0.6 : 2.6}
         color={evening ? '#ffb070' : '#fff6e8'}
         castShadow
-        shadow-mapSize={[2048, 2048]}
+        shadow-mapSize={[4096, 4096]}
         shadow-bias={-0.0004}
         shadow-normalBias={0.02}
         shadow-radius={4}
@@ -58,10 +57,6 @@ export function Lighting() {
       >
         <object3D attach="target" position={[cx, 0, cz]} />
       </directionalLight>
-      {/* ground far below-ish, just to anchor the model visually */}
-      <mesh rotation-x={-Math.PI / 2} position={[cx, -0.15, cz]} material={materials().ground}>
-        <planeGeometry args={[60, 60]} />
-      </mesh>
     </>
   )
 }

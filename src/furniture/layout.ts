@@ -26,11 +26,13 @@ export const layout = {
 
   // ---------------------------------------------------------------- kitchen (upper + lower run on the bottom wall)
   kitchen: {
-    base: { x0: X.entryBlockE, x1: X.kitchenYardW, z0: Z.southInner - 0.6, z1: Z.southInner, h: 0.9 },
+    // tall fridge housing at the entrance end of the run; the cabinet above it hides the DB box
+    fridge: { x0: X.entryBlockE, x1: X.entryBlockE + 0.74, z0: Z.southInner - 0.72, z1: Z.southInner, h: 1.85 },
+    base: { x0: X.entryBlockE + 0.74, x1: X.kitchenYardW, z0: Z.southInner - 0.6, z1: Z.southInner, h: 0.9 },
     // uppers stop short of the yard wall so they don't cover the small kitchen window
-    upper: { x0: X.entryBlockE, x1: 4.2, z0: Z.southInner - 0.36, z1: Z.southInner, y0: 1.5, h: 2.45 - 1.5 },
+    upper: { x0: X.entryBlockE + 0.74, x1: 4.2, z0: Z.southInner - 0.36, z1: Z.southInner, y0: 1.5, h: 2.45 - 1.5 },
     sinkX: D.kitchen.sink.x1 - 0.3, // keeps the existing sink/plumbing position
-    hobX: 2.85,
+    hobX: 3.3, // single-zone "domino" induction hob, 0.29 m wide
   },
 
   // ---------------------------------------------------------------- island (peninsula off the right-hand wall as you leave the kitchen)
@@ -64,17 +66,27 @@ export const layout = {
     rug: { x0: 0.75, x1: 2.55, z0: 1.05, z1: 3.05 },
     plant: [0.45, 0.98] as [number, number],
     fan: [1.55, 1.95] as [number, number],
+    acZ: (Z.corridorNorth + Z.corridorSouth) / 2, // AC point above the hallway opening
   },
 
   // ---------------------------------------------------------------- master bedroom
   master: {
     // wardrobe along the left wall: its side panel is what you see as you walk in
     wardrobe: { x0: X.partitionE, x1: X.partitionE + 0.6, z0: Z.northInner, z1: 2.05, h: H },
-    // Malaysian queen mattress 152 x 190 cm; frame 162 x 205 cm; headboard against the window wall, under the sill
-    bed: { x0: 4.4, x1: 6.02, z0: Z.northInner, z1: Z.northInner + 2.05, h: 0.78 },
+    // Malaysian queen mattress 152 x 190 cm; frame 162 x 205 cm.
+    // Headboard against the right-hand (east) wall, centred on it; the bed runs towards the wardrobe.
+    bed: { x0: X.eastInner - 2.05, x1: X.eastInner, z0: 0.74, z1: 2.36, h: 1.05 },
     mattress: { w: 1.52, l: 1.9 },
-    nightstand: { x0: 6.12, x1: 6.57, z0: 0.22, z1: 0.62, h: 0.5 },
-    rug: { x0: 4.0, x1: 6.45, z0: 1.3, z1: 2.8 },
+    // one nightstand each side of the bed, hung off the wood headboard wall
+    nightstands: [
+      { x0: X.eastInner - 0.42, x1: X.eastInner - 0.03, z0: 0.22, z1: 0.66, h: 0.5 },
+      { x0: X.eastInner - 0.42, x1: X.eastInner - 0.03, z0: 2.44, z1: 2.88, h: 0.5 },
+    ],
+    // wood-panelled headboard wall with a slim display ledge
+    headboardWall: { z0: 0.2, z1: 2.9, y1: 1.2, t: 0.03 },
+    rug: { x0: 3.95, x1: 5.95, z0: 0.45, z1: 2.65 },
+    // AC point on the wall shared with the bath/hallway, near the east corner
+    ac: { x: X.eastInner - 0.55, y: 2.42 },
   },
 
   // ---------------------------------------------------------------- bathroom (keeps toilet + basin + existing shower)
@@ -102,6 +114,7 @@ const circle = (c: readonly [number, number], r: number): Rect => ({ x0: c[0] - 
 export const furnitureColliders: Rect[] = [
   layout.entry.shoeCabinet,
   layout.kitchen.base,
+  layout.kitchen.fridge,
   { ...layout.island.top, z0: layout.island.bodyZ0 },
   ...layout.island.stools.map((s) => circle(s, 0.18)),
   layout.diningWall,
@@ -112,7 +125,7 @@ export const furnitureColliders: Rect[] = [
   circle(layout.living.plant, 0.2),
   layout.master.wardrobe,
   layout.master.bed,
-  layout.master.nightstand,
+  ...layout.master.nightstands,
   layout.bath.vanity,
   layout.studio.desk,
   layout.studio.cart,

@@ -7,6 +7,7 @@ import { CameraRig, type CameraMode } from './controls/CameraRig'
 import { Furniture } from './furniture'
 import { Apartment } from './scene/Apartment'
 import { Effects } from './scene/Effects'
+import { Backdrop } from './scene/Backdrop'
 import { Lighting } from './scene/Lighting'
 import { useLightMode } from './state/lightMode'
 
@@ -34,6 +35,7 @@ export default function App() {
       >
         <Background />
         <Lighting />
+        <Backdrop mode={mode} />
         <Apartment showCeiling={showCeiling} designed={showDesign} />
         <Furniture show={showDesign} />
         {showLabels && <RoomLabels layer={labelLayer} height={mode === 'walkthrough' ? 2.0 : 0.05} />}

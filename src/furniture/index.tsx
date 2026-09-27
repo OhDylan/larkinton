@@ -9,6 +9,7 @@ import { materials, palette } from '../materials/materials'
 import { useLightMode } from '../state/lightMode'
 import { Bath, Master, Studio } from './Bedrooms'
 import { designMaterials, designPalette } from './designMaterials'
+import { Finishes } from './Finishes'
 import { DiningWall, Entry, Island, Kitchen } from './Kitchen'
 import { furnitureColliders } from './layout'
 import { Living } from './Living'
@@ -41,6 +42,7 @@ export function Furniture({ show }: { show: boolean }) {
   if (!show) return null
   return (
     <group>
+      <Finishes />
       <Entry />
       <Kitchen />
       <Island />

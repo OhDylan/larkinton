@@ -5,22 +5,56 @@ import { designMaterials } from './designMaterials'
 import { layout } from './layout'
 import { useMemo } from 'react'
 import * as THREE from 'three'
-import { AirCon, B, Books, Cyl, Downlight, Lamp, Mirror, Plant, RomanBlind, Soft, Vase } from './primitives'
+import { AirCon, Akari, B, Books, Cyl, Downlight, Lamp, Mirror, Plant, RomanBlind, Soft, Vase } from './primitives'
 
 const { x: X, z: Z } = D
 
 // ------------------------------------------------------------------ master bedroom
+/**
+ * Queen bed in its own frame: headboard at local z = 0, bed runs towards +z, centred on x = 0.
+ * Placed with the headboard against the east wall.
+ */
+function QueenBed() {
+  const d = designMaterials()
+  const { bed: b, mattress: mt } = layout.master
+  const L = b.x1 - b.x0 // 2.05
+  const W = b.z1 - b.z0 // 1.62
+  const hw = W / 2
+  const my = 0.54 // mattress top
+  const mz0 = 0.12
+  const mz1 = mz0 + mt.l
+  const cols = 6
+  const cw = (W + 0.1) / cols
+  return (
+    <group>
+      <B x0={-hw + 0.1} x1={hw - 0.1} y0={0} y1={0.1} z0={0.15} z1={L - 0.12} m={d.charcoal} />
+      <B x0={-hw} x1={hw} y0={0.1} y1={0.3} z0={0.08} z1={L} m={d.wood} />
+      {/* channel-tufted linen headboard */}
+      {Array.from({ length: cols }, (_, i) => (
+        <Soft key={i} x0={-hw - 0.05 + i * cw + 0.004} x1={-hw - 0.05 + (i + 1) * cw - 0.004} y0={0.26} y1={b.h} z0={0} z1={0.1} m={d.oatmeal} r={0.045} />
+      ))}
+      <Soft x0={-mt.w / 2} x1={mt.w / 2} y0={0.3} y1={my} z0={mz0} z1={mz1} m={d.linen} r={0.05} />
+      {/* duvet with soft edges spilling over the sides and foot, folded band at the top */}
+      <Soft x0={-mt.w / 2 - 0.05} x1={mt.w / 2 + 0.05} y0={0.36} y1={my + 0.06} z0={mz0 + 0.5} z1={mz1 + 0.05} m={d.linen} r={0.05} />
+      <Soft x0={-mt.w / 2 - 0.05} x1={mt.w / 2 + 0.05} y0={my + 0.04} y1={my + 0.09} z0={mz0 + 0.5} z1={mz0 + 0.78} m={d.oatmeal} r={0.025} />
+      {[-0.37, 0.37].map((x) => (
+        <Soft key={x} x0={x - 0.33} x1={x + 0.33} y0={my} y1={my + 0.15} z0={mz0 + 0.04} z1={mz0 + 0.42} m={d.linen} r={0.06} rot={[-0.3, 0, 0]} />
+      ))}
+      <Soft x0={-0.22} x1={0.22} y0={my + 0.06} y1={my + 0.37} z0={mz0 + 0.33} z1={mz0 + 0.45} m={d.mocha} r={0.05} rot={[-0.35, 0, 0]} />
+      {/* knit throw over one corner of the foot */}
+      <Soft x0={0.05} x1={mt.w / 2 + 0.07} y0={my + 0.06} y1={my + 0.09} z0={mz1 - 0.55} z1={mz1 - 0.1} m={d.wool} r={0.012} />
+      <Soft x0={mt.w / 2 + 0.05} x1={mt.w / 2 + 0.08} y0={0.33} y1={my + 0.09} z0={mz1 - 0.55} z1={mz1 - 0.1} m={d.wool} r={0.01} />
+    </group>
+  )
+}
+
 export function Master() {
   const d = designMaterials()
-  const { wardrobe: w, bed: b, mattress: mt, nightstand: n, rug: r } = layout.master
-  const bx = (b.x0 + b.x1) / 2
-  const mz0 = b.z0 + 0.12
-  const mz1 = mz0 + mt.l
-  const my = 0.54 // mattress top
+  const { wardrobe: w, bed: b, nightstands, headboardWall: hw, rug: r, ac } = layout.master
   const doorZs = [w.z0 + (w.z1 - w.z0) / 3, w.z0 + ((w.z1 - w.z0) * 2) / 3]
-  const nx = (n.x0 + n.x1) / 2
-  const nz = (n.z0 + n.z1) / 2
   const win = D.windows.master
+  const wallX = X.eastInner - hw.t // face of the wood panelling
+  const bz = (b.z0 + b.z1) / 2
   return (
     <group>
       <Soft x0={r.x0} x1={r.x1} y0={0} y1={0.014} z0={r.z0} z1={r.z1} m={d.wool} r={0.006} />
@@ -32,47 +66,46 @@ export function Master() {
         <B key={z} x0={w.x1} x1={w.x1 + 0.002} y0={0.1} y1={w.h - 0.02} z0={z - 0.0015} z1={z + 0.0015} m={d.charcoal} shadow={false} />
       ))}
       <B x0={w.x1} x1={w.x1 + 0.002} y0={2.2} y1={2.203} z0={w.z0} z1={w.z1} m={d.charcoal} shadow={false} />
-      {/* long vertical bronze pulls */}
       {[w.z0 + 0.06, ...doorZs.map((z) => z + 0.06)].map((z) => (
         <B key={z} x0={w.x1} x1={w.x1 + 0.02} y0={0.8} y1={1.5} z0={z} z1={z + 0.012} m={d.bronze} />
       ))}
 
-      {/* bed: wood platform on a shadow plinth, upholstered linen headboard kept under the sill */}
-      <B x0={b.x0 + 0.1} x1={b.x1 - 0.1} y0={0} y1={0.1} z0={b.z0 + 0.15} z1={b.z1 - 0.1} m={d.charcoal} />
-      <B x0={b.x0} x1={b.x1} y0={0.1} y1={0.3} z0={b.z0 + 0.1} z1={b.z1} m={d.wood} />
-      <B x0={b.x0 - 0.03} x1={b.x1 + 0.03} y0={0.1} y1={b.h} z0={b.z0} z1={b.z0 + 0.06} m={d.wood} />
-      <Soft x0={b.x0} x1={b.x1} y0={0.3} y1={b.h - 0.02} z0={b.z0 + 0.06} z1={b.z0 + 0.14} m={d.oatmeal} r={0.03} />
-      <Soft x0={bx - mt.w / 2} x1={bx + mt.w / 2} y0={0.3} y1={my} z0={mz0} z1={mz1} m={d.linen} r={0.05} />
-      {/* duvet with soft edges spilling over the sides and foot */}
-      <Soft x0={bx - mt.w / 2 - 0.05} x1={bx + mt.w / 2 + 0.05} y0={0.36} y1={my + 0.06} z0={mz0 + 0.45} z1={mz1 + 0.05} m={d.linen} r={0.05} />
-      <Soft x0={bx - mt.w / 2 - 0.05} x1={bx + mt.w / 2 + 0.05} y0={my + 0.04} y1={my + 0.09} z0={mz0 + 0.45} z1={mz0 + 0.7} m={d.linen} r={0.025} />
-      {/* pillows + a mocha cushion */}
-      {[bx - 0.37, bx + 0.37].map((x) => (
-        <Soft key={x} x0={x - 0.33} x1={x + 0.33} y0={my} y1={my + 0.14} z0={mz0 + 0.04} z1={mz0 + 0.4} m={d.linen} r={0.06} rot={[-0.3, 0, 0]} />
+      {/* wood-panelled headboard wall with vertical reveals and a slim display ledge */}
+      <B x0={wallX} x1={X.eastInner} y0={0} y1={hw.y1} z0={hw.z0} z1={hw.z1} m={d.wood} />
+      {Array.from({ length: 8 }, (_, i) => hw.z0 + ((hw.z1 - hw.z0) * (i + 1)) / 9).map((z) => (
+        <B key={z} x0={wallX - 0.001} x1={wallX + 0.004} y0={0.02} y1={hw.y1 - 0.02} z0={z - 0.002} z1={z + 0.002} m={d.woodDark} shadow={false} />
       ))}
-      <Soft x0={bx - 0.22} x1={bx + 0.22} y0={my + 0.05} y1={my + 0.36} z0={mz0 + 0.3} z1={mz0 + 0.42} m={d.mocha} r={0.05} rot={[-0.35, 0, 0]} />
-      {/* knit throw loosely over one corner of the foot */}
-      <Soft x0={bx + 0.05} x1={bx + mt.w / 2 + 0.07} y0={my + 0.06} y1={my + 0.09} z0={mz1 - 0.55} z1={mz1 - 0.1} m={d.wool} r={0.012} />
-      <Soft x0={bx + mt.w / 2 + 0.05} x1={bx + mt.w / 2 + 0.08} y0={0.33} y1={my + 0.09} z0={mz1 - 0.55} z1={mz1 - 0.1} m={d.wool} r={0.01} />
+      <B x0={X.eastInner - 0.13} x1={X.eastInner} y0={hw.y1} y1={hw.y1 + 0.03} z0={hw.z0} z1={hw.z1} m={d.wood} />
+      {/* ledge styling: a leaning print, a vase, a small stack */}
+      <B x0={X.eastInner - 0.06} x1={X.eastInner - 0.035} y0={hw.y1 + 0.03} y1={hw.y1 + 0.55} z0={bz - 0.55} z1={bz - 0.05} m={d.woodDark} />
+      <B x0={X.eastInner - 0.062} x1={X.eastInner - 0.06} y0={hw.y1 + 0.07} y1={hw.y1 + 0.51} z0={bz - 0.51} z1={bz - 0.09} m={d.linen} shadow={false} />
+      <Vase x={X.eastInner - 0.07} z={bz + 0.35} y={hw.y1 + 0.03} h={0.26} r={0.06} m={d.ceramicDark} neck={0.4} />
+      <Vase x={X.eastInner - 0.07} z={bz + 0.55} y={hw.y1 + 0.03} h={0.12} r={0.05} m={d.clay} />
 
-      {/* nightstand + paper lamp + books */}
-      <B x0={n.x0} x1={n.x1} y0={0.12} y1={n.h} z0={n.z0} z1={n.z1} m={d.wood} />
-      <B x0={n.x0} x1={n.x1} y0={n.h - 0.16} y1={n.h - 0.157} z0={n.z1} z1={n.z1 + 0.002} m={d.charcoal} shadow={false} />
-      {[n.x0 + 0.04, n.x1 - 0.04].map((x) => (
-        <Cyl key={x} x={x} z={nz} y0={0} y1={0.12} r={0.015} m={d.woodDark} seg={8} />
-      ))}
-      <Books x={nx - 0.05} z={nz + 0.05} y={n.h} n={2} w={0.2} dpt={0.14} />
-      <Cyl x={nx + 0.08} z={nz - 0.02} y0={n.h} y1={n.h + 0.02} r={0.05} m={d.blackMetal} />
-      <mesh position={[nx + 0.08, n.h + 0.2, nz - 0.02]} scale={[1, 1.15, 1]} material={d.paper}>
-        <sphereGeometry args={[0.12, 32, 20]} />
-      </mesh>
-      <Lamp x={nx + 0.08} y={n.h + 0.2} z={nz - 0.02} day={0.03} evening={0.8} distance={3} />
+      <group position={[wallX, 0, bz]} rotation-y={-Math.PI / 2}>
+        <QueenBed />
+      </group>
 
-      {/* linen roman blind, air-con on the right wall, downlights */}
+      {/* floating nightstands with a hanging paper lantern each side */}
+      {nightstands.map((n, i) => {
+        const nz = (n.z0 + n.z1) / 2
+        const nx = (n.x0 + n.x1) / 2
+        return (
+          <group key={i}>
+            <B x0={n.x0} x1={n.x1} y0={n.h - 0.2} y1={n.h} z0={n.z0} z1={n.z1} m={d.wood} />
+            <B x0={n.x0 - 0.002} x1={n.x0} y0={n.h - 0.1} y1={n.h - 0.097} z0={n.z0 + 0.02} z1={n.z1 - 0.02} m={d.charcoal} shadow={false} />
+            <Books x={nx} z={nz + (i ? -0.08 : 0.08)} y={n.h} n={2} w={0.2} dpt={0.14} alongX={false} />
+            <Vase x={nx} z={nz + (i ? 0.13 : -0.13)} y={n.h} h={0.1} r={0.04} m={d.ceramic} />
+            <Akari x={nx - 0.02} z={nz} bottom={0.95} r={0.13} squash={1.1} light={0.7} />
+          </group>
+        )
+      })}
+
+      {/* linen roman blind, air-con at the existing point (near the east corner), downlights */}
       <RomanBlind a0={win.x0} a1={win.x1} at={Z.northInner + 0.03} top={win.head} drop={0.42} alongX />
-      <AirCon x={X.eastInner} z={1.35} y={2.4} face="x-" />
+      <AirCon x={ac.x} z={Z.bed1South} y={ac.y} face="z-" />
       <Downlight x={3.46} z={2.5} />
-      <Downlight x={5.2} z={2.55} />
+      <Downlight x={4.3} z={0.6} />
     </group>
   )
 }

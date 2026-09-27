@@ -5,7 +5,7 @@ import { designMaterials } from './designMaterials'
 import { layout } from './layout'
 import { useMemo } from 'react'
 import * as THREE from 'three'
-import { Akari, B, Books, Cyl, Downlight, Lamp, Mirror, Vase } from './primitives'
+import { Akari, B, Books, Cyl, Downlight, Lamp, Mirror, Soft, Vase } from './primitives'
 
 const GAP = 0.003 // shadow gap between joinery fronts
 
@@ -80,11 +80,15 @@ export function Kitchen() {
       <B x0={k.sinkX - 0.23} x1={k.sinkX + 0.23} y0={counterY - 0.001} y1={counterY + 0.001} z0={sinkZ - 0.2} z1={sinkZ + 0.2} m={d.blackMetal} shadow={false} />
       <Cyl x={k.sinkX} z={b.z1 - 0.07} y0={counterY} y1={counterY + 0.34} r={0.012} m={d.blackMetal} seg={12} />
       <B x0={k.sinkX - 0.01} x1={k.sinkX + 0.01} y0={counterY + 0.32} y1={counterY + 0.34} z0={b.z1 - 0.28} z1={b.z1 - 0.07} m={d.blackMetal} />
-      {/* induction hob */}
-      <B x0={k.hobX - 0.29} x1={k.hobX + 0.29} y0={counterY} y1={counterY + 0.006} z0={sinkZ - 0.25} z1={sinkZ + 0.25} m={d.hobGlass} shadow={false} />
-      {/* styling: board, crock of utensils, stoneware bowls, a small herb pot */}
-      <B x0={3.3} x1={3.72} y0={counterY} y1={counterY + 0.025} z0={b.z1 - 0.32} z1={b.z1 - 0.04} m={d.woodLight} />
-      <Vase x={2.36} z={b.z1 - 0.13} y={counterY} h={0.17} r={0.065} m={d.ceramicDark} neck={0.9} />
+      {/* single-zone domino induction hob with a thin ring marking the zone */}
+      <B x0={k.hobX - 0.145} x1={k.hobX + 0.145} y0={counterY} y1={counterY + 0.006} z0={sinkZ - 0.26} z1={sinkZ + 0.26} m={d.hobGlass} shadow={false} />
+      <mesh position={[k.hobX, counterY + 0.0065, sinkZ + 0.03]} rotation-x={-Math.PI / 2} material={d.bronze}>
+        <ringGeometry args={[0.095, 0.1, 48]} />
+      </mesh>
+      {/* styling: board, crock of utensils, stoneware bowls */}
+      <B x0={3.58} x1={3.95} y0={counterY} y1={counterY + 0.025} z0={b.z1 - 0.32} z1={b.z1 - 0.04} m={d.woodLight} />
+      <Vase x={b.x0 + 0.12} z={b.z1 - 0.13} y={counterY} h={0.17} r={0.065} m={d.ceramicDark} neck={0.9} />
+      <Fridge />
       {[0, 0.06].map((dy, i) => (
         <Cyl key={i} x={3.95} z={b.z0 + 0.25} y0={counterY + dy} y1={counterY + dy + 0.05} r={0.07 - i * 0.012} rTop={0.1 - i * 0.012} m={d.ceramic} />
       ))}
@@ -93,12 +97,39 @@ export function Kitchen() {
       <B x0={u.x0} x1={u.x1} y0={u.y0} y1={uTop} z0={u.z0} z1={u.z1} m={d.wood} />
       <SplitsX xs={divide(u.x0, u.x1, 3)} y0={u.y0} y1={uTop} z={u.z0} />
       <B x0={u.x0} x1={u.x1} y0={uTop} y1={D.ceilingHeight} z0={u.z0 + 0.02} z1={u.z1} m={d.woodDark} />
-      <B x0={k.hobX - 0.3} x1={k.hobX + 0.3} y0={u.y0 - 0.035} y1={u.y0} z0={u.z0 - 0.04} z1={u.z1} m={d.charcoal} />
+      <B x0={k.hobX - 0.2} x1={k.hobX + 0.2} y0={u.y0 - 0.035} y1={u.y0} z0={u.z0 - 0.04} z1={u.z1} m={d.charcoal} />
       <B x0={u.x0 + 0.04} x1={u.x1 - 0.04} y0={u.y0 - 0.005} y1={u.y0} z0={u.z0 + 0.03} z1={u.z0 + 0.05} m={d.lightStrip} shadow={false} />
       <Lamp x={(u.x0 + u.x1) / 2 - 0.5} y={u.y0 - 0.1} z={u.z0 - 0.05} day={0.05} evening={0.5} distance={1.6} />
       <Lamp x={(u.x0 + u.x1) / 2 + 0.5} y={u.y0 - 0.1} z={u.z0 - 0.05} day={0.05} evening={0.5} distance={1.6} />
       <Downlight x={2.7} z={7.7} />
       <Downlight x={3.7} z={7.7} />
+    </group>
+  )
+}
+
+/** Fridge in a full-height wood housing; the cabinet above conceals the DB box. */
+function Fridge() {
+  const d = designMaterials()
+  const f = layout.kitchen.fridge
+  const side = 0.025
+  const fx0 = f.x0 + side + 0.01
+  const fx1 = f.x1 - side - 0.01
+  const front = f.z0 + 0.03
+  const split = 1.2 // bottom freezer drawer / fridge door line
+  const fx = (fx0 + fx1) / 2
+  return (
+    <group>
+      {/* housing: side panels, over-fridge cabinet to the ceiling */}
+      <B x0={f.x0} x1={f.x0 + side} y0={0} y1={D.ceilingHeight} z0={f.z0} z1={f.z1} m={d.wood} />
+      <B x0={f.x1 - side} x1={f.x1} y0={0} y1={D.ceilingHeight} z0={f.z0} z1={f.z1} m={d.wood} />
+      <B x0={f.x0 + side} x1={f.x1 - side} y0={f.h + 0.05} y1={D.ceilingHeight} z0={f.z0} z1={f.z1} m={d.wood} />
+      <SplitsX xs={[fx]} y0={f.h + 0.07} y1={D.ceilingHeight - 0.02} z={f.z0} />
+      <B x0={f.x0 + side} x1={f.x1 - side} y0={f.h + 0.3} y1={f.h + 0.303} z0={f.z0 - 0.002} z1={f.z0} m={d.charcoal} shadow={false} />
+      {/* fridge: matt charcoal, bottom freezer, slim vertical bronze handles */}
+      <Soft x0={fx0} x1={fx1} y0={0.02} y1={f.h} z0={front} z1={f.z1 - 0.03} m={d.charcoal} r={0.015} />
+      <B x0={fx0 + 0.01} x1={fx1 - 0.01} y0={split - 0.003} y1={split + 0.003} z0={front - 0.002} z1={front + 0.01} m={d.blackMetal} shadow={false} />
+      <B x0={fx1 - 0.06} x1={fx1 - 0.045} y0={split + 0.15} y1={split + 0.55} z0={front - 0.035} z1={front} m={d.bronze} />
+      <B x0={fx0 + 0.15} x1={fx1 - 0.15} y0={split - 0.1} y1={split - 0.085} z0={front - 0.035} z1={front} m={d.bronze} />
     </group>
   )
 }

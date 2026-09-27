@@ -48,8 +48,9 @@ export function WalkControls() {
     const up = () => (dragging = false)
     const move = (e: PointerEvent) => {
       if (!dragging) return
-      look.current.yaw += e.movementX * 0.004
-      look.current.pitch = THREE.MathUtils.clamp(look.current.pitch + e.movementY * 0.004, -1.3, 1.3)
+      // "grab the view": drag left → turn right, drag up → look down (like Street View / 360° tours)
+      look.current.yaw -= e.movementX * 0.004
+      look.current.pitch = THREE.MathUtils.clamp(look.current.pitch - e.movementY * 0.004, -1.3, 1.3)
     }
     const kd = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLElement && e.target.closest('input,button')) return

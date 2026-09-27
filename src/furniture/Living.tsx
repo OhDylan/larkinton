@@ -128,8 +128,8 @@ export function Living() {
       <StackedSideTable />
       <Plant x={layout.living.plant[0]} z={layout.living.plant[1]} h={1.7} />
       <CeilingFan x={fx} z={fz} />
-      {/* split air-con above the sofa */}
-      <AirCon x={layout.living.sofa.x1} z={(layout.living.sofa.z0 + layout.living.sofa.z1) / 2} y={2.4} face="x-" />
+      {/* split air-con at the existing point: on the header above the hallway opening (IMG_5220) */}
+      <AirCon x={D.x.partitionW} z={layout.living.acZ} y={2.6} face="x-" />
       {[
         [0.55, 1.35],
         [0.55, 2.75],

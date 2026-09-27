@@ -117,17 +117,21 @@ All positions live in `src/furniture/layout.ts` (metres, same coordinates as abo
 | Space | What's there |
 |---|---|
 | Entrance | Floating wood shoe cabinet with travertine top and under-glow, on the face of the block right of the main door; round bronze-rim mirror (real reflection). No screen. |
-| Kitchen | Lower run: wood fronts, travertine top, sink kept at the existing plumbing position, induction hob. Upper run in the same wood up to the beam line, stopping at x = 4.2 m so the small window stays clear. Integrated hood, under-cabinet light strip. |
+| Kitchen | Fridge (matt charcoal, bottom freezer) in a full-height wood housing at the entrance end of the run; the cabinet above it conceals the DB box. Lower run: wood fronts, travertine top, sink kept at the existing plumbing position, single-zone narrow (domino) induction hob. Upper run in the same wood up to the beam line, stopping at x = 4.2 m so the small window stays clear. Narrow hood, under-cabinet light strip. |
 | Island | Peninsula off the right-hand wall as you walk out of the kitchen: 1.30 × 0.75 m, 0.92 m high, thick travertine top, fluted wood body, 2 leather counter stools, large Akari-style oval paper lantern. ~1.17 m clear between island and the dining joinery. |
 | Dining wall | Full-height joinery on the left wall (3.5 m): open asymmetric shelving over closed base, a lit tea/coffee niche with stone top, tall pantry. |
-| Living | 1.8 m brown leather 2-seater **against the right-hand wall**, facing the left wall, which is **kept blank for a projector screen or a future TV**. No sideboard. Full-width window seat with thick linen pad and cushions, sheer linen curtains. Travertine drum coffee table, stacked-stone side table with a paper lamp, wool rug, olive tree, ceiling fan, split air-con above the sofa, downlights. |
-| Master | Full-height wardrobe **along the left wall** (0.6 × 1.9 m, 3 doors) — its end panel is what you see walking in. Queen bed (Malaysian queen 152 × 190 cm mattress; 162 × 205 cm frame) against the window wall, shifted right, low upholstered headboard under the sill. Nightstand + paper lamp on the right, linen roman blind, air-con, wool rug. |
+| Living | 1.8 m brown leather 2-seater **against the right-hand wall**, facing the left wall, which is **kept blank for a projector screen or a future TV**. No sideboard. Full-width window seat with thick linen pad and cushions, sheer linen curtains. Travertine drum coffee table, stacked-stone side table with a paper lamp, wool rug, olive tree, ceiling fan, split air-con at the existing point on the header above the hallway opening (see IMG_5220), downlights. |
+| Master | Full-height wardrobe **along the left wall** (0.6 × 1.9 m, 3 doors) — its end panel is what you see walking in. Queen bed (Malaysian queen 152 × 190 cm mattress; 162 × 205 cm frame) with its **headboard against the right-hand (east) wall**, centred, in front of a wood-panelled headboard wall with a display ledge; channel-tufted linen headboard. Floating nightstands both sides with hanging paper lanterns. Air-con on the wall shared with the bath/hallway, near the east corner (as marked). Linen roman blind, wool rug. |
 | Bathroom | Toilet kept. Floating wood vanity with travertine top and stoneware vessel basin. One long horizontal mirror (1.48 × 0.70 m) floating off the wall with a warm back-glow. Existing shower glass door kept (pull handle). |
 | Studio (Bedroom 2) | 1.8 m wood-top workbench on a black steel frame (far wall, right-hand side as you walk in), birch pegboard in a wood frame with shelves/bins/tools, 2 desktop robot arms, task lamp, chair, rolling cart. **Sofa bed** (daybed: single mattress, back cushions, bolsters, pull-out trundle) opposite the bench. Roman blind, air-con above the window. |
 
-Rendering: procedural environment lighting, ambient occlusion (N8AO), bloom for lamps, neutral tone mapping, vignette, planar mirrors.
+Finishes: slim painted skirting, travertine window sills, light switches and sockets.
+
+Rendering: procedural environment lighting, full-resolution ambient occlusion (N8AO), 4K sun shadows, bloom for lamps, neutral tone mapping, vignette, planar mirrors, sky + illustrative distant skyline outside the windows in Walkthrough (assumes a mid-level floor; not the real view).
+
+Walkthrough look: drag left to turn right, drag up to look down ("grab the view", like 360° tours).
 
 Open design questions:
-- [ ] Fridge and washing machine are not placed yet (the yard is the usual spot for the washer).
+- [ ] Washing machine is not placed yet (the yard is the usual spot).
 - [ ] Sofa bed trundle pulled out needs ~0.9 m more floor; the desk chair must move.
-- [ ] Air-con positions are assumed (east walls / above the sofa); real positions depend on the AC ledge piping.
+- [ ] Studio air-con position is assumed (above the window); living and master follow the points you marked.

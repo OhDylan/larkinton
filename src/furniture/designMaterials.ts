@@ -47,12 +47,13 @@ const rand = (a: number, b: number) => a + Math.random() * (b - a)
 
 /** Wood: straight grain with slow colour drift, fine pores and a few darker figure lines. */
 const woodDraw = (base: string, dark: string): Draw => (g, w, h) => {
+  const k = w / 512 // detail scale relative to the 512-px design size
   g.fillStyle = base
   g.fillRect(0, 0, w, h)
   // broad colour bands (boards / flitch variation)
   for (let i = 0; i < 14; i++) {
     const x = rand(0, w)
-    const bw = rand(20, 120)
+    const bw = rand(20, 120) * k
     const grd = g.createLinearGradient(x - bw, 0, x + bw, 0)
     const a = rand(0.04, 0.14)
     const tone = Math.random() > 0.5 ? `rgba(255,220,190,${a})` : `rgba(20,8,0,${a})`
@@ -63,15 +64,16 @@ const woodDraw = (base: string, dark: string): Draw => (g, w, h) => {
     g.fillRect(x - bw, 0, bw * 2, h)
   }
   // grain lines
-  for (let i = 0; i < 220; i++) {
+  for (let i = 0; i < 220 * k; i++) {
     const x = rand(0, w)
     g.strokeStyle = Math.random() > 0.3 ? `rgba(30,14,4,${rand(0.03, 0.12)})` : `rgba(255,230,200,${rand(0.02, 0.06)})`
-    g.lineWidth = rand(1, 4)
+    g.lineWidth = rand(1, 4) * k
     g.beginPath()
     const phase = rand(0, 10)
-    const amp = rand(0.5, 4)
+    const amp = rand(0.3, 1.6) * k
+    const period = rand(90, 220) * k
     g.moveTo(x, 0)
-    for (let y = 0; y <= h; y += 32) g.lineTo(x + Math.sin(y / rand(60, 140) + phase) * amp, y)
+    for (let y = 0; y <= h; y += 16) g.lineTo(x + Math.sin(y / period + phase) * amp, y)
     g.stroke()
   }
   // a few long cathedral-ish figure strokes
@@ -79,10 +81,10 @@ const woodDraw = (base: string, dark: string): Draw => (g, w, h) => {
   for (let i = 0; i < 6; i++) {
     const x = rand(0, w)
     g.globalAlpha = rand(0.12, 0.25)
-    g.lineWidth = rand(1, 3)
+    g.lineWidth = rand(1, 3) * k
     g.beginPath()
     g.moveTo(x, 0)
-    for (let y = 0; y <= h; y += 16) g.lineTo(x + Math.sin(y / 180 + i) * 14, y)
+    for (let y = 0; y <= h; y += 16) g.lineTo(x + Math.sin(y / (180 * k) + i) * 14 * k, y)
     g.stroke()
   }
   g.globalAlpha = 1
@@ -138,13 +140,13 @@ const pegDraw: Draw = (g) => {
 const std = (p: THREE.MeshStandardMaterialParameters) => new THREE.MeshStandardMaterial(p)
 
 function wood(base: string, dark: string, roughness = 0.55) {
-  const map = canvasTex(512, 1024, woodDraw(base, dark), [0.9, 0.45])
+  const map = canvasTex(1024, 2048, woodDraw(base, dark), [0.9, 0.45])
   return std({ map, bumpMap: map, bumpScale: 0.25, roughness })
 }
 
 function make() {
   const P = designPalette
-  const limewash = canvasTex(512, 512, mottleDraw(P.wallWarm, 0.007, [30, 110]), [0.4, 0.4])
+  const limewash = canvasTex(512, 512, mottleDraw(P.wallWarm, 0.012, [4, 30]), [0.6, 0.6])
   const travertineMap = canvasTex(512, 512, mottleDraw(P.travertine, 0.05, [8, 40], 500, 40), [1.2, 1.2])
   const linenMap = canvasTex(256, 256, weaveDraw(P.linen, 0.06), [8, 8])
   const woolMap = canvasTex(256, 256, weaveDraw(P.wool, 0.1), [6, 6])
