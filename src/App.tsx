@@ -6,7 +6,9 @@ import { RoomLabels } from './components/RoomLabels'
 import { CameraRig, type CameraMode } from './controls/CameraRig'
 import { Furniture } from './furniture'
 import { Apartment } from './scene/Apartment'
+import { Effects } from './scene/Effects'
 import { Lighting } from './scene/Lighting'
+import { useLightMode } from './state/lightMode'
 
 // Ceiling is hidden by default in the overhead views, shown at eye level.
 const ceilingDefault: Record<CameraMode, boolean> = { dollhouse: false, topdown: false, walkthrough: true }
@@ -30,12 +32,13 @@ export default function App() {
       <Canvas shadows="percentage" camera={{ fov: 45, near: 0.05, far: 200 }} dpr={[1, 2]}
         gl={{ toneMapping: THREE.NeutralToneMapping, toneMappingExposure: 1.5 }}
       >
-        <color attach="background" args={['#e4e8ec']} />
+        <Background />
         <Lighting />
         <Apartment showCeiling={showCeiling} designed={showDesign} />
         <Furniture show={showDesign} />
         {showLabels && <RoomLabels layer={labelLayer} height={mode === 'walkthrough' ? 2.0 : 0.05} />}
         <CameraRig mode={mode} resetKey={resetKey} />
+        <Effects />
       </Canvas>
       <div ref={labelLayer} className="label-layer" />
       <ControlPanel
@@ -51,4 +54,10 @@ export default function App() {
       />
     </>
   )
+}
+
+/** Sky seen through the windows: pale by day, dusk blue-grey in the evening. */
+function Background() {
+  const evening = useLightMode() === 'evening'
+  return <color attach="background" args={[evening ? '#3a4150' : '#e4e8ec']} />
 }

@@ -1,5 +1,6 @@
 import type { CameraMode } from '../controls/CameraRig'
 import { setAllDoors, useDoorState } from '../scene/doorState'
+import { setLightMode, useLightMode } from '../state/lightMode'
 
 type Props = {
   mode: CameraMode
@@ -22,6 +23,7 @@ const modes: { id: CameraMode; label: string }[] = [
 export function ControlPanel(p: Props) {
   const doors = useDoorState()
   const allOpen = Object.values(doors).every(Boolean)
+  const light = useLightMode()
   return (
     <div className="panel">
       <div className="row">
@@ -41,6 +43,9 @@ export function ControlPanel(p: Props) {
         </button>
         <button className={p.showDesign ? 'active' : ''} onClick={() => p.setShowDesign(!p.showDesign)}>
           Design
+        </button>
+        <button className={light === 'evening' ? 'active' : ''} onClick={() => setLightMode(light === 'evening' ? 'day' : 'evening')}>
+          Evening
         </button>
         <button onClick={() => setAllDoors(!allOpen)}>{allOpen ? 'Close Doors' : 'Open Doors'}</button>
       </div>

@@ -109,22 +109,25 @@ All numbers live in `src/data/dimensions.ts` (metres). Layout topology is in `sr
 
 ---
 
-# Phase 2 — Interior design
+# Phase 2 — Interior design (v2)
 
-Style: cozy · Nordic · natural oak · a touch of wabi-sabi · "designer studio". Floors keep the existing porcelain tiles; walls turn a warm limewash off-white.
-All positions live in `src/furniture/layout.ts` (metres, same coordinates as above). The **Design** button in the panel switches between the empty shell and the furnished design.
+Style: cozy, warm wabi-sabi, **deep peach-wood / walnut** joinery, "designer studio" (references: dark-wood built-ins, open asymmetric shelving, paper lanterns, stone, leather, moody lighting). Floors keep the existing porcelain tiles; walls get a greige limewash finish.
+All positions live in `src/furniture/layout.ts` (metres, same coordinates as above). Panel buttons: **Design** (empty shell vs furnished), **Evening** (dusk light, lamps on).
 
 | Space | What's there |
 |---|---|
-| Entrance | Floating oak shoe cabinet (0.88 × 0.35 × 0.9 m, 15 cm off the floor) on the face of the block right of the main door, round oak-rim mirror above. No screen/divider. |
-| Kitchen | Lower run along the bottom wall (oak fronts, warm stone top, sink kept at the existing plumbing position, induction hob). Upper run in warm white, stopping at x = 4.2 m so the small kitchen window stays clear. Slim hood + under-cabinet light strip. |
-| Island | Peninsula off the right-hand wall as you walk out of the kitchen: 1.30 × 0.75 m, 0.92 m high, stone top, fluted oak body. 2 counter stools on the living-room side. Leaves ~1.57 m clear walkway along the left. |
-| Living | Window seat (飘窗) along the full 4-panel window, seat height = sill (0.45 m), with drawers. 1.5 m 2-seater facing the window seat, round oak coffee table, jute rug, low oak sideboard + art on the partition wall (no TV wall), paper floor lamp, paper lantern pendant, tall plant. Open oak shelving on the left wall of the dining zone. |
-| Master | Full-height oak wardrobe (0.9 m wide) straight ahead as you walk in, left of the window. Queen bed right beside it (Malaysian queen mattress 152 × 190 cm; frame 162 × 205 cm) with a low headboard under the sill. Nightstand + lamp on the right. |
-| Bathroom | Toilet kept. Basin kept as a floating oak vanity with a ceramic vessel basin. One long horizontal mirror (1.48 × 0.72 m) across the basin/toilet wall. Existing shower glass door kept (pull handle shown). |
-| Studio (Bedroom 2) | 1.8 m oak-top workbench on the far wall, right-hand side as you walk in; pegboard behind it with shelves, bins and tools; 2 desktop robot arms; task lamp; chair. Rolling cart beside the bench. Small sofa bed (1.6 m) opposite the bench against the bath wall. Window stays clear in the middle. |
+| Entrance | Floating wood shoe cabinet with travertine top and under-glow, on the face of the block right of the main door; round bronze-rim mirror (real reflection). No screen. |
+| Kitchen | Lower run: wood fronts, travertine top, sink kept at the existing plumbing position, induction hob. Upper run in the same wood up to the beam line, stopping at x = 4.2 m so the small window stays clear. Integrated hood, under-cabinet light strip. |
+| Island | Peninsula off the right-hand wall as you walk out of the kitchen: 1.30 × 0.75 m, 0.92 m high, thick travertine top, fluted wood body, 2 leather counter stools, large Akari-style oval paper lantern. ~1.17 m clear between island and the dining joinery. |
+| Dining wall | Full-height joinery on the left wall (3.5 m): open asymmetric shelving over closed base, a lit tea/coffee niche with stone top, tall pantry. |
+| Living | 1.8 m brown leather 2-seater **against the right-hand wall**, facing the left wall, which is **kept blank for a projector screen or a future TV**. No sideboard. Full-width window seat with thick linen pad and cushions, sheer linen curtains. Travertine drum coffee table, stacked-stone side table with a paper lamp, wool rug, olive tree, ceiling fan, split air-con above the sofa, downlights. |
+| Master | Full-height wardrobe **along the left wall** (0.6 × 1.9 m, 3 doors) — its end panel is what you see walking in. Queen bed (Malaysian queen 152 × 190 cm mattress; 162 × 205 cm frame) against the window wall, shifted right, low upholstered headboard under the sill. Nightstand + paper lamp on the right, linen roman blind, air-con, wool rug. |
+| Bathroom | Toilet kept. Floating wood vanity with travertine top and stoneware vessel basin. One long horizontal mirror (1.48 × 0.70 m) floating off the wall with a warm back-glow. Existing shower glass door kept (pull handle). |
+| Studio (Bedroom 2) | 1.8 m wood-top workbench on a black steel frame (far wall, right-hand side as you walk in), birch pegboard in a wood frame with shelves/bins/tools, 2 desktop robot arms, task lamp, chair, rolling cart. **Sofa bed** (daybed: single mattress, back cushions, bolsters, pull-out trundle) opposite the bench. Roman blind, air-con above the window. |
+
+Rendering: procedural environment lighting, ambient occlusion (N8AO), bloom for lamps, neutral tone mapping, vignette, planar mirrors.
 
 Open design questions:
 - [ ] Fridge and washing machine are not placed yet (the yard is the usual spot for the washer).
-- [ ] The master wardrobe is only 0.9 m wide because of the window position. Is that enough?
-- [ ] Sofa bed opened out needs ~2 m depth; the desk chair must move when it's unfolded.
+- [ ] Sofa bed trundle pulled out needs ~0.9 m more floor; the desk chair must move.
+- [ ] Air-con positions are assumed (east walls / above the sofa); real positions depend on the AC ledge piping.
