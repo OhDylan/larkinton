@@ -194,20 +194,59 @@ function RobotArm({ x, z, y, yaw, a1, a2, a3, accent }: { x: number; z: number; 
   )
 }
 
+const meshBack = new THREE.MeshStandardMaterial({ color: '#2b2d30', roughness: 0.8, transparent: true, opacity: 0.82, side: THREE.DoubleSide })
+
+/** Ergonomic task chair: 5-star base on casters, gas lift, mesh back with lumbar + headrest, adjustable arms. Faces +z. */
 function Chair({ x, z }: { x: number; z: number }) {
   const d = designMaterials()
-  // faces +z (towards the workbench)
+  const seatY = 0.47
   return (
-    <group>
-      {[-1, 1].flatMap((sx) =>
-        [-1, 1].map((sz) => <Cyl key={`${sx}${sz}`} x={x + sx * 0.19} z={z + sz * 0.19} y0={0} y1={0.45} r={0.015} m={d.woodDark} seg={10} />),
-      )}
-      <B x0={x - 0.22} x1={x + 0.22} y0={0.42} y1={0.45} z0={z - 0.22} z1={z + 0.22} m={d.woodDark} />
-      <Soft x0={x - 0.21} x1={x + 0.21} y0={0.44} y1={0.5} z0={z - 0.21} z1={z + 0.21} m={d.leather} r={0.02} />
-      {[-1, 1].map((sx) => (
-        <Cyl key={sx} x={x + sx * 0.19} z={z - 0.2} y0={0.45} y1={0.84} r={0.013} m={d.woodDark} seg={10} />
+    <group position={[x, 0, z]} rotation-y={0.25}>
+      {/* 5-star base with casters */}
+      {[0, 1, 2, 3, 4].map((i) => {
+        const a = (i / 5) * Math.PI * 2
+        return (
+          <group key={i} rotation-y={a}>
+            <mesh position={[0.15, 0.085, 0]} rotation-z={0.12} material={d.blackMetal} castShadow>
+              <boxGeometry args={[0.3, 0.03, 0.045]} />
+            </mesh>
+            <mesh position={[0.3, 0.03, 0]} material={d.charcoal} castShadow>
+              <sphereGeometry args={[0.03, 16, 12]} />
+            </mesh>
+          </group>
+        )
+      })}
+      <Cyl x={0} z={0} y0={0.08} y1={0.13} r={0.05} m={d.blackMetal} />
+      <Cyl x={0} z={0} y0={0.13} y1={seatY - 0.05} r={0.022} m={d.bronze} seg={16} />
+      <B x0={-0.12} x1={0.12} y0={seatY - 0.06} y1={seatY - 0.03} z0={-0.12} z1={0.12} m={d.blackMetal} />
+      {/* contoured seat */}
+      <Soft x0={-0.25} x1={0.25} y0={seatY - 0.03} y1={seatY + 0.05} z0={-0.22} z1={0.25} m={d.charcoal} r={0.035} />
+      {/* back support spine + mesh back, slightly reclined */}
+      <mesh position={[0, seatY + 0.12, -0.26]} rotation-x={-0.25} material={d.blackMetal} castShadow>
+        <boxGeometry args={[0.06, 0.28, 0.025]} />
+      </mesh>
+      {/* curved mesh panel: an arc of a 0.42 m-radius cylinder whose axis sits in front of the back */}
+      <group position={[0, seatY + 0.42, -0.3 + 0.42]} rotation-x={-0.12}>
+        <mesh material={meshBack} castShadow>
+          <cylinderGeometry args={[0.42, 0.42, 0.55, 32, 1, true, Math.PI - 0.6, 1.2]} />
+        </mesh>
+      </group>
+      {/* lumbar pad */}
+      <Soft x0={-0.14} x1={0.14} y0={seatY + 0.2} y1={seatY + 0.3} z0={-0.29} z1={-0.24} m={d.charcoal} r={0.02} />
+      {/* headrest */}
+      <Soft x0={-0.14} x1={0.14} y0={seatY + 0.76} y1={seatY + 0.9} z0={-0.4} z1={-0.33} m={d.charcoal} r={0.025} rot={[-0.2, 0, 0]} />
+      <mesh position={[0, seatY + 0.72, -0.36]} material={d.blackMetal}>
+        <boxGeometry args={[0.03, 0.12, 0.02]} />
+      </mesh>
+      {/* adjustable arms */}
+      {[-1, 1].map((s) => (
+        <group key={s}>
+          <mesh position={[s * 0.27, seatY + 0.1, -0.02]} material={d.blackMetal} castShadow>
+            <boxGeometry args={[0.03, 0.22, 0.05]} />
+          </mesh>
+          <Soft x0={s * 0.27 - 0.04} x1={s * 0.27 + 0.04} y0={seatY + 0.2} y1={seatY + 0.235} z0={-0.14} z1={0.14} m={d.charcoal} r={0.012} />
+        </group>
       ))}
-      <Soft x0={x - 0.22} x1={x + 0.22} y0={0.66} y1={0.84} z0={z - 0.235} z1={z - 0.2} m={d.woodDark} r={0.01} />
     </group>
   )
 }

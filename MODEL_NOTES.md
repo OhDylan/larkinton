@@ -38,6 +38,7 @@ All numbers live in `src/data/dimensions.ts` (metres). Layout topology is in `sr
 | Kitchen zone | 4.49 m wide (left wall to yard wall) × 1.54 m, beyond the dining room |
 | Master bedroom (Bedroom 1) | 3.49 × 2.80 m ≈ 9.8 m² |
 | Bedroom 2 | 3.49 × 2.46 m, plus a 0.89 × 0.40 m door recess ≈ 8.9 m² |
+| Yard | Front-load washer with a dryer stacked on top (stacking kit), in the corner away from the yard door's swing; laundry basket. |
 | Bathroom | L-shaped: main area 1.62 × 1.34 m, plus shower zone 0.82 × 0.96 m |
 | Hallway | about 1.03 × 1.10 m |
 | Yard | 1.08 × 1.54 m |
@@ -122,16 +123,16 @@ All positions live in `src/furniture/layout.ts` (metres, same coordinates as abo
 | Dining wall | Full-height joinery on the left wall (3.5 m): open asymmetric shelving over closed base, a lit tea/coffee niche with stone top, tall pantry. |
 | Living | 1.8 m brown leather 2-seater **against the right-hand wall**, facing the left wall, which is **kept blank for a projector screen or a future TV**. No sideboard. Full-width window seat with thick linen pad and cushions, sheer linen curtains. Travertine drum coffee table, stacked-stone side table with a paper lamp, wool rug, olive tree, ceiling fan, split air-con at the existing point on the header above the hallway opening (see IMG_5220), downlights. |
 | Master | Full-height wardrobe **along the left wall** (0.6 × 1.9 m, 3 doors) — its end panel is what you see walking in. Queen bed (Malaysian queen 152 × 190 cm mattress; 162 × 205 cm frame) with its **headboard against the right-hand (east) wall**, centred, in front of a wood-panelled headboard wall with a display ledge; channel-tufted linen headboard. Floating nightstands both sides with hanging paper lanterns. Air-con on the wall shared with the bath/hallway, near the east corner (as marked). Linen roman blind, wool rug. |
+| Yard | Front-load washer with a dryer stacked on top (stacking kit), in the corner away from the yard door's swing; laundry basket. |
 | Bathroom | Toilet kept. Floating wood vanity with travertine top and stoneware vessel basin. One long horizontal mirror (1.48 × 0.70 m) floating off the wall with a warm back-glow. Existing shower glass door kept (pull handle). |
-| Studio (Bedroom 2) | 1.8 m wood-top workbench on a black steel frame (far wall, right-hand side as you walk in), birch pegboard in a wood frame with shelves/bins/tools, 2 desktop robot arms, task lamp, chair, rolling cart. **Sofa bed** (daybed: single mattress, back cushions, bolsters, pull-out trundle) opposite the bench. Roman blind, air-con above the window. |
+| Studio (Bedroom 2) | 1.8 m wood-top workbench on a black steel frame (far wall, right-hand side as you walk in), birch pegboard in a wood frame with shelves/bins/tools, 2 desktop robot arms, task lamp, ergonomic mesh task chair, rolling cart. **Sofa bed** (daybed: single mattress, back cushions, bolsters, pull-out trundle) opposite the bench. Roman blind, air-con above the window. |
 
 Finishes: slim painted skirting, travertine window sills, light switches and sockets.
 
 Rendering: procedural environment lighting, full-resolution ambient occlusion (N8AO), 4K sun shadows, bloom for lamps, neutral tone mapping, vignette, planar mirrors, sky + illustrative distant skyline outside the windows in Walkthrough (assumes a mid-level floor; not the real view).
 
-Walkthrough look: drag left to turn right, drag up to look down ("grab the view", like 360° tours).
+Walkthrough look: drag left to turn right, drag up to look down ("grab the view", like 360° tours). On phones/tablets: on-screen joystick (bottom-left) to walk, one-finger drag to look; both can be used at once.
 
 Open design questions:
-- [ ] Washing machine is not placed yet (the yard is the usual spot).
 - [ ] Sofa bed trundle pulled out needs ~0.9 m more floor; the desk chair must move.
 - [ ] Studio air-con position is assumed (above the window); living and master follow the points you marked.

@@ -5,6 +5,7 @@ import { dimensions as D } from '../data/dimensions'
 import type { Rect } from '../data/floorplan'
 import { activeFurnitureColliders } from '../furniture'
 import { doorColliders } from '../scene/doorState'
+import { moveInput } from '../state/moveInput'
 import { colliders } from '../scene/wallGeometry'
 
 const { eyeHeight, speed, radius } = D.walkthrough
@@ -20,7 +21,7 @@ function blocked(x: number, z: number, rects: Rect[]) {
   })
 }
 
-/** Eye-level walk: WASD / arrows to move, drag to look. Simple circle-vs-wall collision (closed doors block too). */
+/** Eye-level walk: WASD / arrows or the on-screen joystick to move, drag to look. Simple circle-vs-wall collision (closed doors block too). */
 export function WalkControls() {
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera
   const dom = useThree((s) => s.gl.domElement)
@@ -40,17 +41,29 @@ export function WalkControls() {
         look.current = { yaw, pitch: 0 }
       }
 
-    let dragging = false
+    // Look = one pointer dragging on the canvas (mouse or finger). Deltas come from clientX/Y because
+    // mobile browsers don't report movementX/Y for touch; tracking the pointer id lets a second
+    // finger use the joystick at the same time.
+    let lookId: number | null = null
+    let last = [0, 0]
     const down = (e: PointerEvent) => {
-      dragging = true
+      if (lookId !== null) return
+      lookId = e.pointerId
+      last = [e.clientX, e.clientY]
       dom.setPointerCapture(e.pointerId)
     }
-    const up = () => (dragging = false)
+    const up = (e: PointerEvent) => {
+      if (e.pointerId === lookId) lookId = null
+    }
     const move = (e: PointerEvent) => {
-      if (!dragging) return
+      if (e.pointerId !== lookId) return
+      const dx = e.clientX - last[0]
+      const dy = e.clientY - last[1]
+      last = [e.clientX, e.clientY]
+      const sens = e.pointerType === 'touch' ? 0.006 : 0.004
       // "grab the view": drag left → turn right, drag up → look down (like Street View / 360° tours)
-      look.current.yaw -= e.movementX * 0.004
-      look.current.pitch = THREE.MathUtils.clamp(look.current.pitch - e.movementY * 0.004, -1.3, 1.3)
+      look.current.yaw -= dx * sens
+      look.current.pitch = THREE.MathUtils.clamp(look.current.pitch - dy * sens, -1.3, 1.3)
     }
     const kd = (e: KeyboardEvent) => {
       if (e.target instanceof HTMLElement && e.target.closest('input,button')) return
@@ -60,12 +73,14 @@ export function WalkControls() {
     const ku = (e: KeyboardEvent) => keys.current.delete(e.code)
     dom.addEventListener('pointerdown', down)
     window.addEventListener('pointerup', up)
+    window.addEventListener('pointercancel', up)
     window.addEventListener('pointermove', move)
     window.addEventListener('keydown', kd)
     window.addEventListener('keyup', ku)
     return () => {
       dom.removeEventListener('pointerdown', down)
       window.removeEventListener('pointerup', up)
+      window.removeEventListener('pointercancel', up)
       window.removeEventListener('pointermove', move)
       window.removeEventListener('keydown', kd)
       window.removeEventListener('keyup', ku)
@@ -74,8 +89,9 @@ export function WalkControls() {
 
   useFrame((_, dt) => {
     const k = keys.current
-    const fwd = (k.has('KeyW') || k.has('ArrowUp') ? 1 : 0) - (k.has('KeyS') || k.has('ArrowDown') ? 1 : 0)
-    const side = (k.has('KeyD') || k.has('ArrowRight') ? 1 : 0) - (k.has('KeyA') || k.has('ArrowLeft') ? 1 : 0)
+    const clamp1 = (v: number) => Math.max(-1, Math.min(1, v))
+    const fwd = clamp1((k.has('KeyW') || k.has('ArrowUp') ? 1 : 0) - (k.has('KeyS') || k.has('ArrowDown') ? 1 : 0) + moveInput.y)
+    const side = clamp1((k.has('KeyD') || k.has('ArrowRight') ? 1 : 0) - (k.has('KeyA') || k.has('ArrowLeft') ? 1 : 0) + moveInput.x)
     const { yaw, pitch } = look.current
     if (fwd || side) {
       const step = speed * Math.min(dt, 0.05)

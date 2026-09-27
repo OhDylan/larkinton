@@ -2,6 +2,7 @@ import { Canvas } from '@react-three/fiber'
 import { useRef, useState } from 'react'
 import * as THREE from 'three'
 import { ControlPanel } from './components/ControlPanel'
+import { Joystick } from './components/Joystick'
 import { RoomLabels } from './components/RoomLabels'
 import { CameraRig, type CameraMode } from './controls/CameraRig'
 import { Furniture } from './furniture'
@@ -43,6 +44,7 @@ export default function App() {
         <Effects />
       </Canvas>
       <div ref={labelLayer} className="label-layer" />
+      {mode === 'walkthrough' && <Joystick />}
       <ControlPanel
         mode={mode}
         setMode={setMode}

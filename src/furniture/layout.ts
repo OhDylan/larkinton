@@ -35,6 +35,12 @@ export const layout = {
     hobX: 3.3, // single-zone "domino" induction hob, 0.29 m wide
   },
 
+  // ---------------------------------------------------------------- yard: front-load washer with a dryer stacked on top
+  yard: {
+    // south-east corner of the yard, clear of the yard door's swing (radius ~0.76 m from its hinge)
+    laundry: { x0: X.yardAcW - 0.62, x1: X.yardAcW - 0.02, z0: Z.southInner - 0.62, z1: Z.southInner - 0.02, h: 1.72 },
+  },
+
   // ---------------------------------------------------------------- island (peninsula off the right-hand wall as you leave the kitchen)
   island: {
     top: { x0: X.partitionW - 1.3, x1: X.partitionW, z0: 6.1, z1: 6.85, h: 0.92 },
@@ -115,6 +121,7 @@ export const furnitureColliders: Rect[] = [
   layout.entry.shoeCabinet,
   layout.kitchen.base,
   layout.kitchen.fridge,
+  layout.yard.laundry,
   { ...layout.island.top, z0: layout.island.bodyZ0 },
   ...layout.island.stools.map((s) => circle(s, 0.18)),
   layout.diningWall,

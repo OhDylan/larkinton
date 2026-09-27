@@ -10,7 +10,7 @@ import { useLightMode } from '../state/lightMode'
 import { Bath, Master, Studio } from './Bedrooms'
 import { designMaterials, designPalette } from './designMaterials'
 import { Finishes } from './Finishes'
-import { DiningWall, Entry, Island, Kitchen } from './Kitchen'
+import { DiningWall, Entry, Island, Kitchen, Yard } from './Kitchen'
 import { furnitureColliders } from './layout'
 import { Living } from './Living'
 
@@ -46,6 +46,7 @@ export function Furniture({ show }: { show: boolean }) {
       <Entry />
       <Kitchen />
       <Island />
+      <Yard />
       <DiningWall />
       <Living />
       <Master />

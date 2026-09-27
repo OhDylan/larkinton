@@ -51,7 +51,7 @@ export function ControlPanel(p: Props) {
       </div>
       <div className="hint">
         {p.mode === 'walkthrough'
-          ? 'WASD / arrows to move · drag to look · click a door to open/close'
+          ? 'WASD / arrows or joystick to move · drag to look · tap a door to open/close'
           : p.mode === 'topdown'
             ? 'Drag to pan · scroll to zoom'
             : 'Drag to orbit · right-drag to pan · scroll to zoom · click a door to open/close'}

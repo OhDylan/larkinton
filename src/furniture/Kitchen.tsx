@@ -134,6 +134,49 @@ function Fridge() {
   )
 }
 
+// ------------------------------------------------------------------ yard laundry
+/** One front-loading machine (faces -z): body, control strip, round glass door. */
+function Machine({ x0, x1, y0, z0, z1, h, dryer }: { x0: number; x1: number; y0: number; z0: number; z1: number; h: number; dryer: boolean }) {
+  const d = designMaterials()
+  const cx = (x0 + x1) / 2
+  const doorY = y0 + h * 0.45
+  return (
+    <group>
+      <Soft x0={x0} x1={x1} y0={y0} y1={y0 + h} z0={z0} z1={z1} m={d.whiteAppliance} r={0.02} />
+      {/* control strip: dial + display */}
+      <B x0={x0 + 0.03} x1={x1 - 0.03} y0={y0 + h - 0.12} y1={y0 + h - 0.03} z0={z0 - 0.003} z1={z0} m={d.ceramic} shadow={false} />
+      <mesh position={[x1 - 0.12, y0 + h - 0.075, z0 - 0.012]} rotation-x={Math.PI / 2} material={d.bronze}>
+        <cylinderGeometry args={[0.028, 0.028, 0.02, 24]} />
+      </mesh>
+      <B x0={cx - 0.1} x1={cx + 0.04} y0={y0 + h - 0.095} y1={y0 + h - 0.055} z0={z0 - 0.004} z1={z0} m={d.screen} shadow={false} />
+      {/* door: chrome-ish ring + dark glass */}
+      <mesh position={[cx, doorY, z0 - 0.02]} material={d.blackMetal}>
+        <torusGeometry args={[dryer ? 0.19 : 0.2, 0.025, 12, 48]} />
+      </mesh>
+      <mesh position={[cx, doorY, z0 - 0.015]} rotation-y={Math.PI} material={d.hobGlass}>
+        <circleGeometry args={[dryer ? 0.17 : 0.18, 48]} />
+      </mesh>
+    </group>
+  )
+}
+
+export function Yard() {
+  const d = designMaterials()
+  const l = layout.yard.laundry
+  const washerH = 0.85
+  return (
+    <group>
+      <Machine x0={l.x0} x1={l.x1} y0={0.01} z0={l.z0} z1={l.z1} h={washerH} dryer={false} />
+      {/* stacking kit between the two machines */}
+      <B x0={l.x0 - 0.005} x1={l.x1 + 0.005} y0={washerH + 0.01} y1={washerH + 0.03} z0={l.z0} z1={l.z1} m={d.blackMetal} />
+      <Machine x0={l.x0} x1={l.x1} y0={washerH + 0.03} z0={l.z0} z1={l.z1} h={l.h - washerH - 0.03} dryer />
+      {/* laundry basket beside the stack */}
+      <Cyl x={l.x0 - 0.26} z={l.z1 - 0.25} y0={0} y1={0.42} r={0.18} rTop={0.21} m={d.wool} />
+      <Downlight x={(l.x0 + l.x1) / 2 - 0.3} z={7.9} />
+    </group>
+  )
+}
+
 // ------------------------------------------------------------------ island
 export function Island() {
   const d = designMaterials()
