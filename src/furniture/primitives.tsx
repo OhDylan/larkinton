@@ -5,6 +5,7 @@ import { Reflector } from 'three/examples/jsm/objects/Reflector.js'
 import { dimensions as D } from '../data/dimensions'
 import { metricBox } from '../scene/geometry'
 import { useLightMode } from '../state/lightMode'
+import { useRenderMode } from '../state/renderMode'
 import { designMaterials } from './designMaterials'
 
 type Ext = { x0: number; x1: number; y0: number; y1: number; z0: number; z1: number }
@@ -246,5 +247,12 @@ export function Mirror({ geometry, position, rotationY = 0 }: { geometry: THREE.
     [geometry],
   )
   useEffect(() => () => mirror.dispose(), [mirror])
+  const live = useRenderMode() === 'live'
+  if (!live)
+    return (
+      <mesh geometry={geometry} position={position} rotation-y={rotationY} material={photoMirror} />
+    )
   return <primitive object={mirror} position={position} rotation-y={rotationY} />
 }
+
+const photoMirror = new THREE.MeshStandardMaterial({ color: '#f2f4f4', metalness: 1, roughness: 0.02 })

@@ -48,3 +48,7 @@ canvas { touch-action: none; }
   .panel .hint { font-size: 10px; }
   .joystick { left: 20px; bottom: 24px; }
 }
+
+.panel button.photo { border-color: #b08d57; }
+.panel button.photo.active { background: #6a4a2c; border-color: #6a4a2c; }
+.panel .photo-status { font-size: 11px; color: #6a4a2c; padding: 0 2px; }

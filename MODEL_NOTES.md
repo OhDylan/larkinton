@@ -131,6 +131,8 @@ Finishes: slim painted skirting, travertine window sills, light switches and soc
 
 Rendering: procedural environment lighting, full-resolution ambient occlusion (N8AO), 4K sun shadows, bloom for lamps, neutral tone mapping, vignette, planar mirrors, sky + illustrative distant skyline outside the windows in Walkthrough (assumes a mid-level floor; not the real view).
 
+**Photo Render** (panel button): progressive path tracing of the current view (three-gpu-pathtracer), i.e. the same light simulation offline renderers use — real bounce light, soft shadows, light glowing through the paper lamps. The image starts grainy and sharpens while the camera stays still (seconds on a desktop GPU, longer on phones); moving restarts it. Daylight comes from a sky dome plus soft "sky portal" area lights in the windows; exposure is set higher at eye level than in the dollhouse view, like a camera indoors. Loaded on demand, so it doesn't slow the first page load.
+
 Walkthrough look: drag left to turn right, drag up to look down ("grab the view", like 360° tours). On phones/tablets: on-screen joystick (bottom-left) to walk, one-finger drag to look; both can be used at once.
 
 Open design questions:
