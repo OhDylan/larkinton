@@ -25,6 +25,8 @@ function blocked(x: number, z: number, rects: Rect[]) {
 export function WalkControls() {
   const camera = useThree((s) => s.camera) as THREE.PerspectiveCamera
   const dom = useThree((s) => s.gl.domElement)
+  const renderer = useThree((s) => s.gl)
+  const scene = useThree((s) => s.scene)
   const keys = useRef(new Set<string>())
   const look = useRef({ yaw: START.yaw, pitch: 0 })
 
@@ -39,6 +41,29 @@ export function WalkControls() {
       (window as unknown as Record<string, unknown>).__walkTo = (x: number, z: number, yaw: number) => {
         camera.position.set(x, eyeHeight, z)
         look.current = { yaw, pitch: 0 }
+      }
+    // dev helper for performance checks: __stats() → draw calls / triangles / lights of the last frame
+    if (import.meta.env.DEV)
+      (window as unknown as Record<string, unknown>).__stats = () => {
+        let lights = 0
+        let meshes = 0
+        scene.traverse((o: THREE.Object3D) => {
+          if ((o as THREE.Light).isLight && o.visible) lights++
+          if ((o as THREE.Mesh).isMesh && o.visible) meshes++
+        })
+        const i = renderer.info
+        // count every pass of one whole frame (shadow map, AO, effects), not just the last one
+        i.autoReset = false
+        i.reset()
+        return new Promise((resolve) =>
+          requestAnimationFrame(() =>
+            requestAnimationFrame(() => {
+              const r = { calls: i.render.calls, triangles: i.render.triangles, lights, visibleMeshes: meshes }
+              i.autoReset = true
+              resolve(r)
+            }),
+          ),
+        )
       }
 
     // Look = one pointer dragging on the canvas (mouse or finger). Deltas come from clientX/Y because

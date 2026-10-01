@@ -10,12 +10,13 @@ import { FullScreenQuad } from 'three/examples/jsm/postprocessing/Pass.js'
 import { DenoiseMaterial, GradientEquirectTexture, WebGLPathTracer } from 'three-gpu-pathtracer'
 import { designMaterials } from '../furniture/designMaterials'
 import { materials } from '../materials/materials'
-import { setPhotoStatus } from '../state/renderMode'
+import { setPhotoStatus, setRenderMode } from '../state/renderMode'
 import { useLightMode } from '../state/lightMode'
 import { dimensions as D } from '../data/dimensions'
 import { useDoorState } from './doorState'
 
 const isMobile = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
+const MAX_SAMPLES = isMobile ? 192 : 768
 
 /** Sky dome used both as light source and as what you see through the windows. */
 function makeSky(evening: boolean) {
@@ -78,15 +79,21 @@ export function PathTracer({ designed, inside }: { designed: boolean; inside: bo
   // one path tracer for the lifetime of photo mode
   useEffect(() => {
     const tracer = new WebGLPathTracer(gl)
-    tracer.tiles.set(isMobile ? 3 : 2, isMobile ? 3 : 2)
-    tracer.renderScale = isMobile ? 0.5 : Math.min(1, 1.25 / gl.getPixelRatio())
+    // Keep each frame's GPU work small so the browser stays responsive (a single long GPU job is
+    // what makes a tab freeze or the driver reset): a pixel budget instead of full resolution,
+    // the sample split into tiles over several frames, modest bounce depth and texture size.
+    const size = gl.getDrawingBufferSize(new THREE.Vector2())
+    const budget = isMobile ? 0.18e6 : 0.45e6 // path-traced pixels per sample
+    tracer.renderScale = Math.min(1, Math.sqrt(budget / (size.x * size.y)))
+    tracer.tiles.set(isMobile ? 4 : 3, isMobile ? 4 : 3)
     tracer.dynamicLowRes = true
-    tracer.lowResScale = 0.2
+    tracer.lowResScale = 0.15
     tracer.minSamples = 2
     tracer.fadeDuration = 300
-    tracer.bounces = 6
+    tracer.bounces = 4
+    tracer.transmissiveBounces = 2
     tracer.filterGlossyFactor = 0.5
-    tracer.textureSize.set(isMobile ? 512 : 1024, isMobile ? 512 : 1024)
+    tracer.textureSize.set(512, 512)
     // light denoise on top of the accumulated image, strongest while samples are few
     const denoise = new FullScreenQuad(new DenoiseMaterial({ sigma: 2.5, threshold: 0.12, kSigma: 1.0 }))
     tracer.renderToCanvasCallback = (target, renderer, quad) => {
@@ -104,11 +111,19 @@ export function PathTracer({ designed, inside }: { designed: boolean; inside: bo
       renderer.autoClear = auto
     }
     pt.current = tracer
+    // if the GPU gives up (context lost), fall back to the live view instead of a dead canvas
+    const lost = (e: Event) => {
+      e.preventDefault()
+      setPhotoStatus({ phase: 'failed', samples: 0 })
+      setRenderMode('live')
+    }
+    gl.domElement.addEventListener('webglcontextlost', lost)
     return () => {
+      gl.domElement.removeEventListener('webglcontextlost', lost)
       tracer.dispose()
       denoise.dispose()
       pt.current = null
-      setPhotoStatus({ phase: 'idle', samples: 0 })
+      setPhotoStatus({ phase: 'idle', samples: 0 }, true)
     }
   }, [gl])
 
@@ -179,8 +194,11 @@ export function PathTracer({ designed, inside }: { designed: boolean; inside: bo
       lastProj.current.copy(camera.projectionMatrix)
       tracer.updateCamera()
     }
+    // stop once the image is clean enough: no point heating the device further
+    const done = tracer.samples >= MAX_SAMPLES
+    tracer.pausePathTracing = done
     tracer.renderSample()
-    setPhotoStatus({ phase: 'rendering', samples: Math.floor(tracer.samples) })
+    setPhotoStatus({ phase: done ? 'done' : 'rendering', samples: Math.floor(tracer.samples) })
   }, 1)
 
   return <SkyPortals evening={evening} />

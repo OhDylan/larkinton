@@ -59,8 +59,13 @@ export function ControlPanel(p: Props) {
         <div className="photo-status">
           {photo.phase === 'rendering'
             ? `Rendering · ${photo.samples} samples — hold still, it sharpens over time`
-            : 'Preparing the photo render…'}
+            : photo.phase === 'done'
+              ? `Done · ${photo.samples} samples (move the camera to render a new view)`
+              : 'Preparing the photo render…'}
         </div>
+      )}
+      {render === 'live' && photo.phase === 'failed' && (
+        <div className="photo-status">Photo render stopped: this device's graphics ran out of resources.</div>
       )}
       <div className="hint">
         {p.mode === 'walkthrough'

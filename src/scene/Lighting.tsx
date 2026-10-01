@@ -1,10 +1,11 @@
-import { useThree } from '@react-three/fiber'
-import { useEffect } from 'react'
+import { useFrame, useThree } from '@react-three/fiber'
+import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { planCenter } from '../data/floorplan'
 import { useLightMode } from '../state/lightMode'
 import { useRenderMode } from '../state/renderMode'
+import { openness } from './doorState'
 
 const [cx, cz] = planCenter
 
@@ -46,7 +47,7 @@ export function Lighting() {
         intensity={evening ? 0.6 : 2.6}
         color={evening ? '#ffb070' : '#fff6e8'}
         castShadow
-        shadow-mapSize={[4096, 4096]}
+        shadow-mapSize={[2048, 2048]}
         shadow-bias={-0.0004}
         shadow-normalBias={0.02}
         shadow-radius={4}
@@ -60,4 +61,37 @@ export function Lighting() {
       </directionalLight>
     </>
   )
+}
+
+/**
+ * The sun doesn't move, so its shadow map only needs re-rendering when something in the scene
+ * changes (a door swinging, design/ceiling/light toggles) — not every frame. Saves a full
+ * scene pass per frame.
+ */
+export function ShadowUpdates({ version }: { version: string }) {
+  const gl = useThree((s) => s.gl)
+  const frames = useRef(10)
+  const lastDoors = useRef('')
+  useEffect(() => {
+    gl.shadowMap.autoUpdate = false
+    gl.shadowMap.needsUpdate = true
+    return () => {
+      gl.shadowMap.autoUpdate = true
+    }
+  }, [gl])
+  useEffect(() => {
+    frames.current = 10 // a few frames: merged meshes / new lights settle after the toggle
+  }, [version])
+  useFrame(() => {
+    const doors = Object.values(openness).map((v) => v.toFixed(3)).join()
+    if (doors !== lastDoors.current) {
+      lastDoors.current = doors
+      frames.current = Math.max(frames.current, 2)
+    }
+    if (frames.current > 0) {
+      gl.shadowMap.needsUpdate = true
+      frames.current--
+    }
+  })
+  return null
 }

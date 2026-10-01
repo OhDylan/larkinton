@@ -133,6 +133,8 @@ Rendering: procedural environment lighting, full-resolution ambient occlusion (N
 
 **Photo Render** (panel button): progressive path tracing of the current view (three-gpu-pathtracer), i.e. the same light simulation offline renderers use — real bounce light, soft shadows, light glowing through the paper lamps. The image starts grainy and sharpens while the camera stays still (seconds on a desktop GPU, longer on phones); moving restarts it. Daylight comes from a sky dome plus soft "sky portal" area lights in the windows; exposure is set higher at eye level than in the dollhouse view, like a camera indoors. Loaded on demand, so it doesn't slow the first page load.
 
+Performance: static furniture and the shell are merged into one mesh per material after mounting (~900 → ~110 meshes; draw calls per frame cut by ~70%); the sun's shadow map only re-renders when something changes; lamps are off by day and small accent lamps only light up in photo mode; AO at half resolution; bloom only in the evening; pixel ratio capped at 1.5. Photo mode renders a fixed pixel budget split into tiles, stops at 768 samples (192 on phones), and falls back to the live view if the GPU context is lost.
+
 Walkthrough look: drag left to turn right, drag up to look down ("grab the view", like 360° tours). On phones/tablets: on-screen joystick (bottom-left) to walk, one-finger drag to look; both can be used at once.
 
 Open design questions:

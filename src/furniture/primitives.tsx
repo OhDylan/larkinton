@@ -23,7 +23,7 @@ export function Soft({ x0, x1, y0, y1, z0, z1, m, r = 0.04, rot }: Ext & { m: TH
   const d = z1 - z0
   const radius = Math.min(r, w / 2 - 0.001, h / 2 - 0.001, d / 2 - 0.001)
   return (
-    <RoundedBox args={[w, h, d]} radius={radius} smoothness={4} position={[(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2]} rotation={rot} material={m} castShadow receiveShadow />
+    <RoundedBox args={[w, h, d]} radius={radius} smoothness={2} position={[(x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2]} rotation={rot} material={m} castShadow receiveShadow />
   )
 }
 
@@ -36,16 +36,20 @@ export function Cyl({ x, z, y0, y1, r, rTop, m, seg = 32 }: { x: number; z: numb
 }
 
 /** Warm point light whose strength follows the day/evening mode. */
-export function Lamp({ x, y, z, day = 0.15, evening = 1.6, distance = 4, shadow = false }: { x: number; y: number; z: number; day?: number; evening?: number; distance?: number; shadow?: boolean }) {
+export function Lamp({ x, y, z, evening = 1.6, distance = 4, shadow = false, minor = false }: { x: number; y: number; z: number; day?: number; evening?: number; distance?: number; shadow?: boolean; minor?: boolean }) {
   const mode = useLightMode()
+  const photo = useRenderMode() === 'photo'
+  // Performance: every point light adds cost to every pixel in the live view. By day the lamps
+  // are off (they added almost nothing), and small accent lamps only light up in photo mode.
+  if (mode !== 'evening' || (minor && !photo)) return null
   return (
     <pointLight
       position={[x, y, z]}
       color="#ffc98a"
-      intensity={mode === 'evening' ? evening : day}
+      intensity={evening}
       distance={distance}
       decay={2}
-      castShadow={shadow && mode === 'evening'}
+      castShadow={shadow}
       shadow-mapSize={[512, 512]}
       shadow-bias={-0.002}
     />
@@ -53,7 +57,7 @@ export function Lamp({ x, y, z, day = 0.15, evening = 1.6, distance = 4, shadow 
 }
 
 /** Akari-style paper lantern: flattened oval with fine horizontal ribs. */
-export function Akari({ x, z, bottom, r = 0.3, squash = 0.45, light = 1.4 }: { x: number; z: number; bottom: number; r?: number; squash?: number; light?: number }) {
+export function Akari({ x, z, bottom, r = 0.3, squash = 0.45, light = 1.4, minor = false }: { x: number; z: number; bottom: number; r?: number; squash?: number; light?: number; minor?: boolean }) {
   const d = designMaterials()
   const hy = r * squash
   const cy = bottom + hy
@@ -72,7 +76,7 @@ export function Akari({ x, z, bottom, r = 0.3, squash = 0.45, light = 1.4 }: { x
       <mesh position={[x, (cy + hy + top) / 2, z]} material={d.charcoal}>
         <cylinderGeometry args={[0.003, 0.003, top - cy - hy, 6]} />
       </mesh>
-      <Lamp x={x} y={cy} z={z} evening={light} distance={4.5} />
+      <Lamp x={x} y={cy} z={z} evening={light} distance={4.5} minor={minor} />
     </group>
   )
 }
@@ -243,7 +247,7 @@ export function Books({ x, z, y, n = 3, w = 0.22, dpt = 0.16, alongX = true }: {
  */
 export function Mirror({ geometry, position, rotationY = 0 }: { geometry: THREE.BufferGeometry; position: [number, number, number]; rotationY?: number }) {
   const mirror = useMemo(
-    () => new Reflector(geometry, { textureWidth: 1024, textureHeight: 1024, color: new THREE.Color('#c9cdcc'), clipBias: 0.003 }),
+    () => new Reflector(geometry, { textureWidth: 512, textureHeight: 512, color: new THREE.Color('#c9cdcc'), clipBias: 0.003 }),
     [geometry],
   )
   useEffect(() => () => mirror.dispose(), [mirror])

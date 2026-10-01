@@ -96,7 +96,7 @@ export function Master() {
             <B x0={n.x0 - 0.002} x1={n.x0} y0={n.h - 0.1} y1={n.h - 0.097} z0={n.z0 + 0.02} z1={n.z1 - 0.02} m={d.charcoal} shadow={false} />
             <Books x={nx} z={nz + (i ? -0.08 : 0.08)} y={n.h} n={2} w={0.2} dpt={0.14} alongX={false} />
             <Vase x={nx} z={nz + (i ? 0.13 : -0.13)} y={n.h} h={0.1} r={0.04} m={d.ceramic} />
-            <Akari x={nx - 0.02} z={nz} bottom={0.95} r={0.13} squash={1.1} light={0.7} />
+            <Akari x={nx - 0.02} z={nz} bottom={0.95} r={0.13} squash={1.1} light={0.7} minor={i === 1} />
           </group>
         )
       })}
@@ -136,7 +136,7 @@ export function Bath() {
       <B x0={mr.x0 + 0.03} x1={mr.x1 - 0.03} y0={mr.y0 + 0.03} y1={mr.y1 - 0.03} z0={wallZ - 0.03} z1={wallZ - 0.001} m={d.charcoal} />
       <B x0={mr.x0 + 0.02} x1={mr.x1 - 0.02} y0={mr.y0 + 0.02} y1={mr.y1 - 0.02} z0={wallZ - 0.018} z1={wallZ - 0.012} m={d.lightStrip} shadow={false} />
       <Mirror geometry={mirrorGeo} position={[(mr.x0 + mr.x1) / 2, (mr.y0 + mr.y1) / 2, wallZ - 0.031]} rotationY={Math.PI} />
-      <Lamp x={(mr.x0 + mr.x1) / 2} y={mr.y0 + 0.2} z={wallZ - 0.3} day={0.05} evening={0.5} distance={1.8} />
+      <Lamp x={(mr.x0 + mr.x1) / 2} y={mr.y0 + 0.2} z={wallZ - 0.3} evening={0.5} distance={1.8} minor />
 
       {/* existing shower screen: hinged glass door → pull handle on both sides */}
       {[-1, 1].map((s) => (
@@ -313,7 +313,7 @@ function Pegboard() {
       <mesh position={[k.x0 + 0.3, 1.16, z - 0.02]} material={d.charcoal}>
         <torusGeometry args={[0.08, 0.008, 8, 32]} />
       </mesh>
-      <Lamp x={(k.x0 + k.x1) / 2} y={1.9} z={z - 0.3} day={0.03} evening={0.35} distance={1.8} />
+      <Lamp x={(k.x0 + k.x1) / 2} y={1.9} z={z - 0.3} evening={0.35} distance={1.8} minor />
     </group>
   )
 }
@@ -385,7 +385,7 @@ export function Studio() {
       <mesh position={[chx + 0.55, top + 0.4, k.z1 - 0.36]} rotation-x={0.9} material={d.blackMetal}>
         <coneGeometry args={[0.07, 0.12, 24, 1, true]} />
       </mesh>
-      <Lamp x={chx + 0.55} y={top + 0.3} z={k.z1 - 0.42} day={0.05} evening={0.6} distance={2} />
+      <Lamp x={chx + 0.55} y={top + 0.3} z={k.z1 - 0.42} evening={0.6} distance={2} />
       <Vase x={k.x0 + 0.75} z={k.z1 - 0.12} y={top} h={0.14} r={0.05} m={d.ceramicDark} neck={0.9} />
       <Chair x={chx} z={chz} />
       <Cart />

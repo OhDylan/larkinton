@@ -39,7 +39,7 @@ export function Entry() {
       <SplitsX xs={[cx]} y0={s.y0 + 0.01} y1={top - 0.04} z={s.z0} />
       {/* warm under-glow onto the floor */}
       <B x0={s.x0 + 0.05} x1={s.x1 - 0.05} y0={s.y0 - 0.004} y1={s.y0} z0={s.z0 + 0.05} z1={s.z0 + 0.07} m={d.lightStrip} shadow={false} />
-      <Lamp x={cx} y={0.08} z={s.z0 - 0.1} day={0} evening={0.35} distance={1.2} />
+      <Lamp x={cx} y={0.08} z={s.z0 - 0.1} evening={0.35} distance={1.2} minor />
       {/* styling: ceramic key dish, bud vase with a stem, small book */}
       <Cyl x={s.x0 + 0.2} z={s.z0 + 0.17} y0={top} y1={top + 0.025} r={0.08} rTop={0.1} m={d.ceramicDark} />
       <Vase x={s.x1 - 0.16} z={s.z0 + 0.16} y={top} h={0.24} r={0.055} m={d.clay} neck={0.35} />
@@ -99,8 +99,8 @@ export function Kitchen() {
       <B x0={u.x0} x1={u.x1} y0={uTop} y1={D.ceilingHeight} z0={u.z0 + 0.02} z1={u.z1} m={d.woodDark} />
       <B x0={k.hobX - 0.2} x1={k.hobX + 0.2} y0={u.y0 - 0.035} y1={u.y0} z0={u.z0 - 0.04} z1={u.z1} m={d.charcoal} />
       <B x0={u.x0 + 0.04} x1={u.x1 - 0.04} y0={u.y0 - 0.005} y1={u.y0} z0={u.z0 + 0.03} z1={u.z0 + 0.05} m={d.lightStrip} shadow={false} />
-      <Lamp x={(u.x0 + u.x1) / 2 - 0.5} y={u.y0 - 0.1} z={u.z0 - 0.05} day={0.05} evening={0.5} distance={1.6} />
-      <Lamp x={(u.x0 + u.x1) / 2 + 0.5} y={u.y0 - 0.1} z={u.z0 - 0.05} day={0.05} evening={0.5} distance={1.6} />
+      <Lamp x={(u.x0 + u.x1) / 2 - 0.5} y={u.y0 - 0.1} z={u.z0 - 0.05} evening={0.5} distance={1.6} />
+      <Lamp x={(u.x0 + u.x1) / 2 + 0.5} y={u.y0 - 0.1} z={u.z0 - 0.05} evening={0.5} distance={1.6} minor />
       <Downlight x={2.7} z={7.7} />
       <Downlight x={3.7} z={7.7} />
     </group>
@@ -319,7 +319,7 @@ export function DiningWall() {
     <group>
       {pieces}
       {styling}
-      <Lamp x={face + 0.15} y={nicheTop - 0.08} z={(B0 + B1) / 2} day={0.05} evening={0.45} distance={1.5} />
+      <Lamp x={face + 0.15} y={nicheTop - 0.08} z={(B0 + B1) / 2} evening={0.45} distance={1.5} minor />
       <Downlight x={1.0} z={4.2} />
       <Downlight x={1.0} z={5.4} />
     </group>

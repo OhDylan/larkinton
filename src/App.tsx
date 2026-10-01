@@ -10,7 +10,7 @@ import { Apartment } from './scene/Apartment'
 import { Effects } from './scene/Effects'
 import { useRenderMode } from './state/renderMode'
 import { Backdrop } from './scene/Backdrop'
-import { Lighting } from './scene/Lighting'
+import { Lighting, ShadowUpdates } from './scene/Lighting'
 import { useLightMode } from './state/lightMode'
 
 // photo (path-traced) mode is loaded on demand so the first page load stays light
@@ -25,6 +25,7 @@ export default function App() {
   const [showCeiling, setShowCeiling] = useState(false)
   const [showLabels, setShowLabels] = useState(true)
   const [showDesign, setShowDesign] = useState(true)
+  const lightModeKey = useLightMode()
   const renderMode = useRenderMode()
   const labelLayer = useRef<HTMLDivElement>(null!)
 
@@ -36,11 +37,12 @@ export default function App() {
 
   return (
     <>
-      <Canvas shadows="percentage" camera={{ fov: 45, near: 0.05, far: 200 }} dpr={[1, 2]}
+      <Canvas shadows="percentage" camera={{ fov: 45, near: 0.05, far: 200 }} dpr={[1, 1.5]}
         gl={{ toneMapping: THREE.NeutralToneMapping, toneMappingExposure: 1.5 }}
       >
         <Background />
         <Lighting />
+        <ShadowUpdates version={`${showCeiling}|${showDesign}|${lightModeKey}`} />
         <Backdrop mode={mode} />
         <Apartment showCeiling={showCeiling} designed={showDesign} />
         <Furniture show={showDesign} />

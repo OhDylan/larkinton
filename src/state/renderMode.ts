@@ -2,7 +2,7 @@
 import { useSyncExternalStore } from 'react'
 
 export type RenderMode = 'live' | 'photo'
-export type PhotoStatus = { phase: 'idle' | 'preparing' | 'rendering'; samples: number }
+export type PhotoStatus = { phase: 'idle' | 'preparing' | 'rendering' | 'done' | 'failed'; samples: number }
 
 let mode: RenderMode = 'live'
 let status: PhotoStatus = { phase: 'idle', samples: 0 }
@@ -16,7 +16,9 @@ export function setRenderMode(m: RenderMode) {
 }
 export const useRenderMode = () => useSyncExternalStore(subscribe, () => mode)
 
-export function setPhotoStatus(s: PhotoStatus) {
+/** `keepFailure`: a teardown "idle" must not overwrite a just-reported failure. */
+export function setPhotoStatus(s: PhotoStatus, keepFailure = false) {
+  if (keepFailure && status.phase === 'failed') return
   if (s.phase === status.phase && s.samples === status.samples) return
   status = s
   emit()

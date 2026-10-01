@@ -13,6 +13,7 @@ import { Finishes } from './Finishes'
 import { DiningWall, Entry, Island, Kitchen, Yard } from './Kitchen'
 import { furnitureColliders } from './layout'
 import { Living } from './Living'
+import { StaticMerge } from './StaticMerge'
 
 /** Read by walkthrough collision: furniture only blocks the way while it's shown. */
 export const designState = { enabled: true }
@@ -41,7 +42,7 @@ export function Furniture({ show }: { show: boolean }) {
 
   if (!show) return null
   return (
-    <group>
+    <StaticMerge>
       <Finishes />
       <Entry />
       <Kitchen />
@@ -52,6 +53,6 @@ export function Furniture({ show }: { show: boolean }) {
       <Master />
       <Bath />
       <Studio />
-    </group>
+    </StaticMerge>
   )
 }

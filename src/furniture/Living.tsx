@@ -94,7 +94,7 @@ function StackedSideTable() {
       <mesh position={[x - 0.05, 0.68, z]} scale={[1, 1.1, 1]} material={d.paper}>
         <sphereGeometry args={[0.11, 32, 20]} />
       </mesh>
-      <Lamp x={x - 0.05} y={0.68} z={z} day={0.05} evening={0.9} distance={3} />
+      <Lamp x={x - 0.05} y={0.68} z={z} evening={0.9} distance={3} />
       <Vase x={x + 0.1} z={z + 0.04} y={0.52} h={0.1} r={0.04} m={d.clay} />
     </group>
   )
@@ -138,7 +138,7 @@ export function Living() {
       ].map(([x, z]) => (
         <Downlight key={`${x}${z}`} x={x} z={z} />
       ))}
-      <Lamp x={1.55} y={2.3} z={1.95} day={0} evening={0.5} distance={4} />
+      <Lamp x={1.55} y={2.3} z={1.95} evening={0.5} distance={4} minor />
       {/* dining-zone lantern (between shelving wall and island) */}
       <Akari x={1.2} z={4.9} bottom={1.9} r={0.26} squash={0.5} light={0.9} />
     </group>
