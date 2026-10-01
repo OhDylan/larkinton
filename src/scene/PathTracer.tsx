@@ -13,6 +13,7 @@ import { materials } from '../materials/materials'
 import { setPhotoStatus, setRenderMode } from '../state/renderMode'
 import { useLightMode } from '../state/lightMode'
 import { dimensions as D } from '../data/dimensions'
+import { MIRRORED, toWorldX } from '../data/mirror'
 import { useDoorState } from './doorState'
 
 const isMobile = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
@@ -43,6 +44,7 @@ const EXPOSURE = {
  * windows converges in far fewer samples (much less grain) than light found by chance.
  */
 const W = D.windows
+/** In plan coordinates; mirrored to world coordinates when placed. */
 const portals: { w: number; h: number; pos: [number, number, number]; look: [number, number, number] }[] = [
   { w: W.living.x1 - W.living.x0, h: W.living.head - W.living.sill, pos: [(W.living.x0 + W.living.x1) / 2, (W.living.sill + W.living.head) / 2, D.z.northInner + 0.03], look: [0, 0, 1] },
   { w: W.master.x1 - W.master.x0, h: W.master.head - W.master.sill, pos: [(W.master.x0 + W.master.x1) / 2, (W.master.sill + W.master.head) / 2, D.z.northInner + 0.03], look: [0, 0, 1] },
@@ -57,8 +59,8 @@ function SkyPortals({ evening }: { evening: boolean }) {
         <rectAreaLight
           key={i}
           args={[evening ? '#5a6a90' : '#e4ecf6', evening ? 0.25 : 2.5, p.w, p.h]}
-          position={p.pos}
-          onUpdate={(l) => l.lookAt(p.pos[0] + p.look[0], p.pos[1] + p.look[1], p.pos[2] + p.look[2])}
+          position={[toWorldX(p.pos[0]), p.pos[1], p.pos[2]]}
+          onUpdate={(l) => l.lookAt(toWorldX(p.pos[0]) + (MIRRORED ? -p.look[0] : p.look[0]), p.pos[1] + p.look[1], p.pos[2] + p.look[2])}
         />
       ))}
     </group>

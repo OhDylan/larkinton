@@ -2,6 +2,7 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 import { dimensions as D } from '../data/dimensions'
+import { MIRRORED, toPlanX, toWorldX } from '../data/mirror'
 import type { Rect } from '../data/floorplan'
 import { activeFurnitureColliders } from '../furniture'
 import { doorColliders } from '../scene/doorState'
@@ -12,7 +13,9 @@ const { eyeHeight, speed, radius } = D.walkthrough
 // Start just inside the main door, looking up the plan towards the living room.
 const START = { x: 0.75, z: 7.7, yaw: 0 }
 
-function blocked(x: number, z: number, rects: Rect[]) {
+/** `x` is a world x; colliders are in plan coordinates (the model is mirrored, see data/mirror.ts). */
+function blocked(worldX: number, z: number, rects: Rect[]) {
+  const x = toPlanX(worldX)
   if (x < radius || z < radius || x > D.overall.width - radius || z > D.overall.depth + 1) return true
   return rects.some((r) => {
     const dx = x - Math.max(r.x0, Math.min(x, r.x1))
@@ -33,14 +36,15 @@ export function WalkControls() {
   useEffect(() => {
     camera.fov = 70
     camera.up.set(0, 1, 0)
-    camera.position.set(START.x, eyeHeight, START.z)
+    camera.position.set(toWorldX(START.x), eyeHeight, START.z)
     camera.updateProjectionMatrix()
 
     // dev helper for comparing against reference photos: __walkTo(x, z, yawRadians)
     if (import.meta.env.DEV)
       (window as unknown as Record<string, unknown>).__walkTo = (x: number, z: number, yaw: number) => {
-        camera.position.set(x, eyeHeight, z)
-        look.current = { yaw, pitch: 0 }
+        // plan coordinates and plan heading, like the rest of the data
+        camera.position.set(toWorldX(x), eyeHeight, z)
+        look.current = { yaw: MIRRORED ? -yaw : yaw, pitch: 0 }
       }
     // dev helper for performance checks: __stats() → draw calls / triangles / lights of the last frame
     if (import.meta.env.DEV)

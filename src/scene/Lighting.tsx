@@ -5,9 +5,12 @@ import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment
 import { planCenter } from '../data/floorplan'
 import { useLightMode } from '../state/lightMode'
 import { useRenderMode } from '../state/renderMode'
+import { MIRRORED } from '../data/mirror'
 import { openness } from './doorState'
 
 const [cx, cz] = planCenter
+// the side windows face plan-right; in the mirrored unit (Type Ba) they face world-left
+const side = MIRRORED ? -1 : 1
 
 /** Soft indoor reflections / fill from a procedural room environment (no downloads). */
 function Environment({ intensity }: { intensity: number }) {
@@ -43,7 +46,7 @@ export function Lighting() {
       <hemisphereLight args={['#f7f9fc', '#e6dfd3', evening ? 0.12 : 1.15]} />
       <ambientLight intensity={evening ? 0.05 : 0.3} />
       <directionalLight
-        position={evening ? [cx + 9, 4, cz - 6] : [cx + 5, 12, cz - 8]}
+        position={evening ? [cx + side * 9, 4, cz - 6] : [cx + side * 5, 12, cz - 8]}
         intensity={evening ? 0.6 : 2.6}
         color={evening ? '#ffb070' : '#fff6e8'}
         castShadow

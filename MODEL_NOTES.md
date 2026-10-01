@@ -18,6 +18,8 @@ All numbers live in `src/data/dimensions.ts` (metres). Layout topology is in `sr
 
 ## Orientation
 
+**The unit is Type Ba, the left-right mirror image of the published Type B plan.** All numbers, notes and layout data below (and in `src/data`, `src/furniture/layout.ts`) are in the coordinates of the published plan, so "left/right" in these notes means left/right *on the plan*. The model is mirrored as a whole when rendered (`src/data/mirror.ts`, `MIRRORED = true`), so on screen everything appears swapped left-right, matching the real unit.
+
 - Coordinates: the origin is the top-left outer corner of the plan, +x goes right on the plan, +z goes down the plan.
 - The plan has **no north arrow**. "North" in the code just means the top of the plan.
 - **Entrance**: the main door is in the bottom-left corner of the plan, in the bottom wall. You walk in heading up the plan, straight into the kitchen/dining zone. The door swings inward and folds back against the left wall. It sits about 0.5 m inside the outer wall line; the outer recess belongs to the common corridor and is drawn as a grey patch.

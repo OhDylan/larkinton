@@ -4,6 +4,8 @@ import * as THREE from 'three'
 import { ControlPanel } from './components/ControlPanel'
 import { Joystick } from './components/Joystick'
 import { RoomLabels } from './components/RoomLabels'
+import { dimensions } from './data/dimensions'
+import { MIRRORED } from './data/mirror'
 import { CameraRig, type CameraMode } from './controls/CameraRig'
 import { Furniture } from './furniture'
 import { Apartment } from './scene/Apartment'
@@ -44,9 +46,12 @@ export default function App() {
         <Lighting />
         <ShadowUpdates version={`${showCeiling}|${showDesign}|${lightModeKey}`} />
         <Backdrop mode={mode} />
-        <Apartment showCeiling={showCeiling} designed={showDesign} />
-        <Furniture show={showDesign} />
-        {showLabels && <RoomLabels layer={labelLayer} height={mode === 'walkthrough' ? 2.0 : 0.05} />}
+        {/* Type Ba = mirror image of the plan; data stays in plan coordinates (see data/mirror.ts) */}
+        <group scale-x={MIRRORED ? -1 : 1} position-x={MIRRORED ? dimensions.overall.width : 0}>
+          <Apartment showCeiling={showCeiling} designed={showDesign} />
+          <Furniture show={showDesign} />
+          {showLabels && <RoomLabels layer={labelLayer} height={mode === 'walkthrough' ? 2.0 : 0.05} />}
+        </group>
         <CameraRig mode={mode} resetKey={resetKey} />
         {renderMode === 'live' ? (
           <Effects />
