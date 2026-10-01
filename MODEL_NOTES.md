@@ -112,10 +112,11 @@ All numbers live in `src/data/dimensions.ts` (metres). Layout topology is in `sr
 
 ---
 
-# Phase 2 — Interior design (v2)
+# Phase 2 — Interior design (v4: mid-century modern)
 
-Style: cozy, warm wabi-sabi, **deep peach-wood / walnut** joinery, "designer studio" (references: dark-wood built-ins, open asymmetric shelving, paper lanterns, stone, leather, moody lighting). Floors keep the existing porcelain tiles; walls get a greige limewash finish.
-All positions live in `src/furniture/layout.ts` (metres, same coordinates as above). Panel buttons: **Design** (empty shell vs furnished), **Evening** (dusk light, lamps on).
+Style: **mid-century modern, dark and chic** — dark walnut joinery, warm white walls, white terrazzo tops, cognac leather, brass, opal glass; accent colours mustard, forest green and rust. Layout is unchanged from the previous pass; the furniture forms and finishes changed (tapered splayed legs, Sputnik chandelier, dome and globe pendants, sunburst mirror, geometric rug, green velvet channel-tufted headboard, oval walnut coffee table, tripod side table with mushroom lamp).
+Floors: porcelain tiles by default; the **Wood Floor** button switches the dry areas to medium oak boards (bath and yard keep their tiles).
+All positions live in `src/furniture/layout.ts`. Panel buttons: **Design** (empty shell vs furnished), **Evening**, **Wood Floor**, **Photo Render**.
 
 | Space | What's there |
 |---|---|

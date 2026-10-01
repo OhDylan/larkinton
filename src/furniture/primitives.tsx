@@ -56,27 +56,133 @@ export function Lamp({ x, y, z, evening = 1.6, distance = 4, shadow = false, min
   )
 }
 
-/** Akari-style paper lantern: flattened oval with fine horizontal ribs. */
-export function Akari({ x, z, bottom, r = 0.3, squash = 0.45, light = 1.4, minor = false }: { x: number; z: number; bottom: number; r?: number; squash?: number; light?: number; minor?: boolean }) {
+/** Mid-century tapered leg, splayed outwards: (x, z) is where it meets the underside at height `top`. */
+export function TaperedLeg({ x, z, top, splay = [0, 0], r = 0.022, m }: { x: number; z: number; top: number; splay?: [number, number]; r?: number; m?: THREE.Material }) {
   const d = designMaterials()
-  const hy = r * squash
-  const cy = bottom + hy
-  const top = D.ceilingHeight
-  const ribs = [-0.7, -0.35, 0, 0.35, 0.7]
+  const [sx, sz] = splay // horizontal offset of the foot from the top of the leg
+  const len = Math.hypot(top, sx, sz)
+  const q = useMemo(() => new THREE.Quaternion().setFromUnitVectors(new THREE.Vector3(0, 1, 0), new THREE.Vector3(-sx, top, -sz).normalize()), [sx, sz, top])
+  return (
+    <mesh position={[x + sx / 2, top / 2, z + sz / 2]} quaternion={q} material={m ?? d.wood} castShadow receiveShadow>
+      <cylinderGeometry args={[r, r * 0.45, len, 12]} />
+    </mesh>
+  )
+}
+
+/** Four splayed tapered legs under a rectangle. */
+export function Legs4({ x0, x1, z0, z1, top, inset = 0.06, splay = 0.04, r = 0.022, m }: { x0: number; x1: number; z0: number; z1: number; top: number; inset?: number; splay?: number; r?: number; m?: THREE.Material }) {
   return (
     <group>
-      <mesh position={[x, cy, z]} scale={[1, squash, 1]} material={d.paper}>
+      {[
+        [x0 + inset, z0 + inset, -1, -1],
+        [x1 - inset, z0 + inset, 1, -1],
+        [x0 + inset, z1 - inset, -1, 1],
+        [x1 - inset, z1 - inset, 1, 1],
+      ].map(([x, z, dx, dz]) => (
+        <TaperedLeg key={`${x}${z}`} x={x} z={z} top={top} splay={[dx * splay, dz * splay]} r={r} m={m} />
+      ))}
+    </group>
+  )
+}
+
+/** Opal glass globe pendant with a brass canopy and stem. */
+export function GlobePendant({ x, z, bottom, r = 0.15, light = 0.9, minor = false }: { x: number; z: number; bottom: number; r?: number; light?: number; minor?: boolean }) {
+  const d = designMaterials()
+  const cy = bottom + r
+  const top = D.ceilingHeight
+  return (
+    <group>
+      <mesh position={[x, cy, z]} material={d.opal}>
         <sphereGeometry args={[r, 40, 24]} />
       </mesh>
-      {ribs.map((t) => (
-        <mesh key={t} position={[x, cy + t * hy, z]} rotation-x={Math.PI / 2} material={d.bronze}>
-          <torusGeometry args={[r * Math.sqrt(1 - t * t) + 0.001, 0.0015, 4, 48]} />
-        </mesh>
-      ))}
-      <mesh position={[x, (cy + hy + top) / 2, z]} material={d.charcoal}>
-        <cylinderGeometry args={[0.003, 0.003, top - cy - hy, 6]} />
+      <Cyl x={x} z={z} y0={cy + r * 0.92} y1={cy + r + 0.03} r={0.035} rTop={0.03} m={d.brass} />
+      <Cyl x={x} z={z} y0={cy + r + 0.03} y1={top - 0.01} r={0.004} m={d.brass} seg={8} />
+      <Cyl x={x} z={z} y0={top - 0.015} y1={top} r={0.05} m={d.brass} />
+      <Lamp x={x} y={cy} z={z} evening={light} distance={4} minor={minor} />
+    </group>
+  )
+}
+
+/** Spun-metal dome pendant (black outside, brass inside rim). */
+export function DomePendant({ x, z, bottom, r = 0.18, light = 0.8, minor = false }: { x: number; z: number; bottom: number; r?: number; light?: number; minor?: boolean }) {
+  const d = designMaterials()
+  const h = r * 0.75
+  const top = D.ceilingHeight
+  return (
+    <group>
+      <mesh position={[x, bottom + h / 2, z]} material={d.glossBlack} castShadow>
+        <cylinderGeometry args={[r * 0.18, r, h, 40, 1, true]} />
       </mesh>
-      <Lamp x={x} y={cy} z={z} evening={light} distance={4.5} minor={minor} />
+      <mesh position={[x, bottom + 0.002, z]} rotation-x={Math.PI / 2} material={d.brass}>
+        <torusGeometry args={[r, 0.006, 8, 48]} />
+      </mesh>
+      <mesh position={[x, bottom + 0.04, z]} material={d.opal}>
+        <sphereGeometry args={[r * 0.28, 24, 16]} />
+      </mesh>
+      <Cyl x={x} z={z} y0={bottom + h} y1={top} r={0.004} m={d.brass} seg={8} />
+      <Lamp x={x} y={bottom - 0.05} z={z} evening={light} distance={3.5} minor={minor} />
+    </group>
+  )
+}
+
+/** Sputnik chandelier: brass sphere with radiating arms, each tipped with a small opal bulb. */
+export function Sputnik({ x, z, cy, arms = 16, reach = 0.36, light = 1.2 }: { x: number; z: number; cy: number; arms?: number; reach?: number; light?: number }) {
+  const d = designMaterials()
+  const dirs = useMemo(() => {
+    const out: THREE.Vector3[] = []
+    // Fibonacci sphere: evenly spread arm directions
+    for (let i = 0; i < arms; i++) {
+      const y = 1 - ((i + 0.5) / arms) * 2
+      const rr = Math.sqrt(1 - y * y)
+      const a = i * 2.39996
+      out.push(new THREE.Vector3(Math.cos(a) * rr, y * 0.75, Math.sin(a) * rr).normalize())
+    }
+    return out
+  }, [arms])
+  const up = new THREE.Vector3(0, 1, 0)
+  return (
+    <group position={[x, cy, z]}>
+      <mesh material={d.brass}>
+        <sphereGeometry args={[0.055, 24, 16]} />
+      </mesh>
+      {dirs.map((v, i) => (
+        <group key={i}>
+          <mesh position={v.clone().multiplyScalar(reach / 2)} quaternion={new THREE.Quaternion().setFromUnitVectors(up, v)} material={d.brass}>
+            <cylinderGeometry args={[0.004, 0.004, reach, 6]} />
+          </mesh>
+          <mesh position={v.clone().multiplyScalar(reach + 0.02)} material={d.opal}>
+            <sphereGeometry args={[0.022, 12, 8]} />
+          </mesh>
+        </group>
+      ))}
+      <mesh position={[0, (D.ceilingHeight - cy) / 2, 0]} material={d.brass}>
+        <cylinderGeometry args={[0.006, 0.006, D.ceilingHeight - cy, 8]} />
+      </mesh>
+      <Lamp x={x} y={cy} z={z} evening={light} distance={5} />
+    </group>
+  )
+}
+
+/** Sunburst mirror (plane z = const, facing −z): round mirror centre with brass rays. */
+export function Sunburst({ cx, cy, z, r = 0.2, rays = 24, rayLen = 0.22 }: { cx: number; cy: number; z: number; r?: number; rays?: number; rayLen?: number }) {
+  const d = designMaterials()
+  const geo = useMemo(() => new THREE.CircleGeometry(r, 48), [r])
+  return (
+    <group>
+      <Mirror geometry={geo} position={[cx, cy, z - 0.012]} rotationY={Math.PI} />
+      <mesh position={[cx, cy, z - 0.012]} material={d.brass}>
+        <torusGeometry args={[r, 0.012, 8, 48]} />
+      </mesh>
+      {Array.from({ length: rays }, (_, i) => {
+        const a = (i / rays) * Math.PI * 2
+        const len = rayLen * (i % 2 ? 0.7 : 1)
+        const mid = r + 0.01 + len / 2
+        return (
+          <mesh key={i} position={[cx + Math.cos(a) * mid, cy + Math.sin(a) * mid, z - 0.01]} rotation-z={a} material={d.brass} castShadow>
+            <boxGeometry args={[len, 0.008, 0.008]} />
+          </mesh>
+        )
+      })}
     </group>
   )
 }

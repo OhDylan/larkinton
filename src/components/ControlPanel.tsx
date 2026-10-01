@@ -2,6 +2,7 @@ import type { CameraMode } from '../controls/CameraRig'
 import { setAllDoors, useDoorState } from '../scene/doorState'
 import { setLightMode, useLightMode } from '../state/lightMode'
 import { setRenderMode, usePhotoStatus, useRenderMode } from '../state/renderMode'
+import { setFloorFinish, useFloorFinish } from '../state/floorMode'
 
 type Props = {
   mode: CameraMode
@@ -27,6 +28,7 @@ export function ControlPanel(p: Props) {
   const light = useLightMode()
   const render = useRenderMode()
   const photo = usePhotoStatus()
+  const floor = useFloorFinish()
   return (
     <div className="panel">
       <div className="row">
@@ -49,6 +51,9 @@ export function ControlPanel(p: Props) {
         </button>
         <button className={light === 'evening' ? 'active' : ''} onClick={() => setLightMode(light === 'evening' ? 'day' : 'evening')}>
           Evening
+        </button>
+        <button className={floor === 'wood' ? 'active' : ''} onClick={() => setFloorFinish(floor === 'wood' ? 'tile' : 'wood')}>
+          Wood Floor
         </button>
         <button onClick={() => setAllDoors(!allOpen)}>{allOpen ? 'Close Doors' : 'Open Doors'}</button>
         <button className={render === 'photo' ? 'active photo' : 'photo'} onClick={() => setRenderMode(render === 'photo' ? 'live' : 'photo')}>

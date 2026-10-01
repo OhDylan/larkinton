@@ -2,7 +2,7 @@
  * Phase 2: interior design / furniture, kept separate from the architectural
  * shell in /scene. Positions live in ./layout.ts.
  *
- * Style: cozy · warm wabi-sabi · deep peach-wood / walnut joinery · "designer studio".
+ * Style: mid-century modern — dark walnut, cognac leather, brass, terrazzo, mustard / forest green / rust accents.
  */
 import { useEffect } from 'react'
 import { materials, palette } from '../materials/materials'

@@ -1,9 +1,36 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
+import type * as THREE from 'three'
+import { woodFloorTexture } from '../furniture/designMaterials'
+import { useFloorFinish as useFloorFinishState } from '../state/floorMode'
 import { bulkheads, ceilingHeight, ceilings, floors } from '../data/floorplan'
 import { materials, tileSizes } from '../materials/materials'
 import { planeXZ, rectCenter, rectSize } from './geometry'
 
+/**
+ * The porcelain material is swapped in place (map + finish) rather than replaced, because the
+ * floor meshes are merged for speed and share this material object.
+ * Bath and yard keep their wet-area tiles either way.
+ */
+function useFloorFinish() {
+  const finish = useFloorFinishState()
+  useEffect(() => {
+    const m = materials()
+    const p = m.porcelain
+    if (!porcelainMap) porcelainMap = p.map
+    if (finish === 'wood') {
+      p.map = woodFloorTexture()
+      p.roughness = 0.38 // satin-lacquered oak
+    } else {
+      p.map = porcelainMap
+      p.roughness = 0.22
+    }
+    p.needsUpdate = true
+  }, [finish])
+}
+let porcelainMap: THREE.Texture | null = null
+
 export function Floors() {
+  useFloorFinish()
   const m = materials()
   const meshes = useMemo(
     () =>

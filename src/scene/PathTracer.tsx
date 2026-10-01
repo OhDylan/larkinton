@@ -15,6 +15,7 @@ import { useLightMode } from '../state/lightMode'
 import { dimensions as D } from '../data/dimensions'
 import { MIRRORED, toWorldX } from '../data/mirror'
 import { useDoorState } from './doorState'
+import { useFloorFinish } from '../state/floorMode'
 
 const isMobile = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches
 const MAX_SAMPLES = isMobile ? 192 : 768
@@ -73,6 +74,7 @@ export function PathTracer({ designed, inside }: { designed: boolean; inside: bo
   const camera = useThree((s) => s.camera)
   const evening = useLightMode() === 'evening'
   const doors = useDoorState()
+  const floor = useFloorFinish()
   const pt = useRef<WebGLPathTracer | null>(null)
   const ready = useRef(false)
   const lastCam = useRef(new THREE.Matrix4())
@@ -181,7 +183,7 @@ export function PathTracer({ designed, inside }: { designed: boolean; inside: bo
       scene.environmentIntensity = prevEnvI
       sky.dispose()
     }
-  }, [scene, camera, evening, doors, designed])
+  }, [scene, camera, evening, doors, designed, floor])
 
   // take over rendering (priority 1 disables R3F's own render)
   useFrame(() => {

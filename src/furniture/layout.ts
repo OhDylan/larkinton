@@ -2,7 +2,7 @@
  * Phase 2 — interior design layout (all values in METRES, same coordinates as
  * data/dimensions.ts: +x = plan right, +z = plan down, origin = outer top-left corner).
  *
- * Style: cozy · warm wabi-sabi · deep peach-wood / walnut joinery · "designer studio".
+ * Style: mid-century modern (dark walnut, chic). Layout unchanged from the earlier cozy/wabi-sabi pass.
  * Floors keep the existing porcelain tiles.
  *
  * Every piece is a plan rect (x0..x1, z0..z1) plus a height. Edit numbers here;

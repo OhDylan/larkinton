@@ -3,9 +3,7 @@ import type { ReactNode } from 'react'
 import { dimensions as D } from '../data/dimensions'
 import { designMaterials } from './designMaterials'
 import { layout } from './layout'
-import { useMemo } from 'react'
-import * as THREE from 'three'
-import { Akari, B, Books, Cyl, Downlight, Lamp, Mirror, Soft, Vase } from './primitives'
+import { B, Books, Cyl, DomePendant, Downlight, Lamp, Legs4, Soft, Sunburst, Vase } from './primitives'
 
 const GAP = 0.003 // shadow gap between joinery fronts
 
@@ -31,26 +29,25 @@ export function Entry() {
   const mr = layout.entry.mirror
   const faceZ = D.z.entryDoorN
   const cx = (s.x0 + s.x1) / 2
-  const mirrorGeo = useMemo(() => new THREE.CircleGeometry(mr.r, 64), [mr.r])
   return (
     <group>
+      {/* mid-century credenza-style shoe cabinet on splayed tapered legs (shoes still fit underneath) */}
+      <Legs4 x0={s.x0} x1={s.x1} z0={s.z0} z1={s.z1} top={s.y0} inset={0.05} splay={0.025} r={0.018} />
       <B x0={s.x0} x1={s.x1} y0={s.y0} y1={top - 0.03} z0={s.z0} z1={s.z1} m={d.wood} />
-      <B x0={s.x0 - 0.01} x1={s.x1 + 0.01} y0={top - 0.03} y1={top} z0={s.z0 - 0.015} z1={s.z1} m={d.travertine} />
+      {/* brass bar pulls */}
+      {[cx - 0.09, cx + 0.04].map((x) => (
+        <B key={x} x0={x} x1={x + 0.05} y0={top - 0.12} y1={top - 0.11} z0={s.z0 - 0.014} z1={s.z0} m={d.brass} />
+      ))}
+      <B x0={s.x0 - 0.01} x1={s.x1 + 0.01} y0={top - 0.03} y1={top} z0={s.z0 - 0.015} z1={s.z1} m={d.terrazzo} />
       <SplitsX xs={[cx]} y0={s.y0 + 0.01} y1={top - 0.04} z={s.z0} />
-      {/* warm under-glow onto the floor */}
-      <B x0={s.x0 + 0.05} x1={s.x1 - 0.05} y0={s.y0 - 0.004} y1={s.y0} z0={s.z0 + 0.05} z1={s.z0 + 0.07} m={d.lightStrip} shadow={false} />
-      <Lamp x={cx} y={0.08} z={s.z0 - 0.1} evening={0.35} distance={1.2} minor />
       {/* styling: ceramic key dish, bud vase with a stem, small book */}
       <Cyl x={s.x0 + 0.2} z={s.z0 + 0.17} y0={top} y1={top + 0.025} r={0.08} rTop={0.1} m={d.ceramicDark} />
-      <Vase x={s.x1 - 0.16} z={s.z0 + 0.16} y={top} h={0.24} r={0.055} m={d.clay} neck={0.35} />
+      <Vase x={s.x1 - 0.16} z={s.z0 + 0.16} y={top} h={0.24} r={0.055} m={d.rust} neck={0.35} />
       <mesh position={[s.x1 - 0.17, top + 0.42, s.z0 + 0.16]} rotation-z={0.15} material={d.woodDark}>
         <cylinderGeometry args={[0.003, 0.004, 0.4, 5]} />
       </mesh>
-      {/* round mirror with a slim bronze rim */}
-      <Mirror geometry={mirrorGeo} position={[mr.cx, mr.y, faceZ - 0.012]} rotationY={Math.PI} />
-      <mesh position={[mr.cx, mr.y, faceZ - 0.012]} material={d.bronze}>
-        <torusGeometry args={[mr.r, 0.008, 8, 64]} />
-      </mesh>
+      {/* brass sunburst mirror */}
+      <Sunburst cx={mr.cx} cy={mr.y} z={faceZ} r={0.17} rayLen={0.2} />
       <Downlight x={cx} z={s.z0 - 0.25} />
       <Downlight x={0.7} z={7.75} />
     </group>
@@ -69,20 +66,20 @@ export function Kitchen() {
   const uTop = u.y0 + u.h
   return (
     <group>
-      {/* ---- lower run: shadow-gap plinth, deep wood fronts, travertine top with a thick edge */}
+      {/* ---- lower run: shadow-gap plinth, deep wood fronts, terrazzo top with a thick edge */}
       <B x0={b.x0} x1={b.x1} y0={0} y1={0.1} z0={b.z0 + 0.06} z1={b.z1} m={d.charcoal} />
       <B x0={b.x0} x1={b.x1} y0={0.1} y1={bodyTop} z0={b.z0} z1={b.z1} m={d.wood} />
       <SplitsX xs={divide(b.x0, b.x1, 4)} y0={0.1} y1={bodyTop} z={b.z0} />
       {/* top-edge finger-pull groove */}
       <B x0={b.x0} x1={b.x1} y0={bodyTop - 0.035} y1={bodyTop - 0.02} z0={b.z0 - 0.001} z1={b.z0 + 0.012} m={d.woodDark} shadow={false} />
-      <B x0={b.x0} x1={b.x1} y0={bodyTop} y1={counterY} z0={b.z0 - 0.02} z1={b.z1} m={d.travertine} />
+      <B x0={b.x0} x1={b.x1} y0={bodyTop} y1={counterY} z0={b.z0 - 0.02} z1={b.z1} m={d.terrazzo} />
       {/* undermount sink (existing plumbing position) + tall matt-black spout */}
       <B x0={k.sinkX - 0.23} x1={k.sinkX + 0.23} y0={counterY - 0.001} y1={counterY + 0.001} z0={sinkZ - 0.2} z1={sinkZ + 0.2} m={d.blackMetal} shadow={false} />
       <Cyl x={k.sinkX} z={b.z1 - 0.07} y0={counterY} y1={counterY + 0.34} r={0.012} m={d.blackMetal} seg={12} />
       <B x0={k.sinkX - 0.01} x1={k.sinkX + 0.01} y0={counterY + 0.32} y1={counterY + 0.34} z0={b.z1 - 0.28} z1={b.z1 - 0.07} m={d.blackMetal} />
       {/* single-zone domino induction hob with a thin ring marking the zone */}
       <B x0={k.hobX - 0.145} x1={k.hobX + 0.145} y0={counterY} y1={counterY + 0.006} z0={sinkZ - 0.26} z1={sinkZ + 0.26} m={d.hobGlass} shadow={false} />
-      <mesh position={[k.hobX, counterY + 0.0065, sinkZ + 0.03]} rotation-x={-Math.PI / 2} material={d.bronze}>
+      <mesh position={[k.hobX, counterY + 0.0065, sinkZ + 0.03]} rotation-x={-Math.PI / 2} material={d.brass}>
         <ringGeometry args={[0.095, 0.1, 48]} />
       </mesh>
       {/* styling: board, crock of utensils, stoneware bowls */}
@@ -125,11 +122,11 @@ function Fridge() {
       <B x0={f.x0 + side} x1={f.x1 - side} y0={f.h + 0.05} y1={D.ceilingHeight} z0={f.z0} z1={f.z1} m={d.wood} />
       <SplitsX xs={[fx]} y0={f.h + 0.07} y1={D.ceilingHeight - 0.02} z={f.z0} />
       <B x0={f.x0 + side} x1={f.x1 - side} y0={f.h + 0.3} y1={f.h + 0.303} z0={f.z0 - 0.002} z1={f.z0} m={d.charcoal} shadow={false} />
-      {/* fridge: matt charcoal, bottom freezer, slim vertical bronze handles */}
+      {/* fridge: matt charcoal, bottom freezer, slim vertical brass handles */}
       <Soft x0={fx0} x1={fx1} y0={0.02} y1={f.h} z0={front} z1={f.z1 - 0.03} m={d.charcoal} r={0.015} />
       <B x0={fx0 + 0.01} x1={fx1 - 0.01} y0={split - 0.003} y1={split + 0.003} z0={front - 0.002} z1={front + 0.01} m={d.blackMetal} shadow={false} />
-      <B x0={fx1 - 0.06} x1={fx1 - 0.045} y0={split + 0.15} y1={split + 0.55} z0={front - 0.035} z1={front} m={d.bronze} />
-      <B x0={fx0 + 0.15} x1={fx1 - 0.15} y0={split - 0.1} y1={split - 0.085} z0={front - 0.035} z1={front} m={d.bronze} />
+      <B x0={fx1 - 0.06} x1={fx1 - 0.045} y0={split + 0.15} y1={split + 0.55} z0={front - 0.035} z1={front} m={d.brass} />
+      <B x0={fx0 + 0.15} x1={fx1 - 0.15} y0={split - 0.1} y1={split - 0.085} z0={front - 0.035} z1={front} m={d.brass} />
     </group>
   )
 }
@@ -145,7 +142,7 @@ function Machine({ x0, x1, y0, z0, z1, h, dryer }: { x0: number; x1: number; y0:
       <Soft x0={x0} x1={x1} y0={y0} y1={y0 + h} z0={z0} z1={z1} m={d.whiteAppliance} r={0.02} />
       {/* control strip: dial + display */}
       <B x0={x0 + 0.03} x1={x1 - 0.03} y0={y0 + h - 0.12} y1={y0 + h - 0.03} z0={z0 - 0.003} z1={z0} m={d.ceramic} shadow={false} />
-      <mesh position={[x1 - 0.12, y0 + h - 0.075, z0 - 0.012]} rotation-x={Math.PI / 2} material={d.bronze}>
+      <mesh position={[x1 - 0.12, y0 + h - 0.075, z0 - 0.012]} rotation-x={Math.PI / 2} material={d.brass}>
         <cylinderGeometry args={[0.028, 0.028, 0.02, 24]} />
       </mesh>
       <B x0={cx - 0.1} x1={cx + 0.04} y0={y0 + h - 0.095} y1={y0 + h - 0.055} z0={z0 - 0.004} z1={z0} m={d.screen} shadow={false} />
@@ -203,16 +200,18 @@ export function Island() {
       <B x0={t.x0 + 0.03} x1={t.x1} y0={0} y1={0.1} z0={i.bodyZ0 + 0.03} z1={t.z1 - 0.03} m={d.charcoal} />
       <B x0={t.x0} x1={t.x1} y0={0.1} y1={bodyTop} z0={i.bodyZ0} z1={t.z1} m={d.woodDark} />
       {flutes}
-      {/* thick travertine slab */}
-      <B x0={t.x0 - 0.02} x1={t.x1} y0={bodyTop} y1={t.h} z0={t.z0} z1={t.z1 + 0.02} m={d.travertine} />
+      {/* thick terrazzo slab */}
+      <B x0={t.x0 - 0.02} x1={t.x1} y0={bodyTop} y1={t.h} z0={t.z0} z1={t.z1 + 0.02} m={d.terrazzo} />
       {/* chopping board, stoneware fruit bowl, teapot-ish vessel */}
       <B x0={t.x1 - 0.52} x1={t.x1 - 0.12} y0={t.h} y1={t.h + 0.03} z0={t.z1 - 0.34} z1={t.z1 - 0.06} m={d.woodLight} />
-      <Cyl x={t.x0 + 0.3} z={cz + 0.05} y0={t.h} y1={t.h + 0.09} r={0.09} rTop={0.15} m={d.clay} />
+      <Cyl x={t.x0 + 0.3} z={cz + 0.05} y0={t.h} y1={t.h + 0.09} r={0.09} rTop={0.15} m={d.rust} />
       <Vase x={cx - 0.05} z={cz - 0.18} y={t.h} h={0.13} r={0.07} m={d.ceramicDark} neck={0.5} />
       {i.stools.map(([x, z]) => (
         <Stool key={x} x={x} z={z} h={i.seatH} />
       ))}
-      <Akari x={cx} z={cz} bottom={1.55} r={0.34} squash={0.42} light={1.6} />
+      {/* pair of black-and-brass dome pendants over the island */}
+      <DomePendant x={t.x0 + 0.35} z={cz} bottom={1.6} light={0.9} />
+      <DomePendant x={t.x1 - 0.35} z={cz} bottom={1.6} light={0.9} minor />
     </group>
   )
 }
@@ -225,14 +224,14 @@ function Stool({ x, z, h }: { x: number; z: number; h: number }) {
       {[0, 1, 2, 3].map((k) => {
         const a = Math.PI / 4 + (k * Math.PI) / 2
         return (
-          <mesh key={k} position={[x + Math.cos(a) * 0.13, h / 2 - 0.02, z + Math.sin(a) * 0.13]} rotation={[Math.sin(a) * 0.07, 0, -Math.cos(a) * 0.07]} material={d.woodDark} castShadow>
-            <cylinderGeometry args={[0.014, 0.018, h - 0.04, 10]} />
+          <mesh key={k} position={[x + Math.cos(a) * 0.13, h / 2 - 0.02, z + Math.sin(a) * 0.13]} rotation={[Math.sin(a) * 0.07, 0, -Math.cos(a) * 0.07]} material={d.wood} castShadow>
+            <cylinderGeometry args={[0.018, 0.011, h - 0.04, 10]} />
           </mesh>
         )
       })}
       <Cyl x={x} z={z} y0={h - 0.05} y1={h - 0.03} r={0.17} m={d.woodDark} />
       <Cyl x={x} z={z} y0={h - 0.035} y1={h + 0.02} r={0.165} rTop={0.17} m={d.leather} seg={40} />
-      <mesh position={[x, 0.24, z]} rotation-x={Math.PI / 2} material={d.blackMetal}>
+      <mesh position={[x, 0.24, z]} rotation-x={Math.PI / 2} material={d.brass}>
         <torusGeometry args={[0.135, 0.007, 8, 32]} />
       </mesh>
     </group>
@@ -282,7 +281,7 @@ export function DiningWall() {
   const B1 = w.nicheZ1
   vDivider(B0, 0, w.h)
   pieces.push(<B key={key()} x0={w.x0} x1={face} y0={0.08} y1={nicheBottom - 0.03} z0={B0 + T / 2} z1={B1 - T / 2} m={d.wood} />)
-  pieces.push(<B key={key()} x0={w.x0} x1={face + 0.015} y0={nicheBottom - 0.03} y1={nicheBottom} z0={B0 + T / 2} z1={B1 - T / 2} m={d.travertine} />)
+  pieces.push(<B key={key()} x0={w.x0} x1={face + 0.015} y0={nicheBottom - 0.03} y1={nicheBottom} z0={B0 + T / 2} z1={B1 - T / 2} m={d.terrazzo} />)
   pieces.push(<B key={key()} x0={w.x0} x1={face} y0={nicheTop} y1={w.h} z0={B0 + T / 2} z1={B1 - T / 2} m={d.wood} />)
   pieces.push(<B key={key()} x0={face - 0.05} x1={face - 0.03} y0={nicheTop - 0.005} y1={nicheTop} z0={B0 + 0.03} z1={B1 - 0.03} m={d.lightStrip} shadow={false} />)
   // --- C: tall pantry
@@ -304,7 +303,7 @@ export function DiningWall() {
   const styling: ReactNode[] = [
     <Books key="b1" x={sx} z={A0 + 0.25} y={baseH + T / 2} n={4} w={0.26} dpt={0.18} alongX={false} />,
     <Vase key="v1" x={sx} z={A0 + 0.75} y={baseH + T / 2} h={0.3} r={0.1} m={d.ceramicDark} neck={0.4} />,
-    <Vase key="v2" x={sx} z={A0 + 1.2} y={0.9 + T / 2} h={0.18} r={0.08} m={d.clay} />,
+    <Vase key="v2" x={sx} z={A0 + 1.2} y={0.9 + T / 2} h={0.18} r={0.08} m={d.rust} />,
     <Books key="b2" x={sx} z={A0 + 0.35} y={0.9 + T / 2} n={2} w={0.24} dpt={0.18} alongX={false} />,
     <Vase key="v3" x={sx} z={A0 + 0.2} y={1.35 + T / 2} h={0.14} r={0.07} m={d.ceramic} />,
     <Vase key="v4" x={sx} z={A0 + 1.2} y={1.35 + T / 2} h={0.34} r={0.09} m={d.ceramic} neck={0.35} />,
