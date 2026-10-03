@@ -8,11 +8,11 @@
 import * as THREE from 'three'
 
 export const designPalette = {
-  wallWarm: '#e9e2d6', // warm off-white plaster
-  ceilingWarm: '#efe9df',
-  wood: '#6e4a32', // warm walnut / teak, medium-dark
-  woodDark: '#4b3223',
-  woodLight: '#9a7352',
+  wallWarm: '#ddd5c8', // warm greige plaster
+  ceilingWarm: '#e7e1d7',
+  wood: '#5b3a26', // deep walnut / teak
+  woodDark: '#3e281b',
+  woodLight: '#86603f',
   stone: '#ddd3c3', // soft sand-coloured stone
   basalt: '#2b2926',
   leather: '#6a4a36',
@@ -144,6 +144,33 @@ const floorDraw: Draw = (g, w, h) => {
     g.fillStyle = 'rgba(40,24,10,0.5)'
     g.fillRect(c * bw, 0, 1.5, h)
   }
+}
+
+/** Grey microcement: soft trowel clouds and faint sweeps, seamless (as in the reference photos). */
+const microcementDraw: Draw = (g, w, h) => {
+  g.fillStyle = '#9a9790'
+  g.fillRect(0, 0, w, h)
+  for (let i = 0; i < 900; i++) {
+    const l = Math.random() > 0.5 ? 255 : 0
+    g.fillStyle = `rgba(${l},${l},${l},${rand(0, 0.035)})`
+    g.beginPath()
+    g.ellipse(rand(0, w), rand(0, h), rand(20, 120), rand(8, 40), rand(0, 3), 0, Math.PI * 2)
+    g.fill()
+  }
+  for (let i = 0; i < 60; i++) {
+    g.strokeStyle = `rgba(255,255,255,${rand(0.01, 0.03)})`
+    g.lineWidth = rand(4, 18)
+    g.beginPath()
+    const x = rand(0, w)
+    const y = rand(0, h)
+    g.arc(x, y, rand(60, 200), rand(0, 6), rand(0, 6) + 1)
+    g.stroke()
+  }
+}
+
+let concreteTex: THREE.CanvasTexture | null = null
+export function microcementTexture() {
+  return (concreteTex ??= canvasTex(1024, 1024, microcementDraw, [0.25, 0.25]))
 }
 
 /** Wood floor texture, scaled for the floor's UVs (1 UV unit = one 0.6 m porcelain tile). */

@@ -1,7 +1,7 @@
-/** Floor finish in the dry areas: the existing porcelain tiles, or a medium-oak wood floor. */
+/** Floor finish in the dry areas: the existing porcelain tiles, medium-oak boards, or grey microcement. */
 import { useSyncExternalStore } from 'react'
 
-export type FloorFinish = 'tile' | 'wood'
+export type FloorFinish = 'tile' | 'wood' | 'concrete'
 
 let finish: FloorFinish = 'tile'
 const listeners = new Set<() => void>()

@@ -1,29 +1,23 @@
-import { Bloom, EffectComposer, N8AO, SMAA, ToneMapping, Vignette } from '@react-three/postprocessing'
+import { Bloom, EffectComposer, HueSaturation, N8AO, SMAA, ToneMapping, Vignette } from '@react-three/postprocessing'
 import { ToneMappingMode } from 'postprocessing'
+import type { CameraMode } from '../controls/CameraRig'
 import { useLightMode } from '../state/lightMode'
 
 /**
- * Post-processing: ambient occlusion (soft contact darkening), filmic tone mapping, gentle vignette;
- * lamp glow (bloom) only in the evening, when there's something to glow.
- * AO runs at half resolution: most of the look for a fraction of the cost.
+ * Photographic post-processing, following the recipe sael.net's configurator uses (also three.js):
+ * ambient occlusion, ACES filmic tone mapping with a touch of extra saturation, SMAA for clean
+ * edges, bloom on the lamps in the evening, vignette.
+ * (Depth of field was tried and dropped: it blurred the whole frame in this effect chain.)
  */
-export function Effects() {
+export function Effects(_: { mode: CameraMode }) {
   const evening = useLightMode() === 'evening'
-  if (evening)
-    return (
-      <EffectComposer key="evening" multisampling={0}>
-        <N8AO aoRadius={0.5} distanceFalloff={0.5} intensity={2} quality="medium" halfRes />
-        <Bloom intensity={0.8} luminanceThreshold={0.8} luminanceSmoothing={0.25} mipmapBlur />
-        <ToneMapping mode={ToneMappingMode.NEUTRAL} />
-        <Vignette offset={0.3} darkness={0.5} />
-        <SMAA />
-      </EffectComposer>
-    )
   return (
-    <EffectComposer key="day" multisampling={0}>
-      <N8AO aoRadius={0.5} distanceFalloff={0.5} intensity={2.6} quality="medium" halfRes />
-      <ToneMapping mode={ToneMappingMode.NEUTRAL} />
-      <Vignette offset={0.3} darkness={0.28} />
+    <EffectComposer key={`${evening}`} multisampling={0}>
+      <N8AO aoRadius={0.55} distanceFalloff={0.55} intensity={evening ? 2.2 : 3.2} quality="medium" halfRes />
+      <>{evening && <Bloom intensity={0.6} luminanceThreshold={0.9} luminanceSmoothing={0.25} mipmapBlur />}</>
+      <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
+      <HueSaturation saturation={0.06} />
+      <Vignette offset={0.3} darkness={evening ? 0.55 : 0.4} />
       <SMAA />
     </EffectComposer>
   )

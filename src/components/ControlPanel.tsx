@@ -15,6 +15,9 @@ type Props = {
   setShowDesign: (v: boolean) => void
 }
 
+const floorLabel = { tile: 'Tile', wood: 'Wood', concrete: 'Concrete' } as const
+const nextFloor = { tile: 'wood', wood: 'concrete', concrete: 'tile' } as const
+
 const modes: { id: CameraMode; label: string }[] = [
   { id: 'dollhouse', label: 'Dollhouse' },
   { id: 'topdown', label: 'Top Down' },
@@ -49,8 +52,8 @@ export function ControlPanel(p: Props) {
         <button className={light === 'evening' ? 'active' : ''} onClick={() => setLightMode(light === 'evening' ? 'day' : 'evening')}>
           Evening
         </button>
-        <button className={floor === 'wood' ? 'active' : ''} onClick={() => setFloorFinish(floor === 'wood' ? 'tile' : 'wood')}>
-          Wood Floor
+        <button className={floor !== 'tile' ? 'active' : ''} onClick={() => setFloorFinish(nextFloor[floor])}>
+          Floor: {floorLabel[floor]}
         </button>
         <button onClick={() => setAllDoors(!allOpen)}>{allOpen ? 'Close Doors' : 'Open Doors'}</button>
       </div>

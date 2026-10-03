@@ -10,6 +10,7 @@ import { CameraRig, type CameraMode } from './controls/CameraRig'
 import { Furniture } from './furniture'
 import { Apartment } from './scene/Apartment'
 import { Effects } from './scene/Effects'
+import { FakeLampDriver } from './scene/FakeLampDriver'
 import { Backdrop } from './scene/Backdrop'
 import { Lighting, ShadowUpdates } from './scene/Lighting'
 import { useLightMode } from './state/lightMode'
@@ -24,6 +25,7 @@ export default function App() {
   const [showLabels, setShowLabels] = useState(true)
   const [showDesign, setShowDesign] = useState(true)
   const lightModeKey = useLightMode()
+  const unitSpace = useRef<THREE.Group>(null)
   const labelLayer = useRef<HTMLDivElement>(null!)
 
   const setMode = (m: CameraMode) => {
@@ -35,20 +37,21 @@ export default function App() {
   return (
     <>
       <Canvas shadows="percentage" camera={{ fov: 45, near: 0.05, far: 200 }} dpr={[1, 1.5]}
-        gl={{ toneMapping: THREE.NeutralToneMapping, toneMappingExposure: 1.5 }}
+        gl={{ toneMapping: THREE.NeutralToneMapping, toneMappingExposure: 1.0 }}
       >
         <Background />
         <Lighting />
         <ShadowUpdates version={`${showCeiling}|${showDesign}|${lightModeKey}`} />
         <Backdrop mode={mode} />
         {/* Type Ba = mirror image of the plan; data stays in plan coordinates (see data/mirror.ts) */}
-        <group scale-x={MIRRORED ? -1 : 1} position-x={MIRRORED ? dimensions.overall.width : 0}>
+        <group ref={unitSpace} scale-x={MIRRORED ? -1 : 1} position-x={MIRRORED ? dimensions.overall.width : 0}>
           <Apartment showCeiling={showCeiling} designed={showDesign} />
           <Furniture show={showDesign} />
           {showLabels && <RoomLabels layer={labelLayer} height={mode === 'walkthrough' ? 2.0 : 0.05} />}
         </group>
         <CameraRig mode={mode} resetKey={resetKey} />
-        <Effects />
+        <FakeLampDriver space={unitSpace} />
+        <Effects mode={mode} />
       </Canvas>
       <div ref={labelLayer} className="label-layer" />
       {mode === 'walkthrough' && <Joystick />}

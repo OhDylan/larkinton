@@ -41,13 +41,14 @@ export function Lighting() {
   const evening = useLightMode() === 'evening'
   return (
     <>
-      <Environment intensity={evening ? 0.1 : 0.5} />
-      <hemisphereLight args={['#f7f9fc', '#e6dfd3', evening ? 0.12 : 1.15]} />
-      <ambientLight intensity={evening ? 0.05 : 0.3} />
+      {/* moody daylight: soft cool sky fill, low warm late-afternoon sun raking through the windows */}
+      <Environment intensity={evening ? 0.05 : 0.42} />
+      <hemisphereLight args={['#e9eef5', '#d8cbb8', evening ? 0.08 : 0.75]} />
+      <ambientLight intensity={evening ? 0.04 : 0.15} />
       <directionalLight
-        position={evening ? [cx + side * 9, 4, cz - 6] : [cx + side * 5, 12, cz - 8]}
-        intensity={evening ? 0.6 : 2.6}
-        color={evening ? '#ffb070' : '#fff6e8'}
+        position={evening ? [cx + side * 9, 4, cz - 6] : [cx + side * 4, 6.5, cz - 13]}
+        intensity={evening ? 0.5 : 4}
+        color={evening ? '#ffb070' : '#ffd6a0'}
         castShadow
         shadow-mapSize={[2048, 2048]}
         shadow-bias={-0.0004}

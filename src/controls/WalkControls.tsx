@@ -34,7 +34,7 @@ export function WalkControls() {
   const look = useRef({ yaw: START.yaw, pitch: 0 })
 
   useEffect(() => {
-    camera.fov = 70
+    camera.fov = 55 // closer to a real camera lens than a wide game FOV
     camera.up.set(0, 1, 0)
     camera.position.set(toWorldX(START.x), eyeHeight, START.z)
     camera.updateProjectionMatrix()

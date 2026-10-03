@@ -116,8 +116,12 @@ All numbers live in `src/data/dimensions.ts` (metres). Layout topology is in `sr
 
 Style: a restrained palette of warm walnut-teak wood, cream boucle, sand and taupe linen, soft stone tops, a jute rug, and black only as an accent (stoneware, the island dome pendants). Paper globe lanterns, olive trees, warm LED strips under the open dining shelves. Mid-century touches stay in the forms (tapered legs on the side table, shoe cabinet and bed; dome pendants), not in the colours.
 Living: low cream boucle sofa on a recessed walnut plinth, chunky solid-wood coffee table. Entry: round mirror in a thin walnut frame. Master: taupe linen channel-tufted headboard.
-Floors: porcelain tiles by default; the **Wood Floor** button switches the dry areas to medium oak boards (bath and yard keep their tiles).
-All positions live in `src/furniture/layout.ts`. Panel buttons: **Design** (empty shell vs furnished), **Evening**, **Wood Floor**.
+Floors: the **Floor** button cycles the dry areas between the existing porcelain tiles, medium oak boards and grey microcement (bath and yard keep their tiles).
+All positions live in `src/furniture/layout.ts`. Panel buttons: **Design** (empty shell vs furnished), **Evening**, **Floor**.
+
+Rendering approach (after studying sael.net/interior, which is also three.js): ACES filmic tone mapping with a little extra saturation, ambient occlusion, SMAA, a low warm sun through the windows by day, and "fake" lamp light computed inside every material (src/scene/fakeLamps.ts) instead of real point lights, so all lamps can be lit in the evening cheaply, as pools of warm light. Walkthrough lens narrowed from 70° to 55°. Depth of field was tried and dropped (it blurred the whole frame in this effect chain).
+
+Style references (from the owner): dark walnut built-ins, grey microcement floor, paper lanterns, black stoneware, dim warm evening light; cream boucle / sand linen in the softer references.
 
 | Space | What's there |
 |---|---|

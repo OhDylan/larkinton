@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react'
 import type * as THREE from 'three'
-import { woodFloorTexture } from '../furniture/designMaterials'
+import { microcementTexture, woodFloorTexture } from '../furniture/designMaterials'
 import { useFloorFinish as useFloorFinishState } from '../state/floorMode'
 import { bulkheads, ceilingHeight, ceilings, floors } from '../data/floorplan'
 import { materials, tileSizes } from '../materials/materials'
@@ -20,6 +20,9 @@ function useFloorFinish() {
     if (finish === 'wood') {
       p.map = woodFloorTexture()
       p.roughness = 0.38 // satin-lacquered oak
+    } else if (finish === 'concrete') {
+      p.map = microcementTexture()
+      p.roughness = 0.6 // sealed microcement, soft sheen
     } else {
       p.map = porcelainMap
       p.roughness = 0.22

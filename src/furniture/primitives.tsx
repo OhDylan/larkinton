@@ -1,8 +1,9 @@
 import { RoundedBox } from '@react-three/drei'
-import { useEffect, useMemo, type ReactNode } from 'react'
+import { useEffect, useId, useMemo, type ReactNode } from 'react'
 import * as THREE from 'three'
 import { Reflector } from 'three/examples/jsm/objects/Reflector.js'
 import { dimensions as D } from '../data/dimensions'
+import { removeLamp, setLamp } from '../scene/fakeLamps'
 import { metricBox } from '../scene/geometry'
 import { useLightMode } from '../state/lightMode'
 import { designMaterials } from './designMaterials'
@@ -34,24 +35,20 @@ export function Cyl({ x, z, y0, y1, r, rTop, m, seg = 32 }: { x: number; z: numb
   )
 }
 
-/** Warm point light whose strength follows the day/evening mode. */
-export function Lamp({ x, y, z, evening = 1.6, distance = 4, shadow = false, minor = false }: { x: number; y: number; z: number; day?: number; evening?: number; distance?: number; shadow?: boolean; minor?: boolean }) {
+/**
+ * Warm lamp light, on in the evening. Rendered as a "fake" lamp (see scene/fakeLamps.ts):
+ * cheap enough that every lamp can be lit. Coordinates are plan coordinates.
+ */
+export function Lamp({ x, y, z, evening = 1.6, distance = 4 }: { x: number; y: number; z: number; day?: number; evening?: number; distance?: number; shadow?: boolean; minor?: boolean }) {
   const mode = useLightMode()
-  // Performance: every point light adds cost to every pixel. By day the lamps are off (they added
-  // almost nothing), and small accent lamps (`minor`) are skipped; their glowing shades remain.
-  if (mode !== 'evening' || minor) return null
-  return (
-    <pointLight
-      position={[x, y, z]}
-      color="#ffc98a"
-      intensity={evening}
-      distance={distance}
-      decay={2}
-      castShadow={shadow}
-      shadow-mapSize={[512, 512]}
-      shadow-bias={-0.002}
-    />
-  )
+  const id = useId()
+  useEffect(() => {
+    if (mode !== 'evening') return
+    // point-light intensities were tuned for physical falloff; the fake falloff needs a bigger number
+    setLamp(id, [x, y, z], '#ffbf7a', evening * 1.6, Math.min(distance, 3.2) * 0.75)
+    return () => removeLamp(id)
+  }, [mode, id, x, y, z, evening, distance])
+  return null
 }
 
 /** Mid-century tapered leg, splayed outwards: (x, z) is where it meets the underside at height `top`. */
