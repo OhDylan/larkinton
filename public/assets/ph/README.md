@@ -30,5 +30,6 @@ licensed CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Credited on s
 - `glb/toilet.glb` — "Toilet" by hippostance, https://sketchfab.com/3d-models/132a8ee2af3a40d39d270fbed3d3666c
 - `glb/towel_rail.glb` — "Towel Rail And Towel Free" by AMMediaGames, https://sketchfab.com/3d-models/3a21870d7a88497a8ea3bb576f431c31
 - `glb/soap_black.glb` — "Soap dispenser" by BlueHour, https://sketchfab.com/3d-models/73b1e052e89b4a37a95c72d6798e5e51
+- `glb/futon_sofa_bed.glb` — "FUTON LONDON" by HogarVenecia, https://sketchfab.com/3d-models/a9fa1761cb8d42d29a4aedefe42a5c65 (fabric re-dyed charcoal in the scene)
 
 All re-packed with gltf-transform (meshopt, WebP ≤ 512 px; a few simplified). Some are re-coloured (stools stained charcoal) or rescaled in the scene.

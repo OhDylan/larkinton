@@ -42,6 +42,7 @@ export const MODEL_IDS = [
   'towel_folded',
   'towel_rail',
   'soap_black',
+  'futon_sofa_bed',
 ] as const
 export type PhModelId = (typeof MODEL_IDS)[number]
 
@@ -62,6 +63,8 @@ type ModelProps = {
   finish?: 'black' | 'charcoal'
   /** KHR_materials_variants colourway (e.g. the sofa's "Black") */
   variant?: string
+  /** re-dye materials by name: drops the colour texture, keeps normal / roughness detail */
+  recolor?: Record<string, string>
 }
 
 const blackGlaze = new Map<THREE.Material, THREE.Material>()
@@ -86,7 +89,20 @@ function toCharcoal(m: THREE.Material) {
   return c
 }
 
-function Model({ id, pick, position, rotation, scale = 1, recenter = true, finish, variant }: ModelProps) {
+const dyed = new Map<string, THREE.Material>()
+function dye(m: THREE.Material, color: string) {
+  const key = `${m.uuid}|${color}`
+  let d = dyed.get(key)
+  if (!d) {
+    const c = (m as THREE.MeshStandardMaterial).clone()
+    c.map = null
+    c.color.set(color)
+    dyed.set(key, (d = c))
+  }
+  return d
+}
+
+function Model({ id, pick, position, rotation, scale = 1, recenter = true, finish, variant, recolor }: ModelProps) {
   const { scene, parser } = useGLTF(modelUrl(id))
   const variantMats = useVariant(parser, scene, variant)
   const obj = useMemo(() => {
@@ -104,6 +120,7 @@ function Model({ id, pick, position, rotation, scale = 1, recenter = true, finis
       if (vm) c.material = vm
       const f = finish === 'black' ? toBlack : finish === 'charcoal' ? toCharcoal : null
       if (f) c.material = Array.isArray(c.material) ? c.material.map(f) : f(c.material)
+      if (recolor && !Array.isArray(c.material) && recolor[c.material.name]) c.material = dye(c.material, recolor[c.material.name])
       c.castShadow = true
       c.receiveShadow = true
       root.add(c)
@@ -115,7 +132,7 @@ function Model({ id, pick, position, rotation, scale = 1, recenter = true, finis
       root.children.forEach((c) => c.position.sub(shift))
     }
     return root
-  }, [scene, pick, recenter, finish, variantMats])
+  }, [scene, pick, recenter, finish, variantMats, recolor])
   return <primitive object={obj} position={position} rotation={rotation} scale={scale} />
 }
 

@@ -137,7 +137,7 @@ Style references (from the owner): dark walnut built-ins, grey microcement floor
 | Master | Full-height wardrobe **along the left wall** (0.6 × 1.9 m, 3 doors) — its end panel is what you see walking in. Queen bed: low dark-grey upholstered bed with grey linen (Sketchfab model, fitted to ~1.75 × 2.02 m) with its **headboard against the right-hand (east) wall**, centred, in front of a wood-panelled headboard wall with a display ledge. Floating nightstands both sides with hanging paper lanterns. Air-con on the wall shared with the bath/hallway, near the east corner (as marked). Linen roman blind, wool rug. |
 | Yard | Half wall (parapet, ~1.0 m assumed) to the AC ledge, open above. Front-load washer with a dryer stacked on top (stacking kit), in the corner away from the yard door's swing; laundry basket. |
 | Bathroom | Toilet kept (real model in design mode) with a wooden brush holder. Floating wood vanity with travertine top and stoneware vessel basin, black pump bottle, folded towel. Black towel rail with towel by the door. Hinoki bath stool and bucket in the shower. One long horizontal mirror (1.48 × 0.70 m) floating off the wall with a warm back-glow. Existing shower glass door kept (pull handle). |
-| Studio (Bedroom 2) | 1.8 m wood-top workbench on a black steel frame (far wall, right-hand side as you walk in), birch pegboard in a wood frame with shelves/bins/tools, 2 desktop 6-axis robot arms, laptop, black architect lamp, black mesh ergonomic chair with headrest, black 3-tier utility trolley (all real models). **Sofa bed** (daybed: single mattress, back cushions, bolsters, pull-out trundle) opposite the bench — still hand-built: no suitable free daybed model found. Roman blind, air-con above the window. |
+| Studio (Bedroom 2) | 1.8 m wood-top workbench on a black steel frame (far wall, right-hand side as you walk in), birch pegboard in a wood frame with shelves/bins/tools, 2 desktop 6-axis robot arms, laptop, black architect lamp, black mesh ergonomic chair with headrest, black 3-tier utility trolley (all real models). **Sofa bed**: click-clack futon on oak legs (Sketchfab, fabric re-dyed charcoal, scaled to 1.9 m) opposite the bench. Roman blind, air-con above the window. |
 
 Finishes: slim painted skirting, travertine window sills, light switches and sockets.
 
@@ -152,5 +152,5 @@ Assets (v6): all loose furniture and decor are downloaded models, not hand-built
 Loading: each model is one meshopt-compressed GLB with WebP textures at up to 512 px, and unused variants are pruned. Surface textures are WebP. public/assets/ph was cut from ~12 MB to ~3.7 MB, and is ~7 MB with the Sketchfab furniture added. All models preload at startup. vercel.json caches /assets/ph for 30 days.
 
 Open design questions:
-- [ ] Sofa bed trundle pulled out needs ~0.9 m more floor; the desk chair must move.
+- [ ] Sofa bed folded flat is deeper than as a sofa (not modelled); check clearance to the desk chair.
 - [ ] Studio air-con position is assumed (above the window); living and master follow the points you marked.

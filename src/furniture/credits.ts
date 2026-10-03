@@ -14,4 +14,5 @@ export const sketchfabCredits = [
   { title: 'Toilet', author: 'hippostance', uid: '132a8ee2af3a40d39d270fbed3d3666c' },
   { title: 'Towel Rail And Towel Free', author: 'AMMediaGames', uid: '3a21870d7a88497a8ea3bb576f431c31' },
   { title: 'Soap dispenser', author: 'BlueHour', uid: '73b1e052e89b4a37a95c72d6798e5e51' },
+  { title: 'FUTON LONDON', author: 'HogarVenecia', uid: 'a9fa1761cb8d42d29a4aedefe42a5c65' },
 ]

@@ -150,45 +150,11 @@ function Pegboard() {
   )
 }
 
-/** Sofa bed (daybed style): single mattress on a wood frame, back cushions, bolsters, pull-out trundle. */
-function SofaBed() {
-  const d = designMaterials()
-  const s = layout.studio.sofaBed // back against the wall at z0, faces +z
-  const baseTop = 0.32
-  const matTop = 0.5
-  const cx = (s.x0 + s.x1) / 2
-  const third = (s.x1 - s.x0 - 0.36) / 3
-  return (
-    <group>
-      <B x0={s.x0 + 0.05} x1={s.x1 - 0.05} y0={0} y1={0.06} z0={s.z0 + 0.05} z1={s.z1 - 0.05} m={d.charcoal} />
-      <B x0={s.x0} x1={s.x1} y0={0.06} y1={baseTop} z0={s.z0} z1={s.z1} m={d.wood} />
-      {/* trundle front (pulls out into a second mattress) with two brass pulls */}
-      <B x0={s.x0 + 0.04} x1={s.x1 - 0.04} y0={0.09} y1={baseTop - 0.03} z0={s.z1} z1={s.z1 + 0.003} m={d.woodDark} />
-      {[cx - 0.4, cx + 0.4].map((x) => (
-        <B key={x} x0={x - 0.08} x1={x + 0.08} y0={0.2} y1={0.212} z0={s.z1 + 0.003} z1={s.z1 + 0.02} m={d.bronze} />
-      ))}
-      {/* mattress + fitted cover */}
-      <Soft x0={s.x0 + 0.02} x1={s.x1 - 0.02} y0={baseTop} y1={matTop} z0={s.z0 + 0.02} z1={s.z1 - 0.01} m={d.cream} r={0.05} />
-      {/* three back cushions against the wall */}
-      {[0, 1, 2].map((i) => (
-        <Soft key={i} x0={s.x0 + 0.18 + i * third + 0.01} x1={s.x0 + 0.18 + (i + 1) * third - 0.01} y0={matTop - 0.02} y1={s.h} z0={s.z0 + 0.03} z1={s.z0 + 0.22} m={d.linen} r={0.07} rot={[-0.12, 0, 0]} />
-      ))}
-      {/* bolsters at each end */}
-      {[s.x0 + 0.1, s.x1 - 0.1].map((x) => (
-        <mesh key={x} position={[x, matTop + 0.09, (s.z0 + s.z1) / 2]} rotation-x={Math.PI / 2} material={d.sand} castShadow>
-          <capsuleGeometry args={[0.09, 0.5, 8, 24]} />
-        </mesh>
-      ))}
-      <Soft x0={cx + 0.1} x1={cx + 0.5} y0={matTop} y1={matTop + 0.32} z0={s.z0 + 0.22} z1={s.z0 + 0.34} m={d.taupe} r={0.05} rot={[-0.3, 0, 0]} />
-      {/* folded guest blanket + pillow */}
-      <Soft x0={s.x0 + 0.3} x1={s.x0 + 0.78} y0={matTop} y1={matTop + 0.08} z0={s.z1 - 0.42} z1={s.z1 - 0.08} m={d.wool} r={0.02} />
-      <Soft x0={s.x0 + 0.32} x1={s.x0 + 0.76} y0={matTop + 0.08} y1={matTop + 0.16} z0={s.z1 - 0.4} z1={s.z1 - 0.12} m={d.linen} r={0.035} />
-    </group>
-  )
-}
+const FUTON_FABRIC = { TELA: '#4a4846' }
 
 export function Studio() {
   const d = designMaterials()
+  const sb = layout.studio.sofaBed
   const k = layout.studio.desk
   const top = k.h
   const [chx, chz] = layout.studio.chair
@@ -214,7 +180,10 @@ export function Studio() {
       <PhModel id="office_chair" position={[chx, 0, chz]} rotation={[0, -Math.PI / 2 + 0.25, 0]} scale={1.2 / 8.52} />
       {/* black 3-tier utility trolley */}
       <PhModel id="raskog_cart" position={[(layout.studio.cart.x0 + layout.studio.cart.x1) / 2, 0, (layout.studio.cart.z0 + layout.studio.cart.z1) / 2]} />
-      <SofaBed />
+      {/* click-clack futon sofa bed on oak legs (Sketchfab "FUTON LONDON", CC BY 4.0), blue fabric re-dyed charcoal;
+          2.22 m model scaled to the 1.9 m slot, back against the bath wall, facing the bench */}
+      <PhModel id="futon_sofa_bed" position={[(sb.x0 + sb.x1) / 2, 0, sb.z0 + 0.47]} rotation={[0, -Math.PI / 2, 0]} scale={(sb.x1 - sb.x0) / 2.22}
+        recolor={FUTON_FABRIC} />
       <PhModel id="potted_plant_02" position={[layout.studio.plant[0] - 0.05, 0, layout.studio.plant[1] - 0.05]} scale={1.1} />
       <RomanBlind a0={win.z0} a1={win.z1} at={X.eastInner - 0.03} top={win.head} drop={0.38} alongX={false} />
       <AirCon x={X.eastInner} z={(win.z0 + win.z1) / 2} y={2.4} face="x-" />
