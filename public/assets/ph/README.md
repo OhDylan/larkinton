@@ -13,3 +13,10 @@ smooth_concrete_floor, poly_wool_herringbone (as jute).
 ## Khronos glTF Sample Assets — https://github.com/KhronosGroup/glTF-Sample-Assets
 glb/GlamVelvetSofa.glb — "Glam Velvet Sofa" by Eric Chadwick, © 2021 Wayfair, LLC,
 licensed CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Credited on screen.
+
+## Sketchfab (CC BY 4.0)
+
+- `glb/stone_coffee_table.glb` — "17 Stories Coffee Table" by bluejam99, https://sketchfab.com/3d-models/c06c7445f9a743fa8edaf3e7bd834b0b
+- `glb/japandi_stool.glb` — "Japandi Bar Stool" by sketchstudio, https://sketchfab.com/3d-models/92d1658dde9a41ec93880fea5d77105e (oak stained charcoal in the scene)
+
+Both re-packed with gltf-transform (meshopt, WebP ≤ 512 px); geometry unchanged.

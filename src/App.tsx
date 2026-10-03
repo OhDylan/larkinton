@@ -56,7 +56,8 @@ export default function App() {
       <div ref={labelLayer} className="label-layer" />
       {mode === 'walkthrough' && <Joystick />}
       <div className="credits">
-        Sofa: “Glam Velvet Sofa” by Eric Chadwick / Wayfair, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a> ·
+        Sofa: “Glam Velvet Sofa” by Eric Chadwick / Wayfair · Coffee table: “17 Stories Coffee Table” by bluejam99 · Stools: “Japandi Bar Stool” by sketchstudio (Sketchfab) ·{' '}
+        <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a> ·
         Models &amp; textures: <a href="https://polyhaven.com" target="_blank" rel="noreferrer">Poly Haven</a> (CC0)
       </div>
       <ControlPanel

@@ -31,11 +31,9 @@ function WindowSeat() {
   )
 }
 
-/** Low cream boucle sofa on a recessed walnut plinth: soft, deep, rounded (Japandi). */
 /**
  * Sofa: Wayfair's curved velvet sofa (Khronos glTF sample assets, CC BY 4.0) in its black
- * colourway, against the right-hand wall facing the projection wall. No coffee table on purpose:
- * Poly Haven only has antique / Chinese / industrial ones, and the empty floor suits the zen brief.
+ * colourway, against the right-hand wall facing the projection wall.
  */
 function Sofa() {
   const s = layout.living.sofa
@@ -54,6 +52,8 @@ export function Living() {
       </mesh>
       <WindowSeat />
       <Sofa />
+      {/* low round dark-stone table (Sketchfab "17 Stories Coffee Table", CC BY 4.0); model is 0.48 m across, scaled to ~0.86 m */}
+      <PhModel id="stone_coffee_table" position={[layout.living.coffeeTable.cx, 0, layout.living.coffeeTable.cz]} scale={1.8} />
       <MoneyTree x={layout.living.plant[0]} z={layout.living.plant[1]} />
       <CeilingFan x={fx} z={fz} />
       {/* split air-con at the existing point: on the header above the hallway opening (IMG_5220) */}

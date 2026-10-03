@@ -68,7 +68,8 @@ export const layout = {
     sofa: { x0: X.partitionW - 1.05, x1: X.partitionW, z0: 0.9, z1: 3.09, h: 0.79 },
     // left wall kept clear for a projector screen / future TV
     projectionWall: { z0: 1.2, z1: 3.0 },
-    coffeeTable: { cx: 1.4, cz: 2.05, r: 0.36, h: 0.34 },
+    // low round stone table, ~0.38 m clear in front of the sofa, ~0.58 m to the left wall
+    coffeeTable: { cx: 1.16, cz: 2.0, r: 0.43, h: 0.29 },
     sideTable: [X.partitionW - 0.42, 0.93] as [number, number], // stacked-stone side table, between sofa and window seat
     rug: { x0: 0.75, x1: 2.55, z0: 1.05, z1: 3.05 },
     plant: [0.45, 0.98] as [number, number],
@@ -127,6 +128,8 @@ export const furnitureColliders: Rect[] = [
   layout.diningWall,
   layout.living.windowSeat,
   layout.living.sofa,
+  circle([layout.living.coffeeTable.cx, layout.living.coffeeTable.cz], layout.living.coffeeTable.r),
+  ...layout.island.stools.map((s) => circle(s, 0.2)),
   circle(layout.living.plant, 0.2),
   layout.master.wardrobe,
   layout.master.bed,

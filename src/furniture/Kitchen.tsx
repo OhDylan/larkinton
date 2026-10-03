@@ -208,6 +208,10 @@ export function Island() {
       <B x0={t.x0 - 0.02} x1={t.x1} y0={bodyTop} y1={t.h} z0={t.z0} z1={t.z1 + 0.02} m={d.stone} />
       <PhModel id="wooden_bowl_01" position={[t.x0 + 0.3, t.h, cz + 0.05]} scale={0.9} />
       <Ikebana x={cx - 0.05} z={cz - 0.15} y={t.h} rot={0.6} />
+      {/* Japandi counter stools (Sketchfab, CC BY 4.0), oak stained charcoal; 0.72 m model scaled to a 0.65 m seat */}
+      {i.stools.map(([sx, sz]) => (
+        <PhModel key={sx} id="japandi_stool" position={[sx, 0, sz]} scale={i.seatH / 0.72} finish="charcoal" />
+      ))}
       {/* one wide oval paper lantern over the island */}
       <PaperGlobe x={cx} z={cz} bottom={1.62} r={0.36} squash={0.42} light={1.1} />
     </group>

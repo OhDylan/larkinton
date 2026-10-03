@@ -1,7 +1,8 @@
 /**
  * Real models only (nothing hand-modelled): Poly Haven CC0 stoneware vases, wooden bowl,
  * money tree, plants and dry branch, plus Wayfair's GlamVelvetSofa from the Khronos glTF
- * sample assets (CC BY 4.0, credited on screen).
+ * sample assets, and a stone coffee table and Japandi counter stools from Sketchfab
+ * (all CC BY 4.0, credited on screen).
  */
 import { useGLTF } from '@react-three/drei'
 import { Suspense, useEffect, useMemo, useState } from 'react'
@@ -27,6 +28,8 @@ export const MODEL_IDS = [
   'dry_branches_medium_01',
   'planter_pot_clay',
   'GlamVelvetSofa',
+  'stone_coffee_table',
+  'japandi_stool',
 ] as const
 export type PhModelId = (typeof MODEL_IDS)[number]
 
@@ -39,8 +42,11 @@ type ModelProps = {
   scale?: number
   /** re-centre the picked pieces so their footprint centre / base sits at `position` */
   recenter?: boolean
-  /** override the scanned glaze: matte black stoneware (keeps the surface relief) */
-  finish?: 'black'
+  /**
+   * 'black': override the scanned glaze with matte black stoneware (keeps the surface relief).
+   * 'charcoal': stain the existing texture dark (keeps the wood grain).
+   */
+  finish?: 'black' | 'charcoal'
   /** KHR_materials_variants colourway (e.g. the sofa's "Black") */
   variant?: string
 }
@@ -54,6 +60,17 @@ function toBlack(m: THREE.Material) {
     blackGlaze.set(m, b)
   }
   return b
+}
+
+const charcoalStain = new Map<THREE.Material, THREE.Material>()
+function toCharcoal(m: THREE.Material) {
+  let c = charcoalStain.get(m)
+  if (!c) {
+    c = (m as THREE.MeshStandardMaterial).clone()
+    ;(c as THREE.MeshStandardMaterial).color.set('#4a4642')
+    charcoalStain.set(m, c)
+  }
+  return c
 }
 
 function Model({ id, pick, position, rotation, scale = 1, recenter = true, finish, variant }: ModelProps) {
@@ -71,7 +88,8 @@ function Model({ id, pick, position, rotation, scale = 1, recenter = true, finis
       c.matrix.decompose(c.position, c.quaternion, c.scale)
       const vm = variantMats?.get(mesh)
       if (vm) c.material = vm
-      if (finish === 'black') c.material = Array.isArray(c.material) ? c.material.map(toBlack) : toBlack(c.material)
+      const f = finish === 'black' ? toBlack : finish === 'charcoal' ? toCharcoal : null
+      if (f) c.material = Array.isArray(c.material) ? c.material.map(f) : f(c.material)
       c.castShadow = true
       c.receiveShadow = true
       root.add(c)

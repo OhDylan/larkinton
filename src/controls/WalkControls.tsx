@@ -39,12 +39,12 @@ export function WalkControls() {
     camera.position.set(toWorldX(START.x), eyeHeight, START.z)
     camera.updateProjectionMatrix()
 
-    // dev helper for comparing against reference photos: __walkTo(x, z, yawRadians)
+    // dev helper for comparing against reference photos: __walkTo(x, z, yawRadians, pitchRadians?)
     if (import.meta.env.DEV)
-      (window as unknown as Record<string, unknown>).__walkTo = (x: number, z: number, yaw: number) => {
+      (window as unknown as Record<string, unknown>).__walkTo = (x: number, z: number, yaw: number, pitch = 0) => {
         // plan coordinates and plan heading, like the rest of the data
         camera.position.set(toWorldX(x), eyeHeight, z)
-        look.current = { yaw: MIRRORED ? -yaw : yaw, pitch: 0 }
+        look.current = { yaw: MIRRORED ? -yaw : yaw, pitch }
       }
     // dev helper for performance checks: __stats() → draw calls / triangles / lights of the last frame
     if (import.meta.env.DEV)
