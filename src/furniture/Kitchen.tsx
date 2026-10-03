@@ -6,7 +6,7 @@ import { layout } from './layout'
 import { useMemo } from 'react'
 import * as THREE from 'three'
 import { B, Cyl, Downlight, Lamp, Legs4, Mirror, PaperGlobe, Soft } from './primitives'
-import { Ikebana, PhModel, TeaSet } from './zen'
+import { Ikebana, PhModel } from './zen'
 
 const GAP = 0.003 // shadow gap between joinery fronts
 
@@ -208,9 +208,6 @@ export function Island() {
       <B x0={t.x0 - 0.02} x1={t.x1} y0={bodyTop} y1={t.h} z0={t.z0} z1={t.z1 + 0.02} m={d.stone} />
       <PhModel id="wooden_bowl_01" position={[t.x0 + 0.3, t.h, cz + 0.05]} scale={0.9} />
       <Ikebana x={cx - 0.05} z={cz - 0.15} y={t.h} rot={0.6} />
-      {i.stools.map(([x, z]) => (
-        <PhModel key={x} id="chinese_stool" position={[x, 0, z]} rotation={[0, Math.PI / 2, 0]} />
-      ))}
       {/* one wide oval paper lantern over the island */}
       <PaperGlobe x={cx} z={cz} bottom={1.62} r={0.36} squash={0.42} light={1.1} />
     </group>
@@ -292,8 +289,9 @@ export function DiningWall() {
     <PhModel key="v6" id="ceramic_vase_03" position={[sx, baseH + T / 2, A0 + 0.25]} scale={0.85} />,
     <PhModel key="v7" id="wooden_bowl_01" position={[sx, 1.8 + T / 2, A0 + 1.1]} scale={0.7} />,
     <PhModel key="v5" id="ceramic_vase_04" position={[sx, 1.8 + T / 2, A0 + 0.35]} scale={0.7} finish="black" />,
-    // niche: tea corner with the Poly Haven tea set
-    <TeaSet key="tea" x={sx} z={(B0 + B1) / 2} y={nicheBottom} rot={Math.PI / 2} />,
+    // niche: black stoneware and a wooden bowl
+    <PhModel key="tea1" id="ceramic_vase_02" position={[sx, nicheBottom, (B0 + B1) / 2 - 0.15]} scale={0.5} finish="black" />,
+    <PhModel key="tea2" id="wooden_bowl_01" position={[sx, nicheBottom, (B0 + B1) / 2 + 0.15]} scale={0.6} />,
   ]
   return (
     <group>

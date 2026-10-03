@@ -11,7 +11,7 @@ const base = `${import.meta.env.BASE_URL}assets/ph/tex/`
 const loader = new THREE.TextureLoader()
 
 function tex(name: string, file: string, perMetre: number, srgb: boolean) {
-  const t = loader.load(`${base}${name}/${file}.jpg`)
+  const t = loader.load(`${base}${name}/${file}.webp`)
   t.wrapS = t.wrapT = THREE.RepeatWrapping
   t.repeat.set(perMetre, perMetre)
   t.anisotropy = 8

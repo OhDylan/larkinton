@@ -1,32 +1,34 @@
 /**
- * Zen / Japanese accents: Poly Haven models (CC0) for the objects that need real detail
- * (tea set, stoneware vases, wooden bowl, money tree, dry branches, furniture), arranged as zen
- * accents. Nothing here is hand-modelled.
+ * Real models only (nothing hand-modelled): Poly Haven CC0 stoneware vases, wooden bowl,
+ * money tree, plants and dry branch, plus Wayfair's GlamVelvetSofa from the Khronos glTF
+ * sample assets (CC BY 4.0, credited on screen).
  */
 import { useGLTF } from '@react-three/drei'
-import { Suspense, useMemo } from 'react'
+import { Suspense, useEffect, useMemo, useState } from 'react'
 import * as THREE from 'three'
+import type { GLTFParser } from 'three-stdlib'
 
-const modelUrl = (id: string) => `${import.meta.env.BASE_URL}assets/ph/models/${id}/${id}_1k.gltf`
+/**
+ * Models are pre-optimised single-file GLBs (meshopt-compressed geometry, WebP textures,
+ * unused variants pruned) — see public/assets/ph/README.md.
+ */
+const modelUrl = (id: string) => `${import.meta.env.BASE_URL}assets/ph/glb/${id}.glb`
 
-export type PhModelId =
-  | 'tea_set_01'
-  | 'ceramic_vase_01'
-  | 'ceramic_vase_02'
-  | 'ceramic_vase_03'
-  | 'ceramic_vase_04'
-  | 'antique_ceramic_vase_01'
-  | 'wooden_bowl_01'
-  | 'pachira_aquatica_01'
-  | 'potted_plant_02'
-  | 'dry_branches_medium_01'
-  | 'modern_arm_chair_01'
-  | 'chinese_tea_table'
-  | 'chinese_stool'
-  | 'WoodenTable_02'
-  | 'hanging_picture_frame_03'
-  | 'planter_pot_clay'
-  | 'potted_plant_04'
+export const MODEL_IDS = [
+  'ceramic_vase_01',
+  'ceramic_vase_02',
+  'ceramic_vase_03',
+  'ceramic_vase_04',
+  'antique_ceramic_vase_01',
+  'wooden_bowl_01',
+  'pachira_aquatica_01',
+  'potted_plant_02',
+  'potted_plant_04',
+  'dry_branches_medium_01',
+  'planter_pot_clay',
+  'GlamVelvetSofa',
+] as const
+export type PhModelId = (typeof MODEL_IDS)[number]
 
 type ModelProps = {
   id: PhModelId
@@ -39,6 +41,8 @@ type ModelProps = {
   recenter?: boolean
   /** override the scanned glaze: matte black stoneware (keeps the surface relief) */
   finish?: 'black'
+  /** KHR_materials_variants colourway (e.g. the sofa's "Black") */
+  variant?: string
 }
 
 const blackGlaze = new Map<THREE.Material, THREE.Material>()
@@ -52,8 +56,9 @@ function toBlack(m: THREE.Material) {
   return b
 }
 
-function Model({ id, pick, position, rotation, scale = 1, recenter = true, finish }: ModelProps) {
-  const { scene } = useGLTF(modelUrl(id))
+function Model({ id, pick, position, rotation, scale = 1, recenter = true, finish, variant }: ModelProps) {
+  const { scene, parser } = useGLTF(modelUrl(id))
+  const variantMats = useVariant(parser, scene, variant)
   const obj = useMemo(() => {
     const root = new THREE.Group()
     scene.updateMatrixWorld(true)
@@ -64,6 +69,8 @@ function Model({ id, pick, position, rotation, scale = 1, recenter = true, finis
       const c = mesh.clone()
       c.matrix.copy(mesh.matrixWorld)
       c.matrix.decompose(c.position, c.quaternion, c.scale)
+      const vm = variantMats?.get(mesh)
+      if (vm) c.material = vm
       if (finish === 'black') c.material = Array.isArray(c.material) ? c.material.map(toBlack) : toBlack(c.material)
       c.castShadow = true
       c.receiveShadow = true
@@ -75,27 +82,43 @@ function Model({ id, pick, position, rotation, scale = 1, recenter = true, finis
       root.children.forEach((c) => c.position.sub(new THREE.Vector3(centre.x, box.min.y, centre.z)))
     }
     return root
-  }, [scene, pick, recenter, finish])
+  }, [scene, pick, recenter, finish, variantMats])
   return <primitive object={obj} position={position} rotation={rotation} scale={scale} />
 }
 
-/** A Poly Haven model, loaded lazily (never blocks the rest of the room). */
+/** Resolve a KHR_materials_variants colourway to a material per original mesh (async, then re-render). */
+function useVariant(parser: GLTFParser, scene: THREE.Object3D, variant?: string) {
+  const [mats, setMats] = useState<Map<THREE.Object3D, THREE.Material> | null>(null)
+  useEffect(() => {
+    if (!variant) return
+    const ext = parser.json.extensions?.KHR_materials_variants as { variants: { name: string }[] } | undefined
+    const vi = ext?.variants.findIndex((v) => v.name === variant) ?? -1
+    if (vi < 0) return
+    const meshes: THREE.Mesh[] = []
+    scene.traverse((o) => (o as THREE.Mesh).isMesh && meshes.push(o as THREE.Mesh))
+    let alive = true
+    Promise.all(
+      meshes.map(async (m) => {
+        const a = parser.associations.get(m) as { meshes?: number; primitives?: number } | undefined
+        if (a?.meshes === undefined) return null
+        const prim = parser.json.meshes[a.meshes].primitives[a.primitives ?? 0]
+        const map = prim.extensions?.KHR_materials_variants?.mappings?.find((mp: { variants: number[] }) => mp.variants.includes(vi))
+        return map ? ([m, (await parser.getDependency('material', map.material)) as THREE.Material] as const) : null
+      }),
+    ).then((pairs) => alive && setMats(new Map(pairs.filter((p) => p !== null))))
+    return () => {
+      alive = false
+    }
+  }, [parser, scene, variant])
+  return variant ? mats : null
+}
+
+/** A model, loaded lazily (never blocks the rest of the room). */
 export function PhModel(props: ModelProps) {
   return (
     <Suspense fallback={null}>
       <Model {...props} />
     </Suspense>
-  )
-}
-
-/** Teapot and two cups from the Poly Haven tea set. */
-export function TeaSet({ x, z, y, rot = 0 }: { x: number; z: number; y: number; rot?: number }) {
-  return (
-    <group position={[x, y, z]} rotation-y={rot}>
-      <PhModel id="tea_set_01" pick={['teapot_01']} position={[-0.08, 0, 0]} />
-      <PhModel id="tea_set_01" pick={['cup_small_01']} position={[0.08, 0, -0.04]} />
-      <PhModel id="tea_set_01" pick={['cup_small_02']} position={[0.12, 0, 0.06]} />
-    </group>
   )
 }
 
@@ -106,7 +129,7 @@ export function MoneyTree({ x, z, scale = 1 }: { x: number; z: number; scale?: n
   return (
     <group>
       <PhModel id="planter_pot_clay" position={[x, 0, z]} scale={potScale} />
-      <PhModel id="pachira_aquatica_01" pick={['_d']} position={[x, potH - 0.06, z]} scale={scale} />
+      <PhModel id="pachira_aquatica_01" position={[x, potH - 0.06, z]} scale={scale} />
     </group>
   )
 }
@@ -117,9 +140,10 @@ export function Ikebana({ x, z, y, rot = 0 }: { x: number; z: number; y: number;
     <group position={[x, y, z]} rotation-y={rot}>
       <PhModel id="ceramic_vase_03" position={[0, 0, 0]} finish="black" />
       {/* branch "a" lies along +z on the ground: tip it upright into the vase */}
-      <PhModel id="dry_branches_medium_01" pick={['_a']} position={[0, 0.25, 0]} rotation={[-Math.PI / 2 + 0.2, 0, 0.15]} scale={0.6} />
+      <PhModel id="dry_branches_medium_01" position={[0, 0.25, 0]} rotation={[-Math.PI / 2 + 0.2, 0, 0.15]} scale={0.6} />
     </group>
   )
 }
 
-;(['tea_set_01', 'ceramic_vase_01', 'ceramic_vase_03', 'wooden_bowl_01', 'pachira_aquatica_01'] as PhModelId[]).forEach((id) => useGLTF.preload(modelUrl(id)))
+// start every download immediately, in parallel, instead of when each item mounts
+MODEL_IDS.forEach((id) => useGLTF.preload(modelUrl(id)))

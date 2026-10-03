@@ -79,8 +79,7 @@ export function Master() {
         <B key={z} x0={wallX - 0.001} x1={wallX + 0.004} y0={0.02} y1={hw.y1 - 0.02} z0={z - 0.002} z1={z + 0.002} m={d.woodDark} shadow={false} />
       ))}
       <B x0={X.eastInner - 0.13} x1={X.eastInner} y0={hw.y1} y1={hw.y1 + 0.03} z0={hw.z0} z1={hw.z1} m={d.wood} />
-      {/* above the bed: a round East Asian landscape painting; on the ledge, stoneware */}
-      <PhModel id="hanging_picture_frame_03" position={[X.eastInner - 0.02, hw.y1 + 0.3, bz - 0.25]} rotation={[0, -Math.PI / 2, 0]} scale={1.1} />
+      {/* on the ledge: black and white stoneware */}
       <PhModel id="ceramic_vase_03" position={[X.eastInner - 0.07, hw.y1 + 0.03, bz + 0.45]} scale={0.7} finish="black" />
       <PhModel id="ceramic_vase_02" position={[X.eastInner - 0.07, hw.y1 + 0.03, bz + 0.65]} scale={0.45} />
 

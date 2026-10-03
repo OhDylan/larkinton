@@ -64,7 +64,8 @@ export const layout = {
     // window seat (飘窗) along the whole 4-panel window; seat top = window sill (0.45)
     windowSeat: { x0: X.westInner, x1: X.partitionW, z0: Z.northInner, z1: Z.northInner + 0.55, h: D.windows.living.sill },
     // 2-seater against the right-hand (partition) wall, facing the left wall
-    sofa: { x0: X.partitionW - 0.92, x1: X.partitionW, z0: 1.15, z1: 2.95, h: 0.76 },
+    // curved velvet sofa, 2.19 m long x 1.02 m deep, from the window seat to just short of the hallway opening
+    sofa: { x0: X.partitionW - 1.05, x1: X.partitionW, z0: 0.9, z1: 3.09, h: 0.79 },
     // left wall kept clear for a projector screen / future TV
     projectionWall: { z0: 1.2, z1: 3.0 },
     coffeeTable: { cx: 1.4, cz: 2.05, r: 0.36, h: 0.34 },
@@ -123,12 +124,9 @@ export const furnitureColliders: Rect[] = [
   layout.kitchen.fridge,
   layout.yard.laundry,
   { ...layout.island.top, z0: layout.island.bodyZ0 },
-  ...layout.island.stools.map((s) => circle(s, 0.18)),
   layout.diningWall,
   layout.living.windowSeat,
   layout.living.sofa,
-  circle([layout.living.coffeeTable.cx, layout.living.coffeeTable.cz], layout.living.coffeeTable.r),
-  circle(layout.living.sideTable, 0.18),
   circle(layout.living.plant, 0.2),
   layout.master.wardrobe,
   layout.master.bed,

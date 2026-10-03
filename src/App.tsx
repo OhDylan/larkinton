@@ -55,6 +55,10 @@ export default function App() {
       </Canvas>
       <div ref={labelLayer} className="label-layer" />
       {mode === 'walkthrough' && <Joystick />}
+      <div className="credits">
+        Sofa: “Glam Velvet Sofa” by Eric Chadwick / Wayfair, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a> ·
+        Models &amp; textures: <a href="https://polyhaven.com" target="_blank" rel="noreferrer">Poly Haven</a> (CC0)
+      </div>
       <ControlPanel
         mode={mode}
         setMode={setMode}
