@@ -17,9 +17,12 @@ function useFloorFinish() {
     const m = materials()
     const p = m.porcelain
     if (!porcelainMap) porcelainMap = p.map
+    if (!porcelainColor) porcelainColor = p.color.clone()
+    p.color.copy(porcelainColor)
     if (finish === 'wood') {
       p.map = woodFloorTexture()
-      p.roughness = 0.38 // satin-lacquered oak
+      p.color.set('#b8a898') // a shade deeper and less orange than the raw oak scan
+      p.roughness = 0.42 // satin-lacquered oak
     } else if (finish === 'concrete') {
       p.map = microcementTexture()
       p.roughness = 0.6 // sealed microcement, soft sheen
@@ -31,6 +34,7 @@ function useFloorFinish() {
   }, [finish])
 }
 let porcelainMap: THREE.Texture | null = null
+let porcelainColor: THREE.Color | null = null
 
 export function Floors() {
   useFloorFinish()

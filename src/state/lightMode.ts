@@ -3,7 +3,7 @@ import { useSyncExternalStore } from 'react'
 
 export type LightMode = 'day' | 'evening'
 
-let mode: LightMode = 'day'
+let mode: LightMode = 'evening'
 const listeners = new Set<() => void>()
 
 export function setLightMode(m: LightMode) {

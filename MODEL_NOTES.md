@@ -151,6 +151,8 @@ Assets (v6): all loose furniture and decor are downloaded models, not hand-built
 
 Loading: each model is one meshopt-compressed GLB with WebP textures at up to 512 px, and unused variants are pruned. Surface textures are WebP. public/assets/ph was cut from ~12 MB to ~3.7 MB, and is ~7 MB with the Sketchfab furniture added. All models preload at startup. vercel.json caches /assets/ph for 30 days.
 
+Defaults: opens in Evening lighting with the wood floor (Poly Haven laminate_floor_03 oak, toned a shade deeper); tile and microcement remain on the Floor button.
+
 Open design questions:
 - [ ] Sofa bed folded flat is deeper than as a sofa (not modelled); check clearance to the desk chair.
 - [ ] Studio air-con position is assumed (above the window); living and master follow the points you marked.

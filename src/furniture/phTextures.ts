@@ -30,7 +30,7 @@ export const tileSize = {
   sand: 0.27,
   taupe: 0.27,
   leather: 0.4,
-  wood_floor: 1.98,
+  wood_floor: 2.08, // laminate_floor_03
   microcement: 2.0,
   jute: 0.27,
 } as const
