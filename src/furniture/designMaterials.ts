@@ -80,7 +80,7 @@ export function microcementTexture() {
 /** Wood floor texture, scaled for the floor's UVs (1 UV unit = one 0.6 m porcelain tile). */
 let floorTex: THREE.Texture | null = null
 export function woodFloorTexture() {
-  return (floorTex ??= phMap('wood_floor', 0.6 / tileSize.wood_floor))
+  return (floorTex ??= phMap('oak_floor', 0.6 / tileSize.oak_floor))
 }
 
 /** Fine weave for linen / wool. */
