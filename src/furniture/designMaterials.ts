@@ -6,6 +6,7 @@
  * metre-scaled UVs, so `repeat` below = how many texture tiles per metre.
  */
 import * as THREE from 'three'
+import { phMap, phMaterial, tileSize } from './phTextures'
 
 export const designPalette = {
   wallWarm: '#ddd5c8', // warm greige plaster
@@ -47,51 +48,6 @@ function canvasTex(w: number, h: number, draw: Draw, perMetre: [number, number],
 
 const rand = (a: number, b: number) => a + Math.random() * (b - a)
 
-/** Wood: straight grain with slow colour drift, fine pores and a few darker figure lines. */
-const woodDraw = (base: string, dark: string): Draw => (g, w, h) => {
-  const k = w / 512 // detail scale relative to the 512-px design size
-  g.fillStyle = base
-  g.fillRect(0, 0, w, h)
-  // broad colour bands (boards / flitch variation)
-  for (let i = 0; i < 14; i++) {
-    const x = rand(0, w)
-    const bw = rand(20, 120) * k
-    const grd = g.createLinearGradient(x - bw, 0, x + bw, 0)
-    const a = rand(0.04, 0.14)
-    const tone = Math.random() > 0.5 ? `rgba(255,220,190,${a})` : `rgba(20,8,0,${a})`
-    grd.addColorStop(0, 'rgba(0,0,0,0)')
-    grd.addColorStop(0.5, tone)
-    grd.addColorStop(1, 'rgba(0,0,0,0)')
-    g.fillStyle = grd
-    g.fillRect(x - bw, 0, bw * 2, h)
-  }
-  // grain lines
-  for (let i = 0; i < 220 * k; i++) {
-    const x = rand(0, w)
-    g.strokeStyle = Math.random() > 0.3 ? `rgba(30,14,4,${rand(0.03, 0.12)})` : `rgba(255,230,200,${rand(0.02, 0.06)})`
-    g.lineWidth = rand(1, 4) * k
-    g.beginPath()
-    const phase = rand(0, 10)
-    const amp = rand(0.3, 1.6) * k
-    const period = rand(90, 220) * k
-    g.moveTo(x, 0)
-    for (let y = 0; y <= h; y += 16) g.lineTo(x + Math.sin(y / period + phase) * amp, y)
-    g.stroke()
-  }
-  // a few long cathedral-ish figure strokes
-  g.strokeStyle = dark
-  for (let i = 0; i < 6; i++) {
-    const x = rand(0, w)
-    g.globalAlpha = rand(0.12, 0.25)
-    g.lineWidth = rand(1, 3) * k
-    g.beginPath()
-    g.moveTo(x, 0)
-    for (let y = 0; y <= h; y += 16) g.lineTo(x + Math.sin(y / (180 * k) + i) * 14 * k, y)
-    g.stroke()
-  }
-  g.globalAlpha = 1
-}
-
 /** Soft mottling for limewash / stone / textiles; `pores` adds terrazzo-like voids. */
 const mottleDraw = (base: string, amount: number, blob: [number, number], pores = 0, streaks = 0): Draw => (g, w, h) => {
   g.fillStyle = base
@@ -115,68 +71,16 @@ const mottleDraw = (base: string, amount: number, blob: [number, number], pores 
   }
 }
 
-/** Medium oak floorboards, 180 mm wide, staggered lengths (one texture tile = 1.2 x 1.2 m). */
-const floorDraw: Draw = (g, w, h) => {
-  const boards = 1.2 / 0.18
-  const bw = w / boards
-  const tones = ['#a5805d', '#9e7956', '#aa8662', '#9a7552', '#a37e5b']
-  for (let c = 0; c < Math.ceil(boards); c++) {
-    // stagger each column, and wrap so the texture tiles seamlessly
-    let y = -rand(0, h * 0.6)
-    let k = c
-    while (y < h) {
-      const len = rand(h * 0.45, h * 0.9)
-      g.fillStyle = tones[k++ % tones.length]
-      g.fillRect(c * bw, y, bw, len)
-      for (let i = 0; i < 26; i++) {
-        g.strokeStyle = `rgba(60,35,15,${rand(0.04, 0.12)})`
-        g.lineWidth = rand(0.5, 1.6)
-        const x = c * bw + rand(2, bw - 2)
-        g.beginPath()
-        g.moveTo(x, y)
-        g.bezierCurveTo(x + rand(-3, 3), y + len * 0.3, x + rand(-3, 3), y + len * 0.7, x + rand(-2, 2), y + len)
-        g.stroke()
-      }
-      g.fillStyle = 'rgba(40,24,10,0.55)'
-      g.fillRect(c * bw, y, bw, 1.5)
-      y += len
-    }
-    g.fillStyle = 'rgba(40,24,10,0.5)'
-    g.fillRect(c * bw, 0, 1.5, h)
-  }
-}
-
-/** Grey microcement: soft trowel clouds and faint sweeps, seamless (as in the reference photos). */
-const microcementDraw: Draw = (g, w, h) => {
-  g.fillStyle = '#9a9790'
-  g.fillRect(0, 0, w, h)
-  for (let i = 0; i < 900; i++) {
-    const l = Math.random() > 0.5 ? 255 : 0
-    g.fillStyle = `rgba(${l},${l},${l},${rand(0, 0.035)})`
-    g.beginPath()
-    g.ellipse(rand(0, w), rand(0, h), rand(20, 120), rand(8, 40), rand(0, 3), 0, Math.PI * 2)
-    g.fill()
-  }
-  for (let i = 0; i < 60; i++) {
-    g.strokeStyle = `rgba(255,255,255,${rand(0.01, 0.03)})`
-    g.lineWidth = rand(4, 18)
-    g.beginPath()
-    const x = rand(0, w)
-    const y = rand(0, h)
-    g.arc(x, y, rand(60, 200), rand(0, 6), rand(0, 6) + 1)
-    g.stroke()
-  }
-}
-
-let concreteTex: THREE.CanvasTexture | null = null
+let concreteTex: THREE.Texture | null = null
 export function microcementTexture() {
-  return (concreteTex ??= canvasTex(1024, 1024, microcementDraw, [0.25, 0.25]))
+  // floor UVs: 1 unit = one 0.6 m porcelain tile
+  return (concreteTex ??= phMap('microcement', 0.6 / tileSize.microcement))
 }
 
 /** Wood floor texture, scaled for the floor's UVs (1 UV unit = one 0.6 m porcelain tile). */
-let floorTex: THREE.CanvasTexture | null = null
+let floorTex: THREE.Texture | null = null
 export function woodFloorTexture() {
-  return (floorTex ??= canvasTex(1024, 1024, floorDraw, [0.5, 0.5]))
+  return (floorTex ??= phMap('wood_floor', 0.6 / tileSize.wood_floor))
 }
 
 /** Fine weave for linen / wool. */
@@ -205,41 +109,29 @@ const pegDraw: Draw = (g) => {
 
 const std = (p: THREE.MeshStandardMaterialParameters) => new THREE.MeshStandardMaterial(p)
 
-function wood(base: string, dark: string, roughness = 0.42) {
-  const map = canvasTex(1024, 2048, woodDraw(base, dark), [0.9, 0.45])
-  return std({ map, bumpMap: map, bumpScale: 0.25, roughness })
-}
 
 function make() {
   const P = designPalette
-  // smooth painted wall: only a whisper of texture
-  const limewash = canvasTex(512, 512, mottleDraw(P.wallWarm, 0.006, [4, 30]), [0.6, 0.6])
+  // walls: scanned grey plaster (Poly Haven) recoloured to warm greige; walls have metre UVs
+  const limewash = phMap('plaster', 1 / tileSize.plaster)
   const stoneMap = canvasTex(512, 512, mottleDraw(P.stone, 0.035, [6, 40], 120, 10), [1.2, 1.2])
-  const linenMap = canvasTex(256, 256, weaveDraw(P.linen, 0.06), [8, 8])
   const woolMap = canvasTex(256, 256, weaveDraw(P.wool, 0.1), [6, 6])
-  const leatherMap = canvasTex(256, 256, mottleDraw(P.leather, 0.025, [2, 8]), [4, 4])
   return {
     limewash,
     ceiling: P.ceilingWarm,
-    wood: wood(P.wood, P.woodDark),
-    woodDark: wood(P.woodDark, '#1e120b', 0.6),
-    woodLight: wood(P.woodLight, P.wood, 0.6),
+    // scanned veneers (Poly Haven): walnut joinery, smoked walnut accents, teak
+    wood: phMaterial('walnut', { roughness: 0.75 }),
+    woodDark: phMaterial('smoked_walnut', { roughness: 0.8 }),
+    woodLight: phMaterial('teak', { roughness: 0.8 }),
     stone: std({ map: stoneMap, roughness: 0.5 }),
     basalt: std({ map: canvasTex(256, 256, mottleDraw(P.basalt, 0.08, [4, 20]), [2, 2]), roughness: 0.85 }),
-    leather: std({ map: leatherMap, bumpMap: leatherMap, bumpScale: 0.15, roughness: 0.42 }),
-    linen: std({ map: linenMap, bumpMap: linenMap, bumpScale: 0.3, roughness: 1 }),
-    // boucle: chunky loops → strong bump
-    cream: (() => {
-      const t = canvasTex(256, 256, mottleDraw(P.cream, 0.12, [1.5, 3.5]), [10, 10])
-      return std({ map: t, bumpMap: t, bumpScale: 1.2, roughness: 1 })
-    })(),
-    sand: std({ map: canvasTex(256, 256, weaveDraw(P.sand, 0.07), [8, 8]), roughness: 1 }),
-    taupe: std({ map: canvasTex(256, 256, weaveDraw(P.taupe, 0.07), [8, 8]), roughness: 1 }),
-    // jute rug: coarse woven fibre
-    rug: (() => {
-      const t = canvasTex(256, 256, weaveDraw(P.jute, 0.22), [3, 3])
-      return std({ map: t, bumpMap: t, bumpScale: 1.5, roughness: 1 })
-    })(),
+    // scanned fabrics (Poly Haven); upholstery UVs run 0..1 per face, so repeats are per face
+    leather: phMaterial('leather', { roughness: 0.9 }, 0.5),
+    linen: phMaterial('linen', {}, 0.6),
+    cream: phMaterial('cream', {}, 0.6, 1.3), // cream linen-weave upholstery
+    sand: phMaterial('sand', {}, 0.6),
+    taupe: phMaterial('taupe', {}, 0.6),
+    rug: phMaterial('jute', {}, 1.8 / 4, 1.2), // rug plane UVs span the whole ~1.8 m rug
     opal: std({ color: '#fbf7ef', emissive: '#ffd9a6', emissiveIntensity: 0.25, roughness: 0.25 }),
     glossBlack: std({ color: '#151413', roughness: 0.15, metalness: 0.2 }),
     wool: std({ map: woolMap, bumpMap: woolMap, bumpScale: 0.8, roughness: 1 }),

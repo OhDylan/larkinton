@@ -121,22 +121,23 @@ export function DomePendant({ x, z, bottom, r = 0.18, light = 0.8, minor = false
 }
 
 /** Round paper lantern (Akari-style globe) with fine horizontal ribs. */
-export function PaperGlobe({ x, z, bottom, r = 0.28, light = 1.0, minor = false }: { x: number; z: number; bottom: number; r?: number; light?: number; minor?: boolean }) {
+export function PaperGlobe({ x, z, bottom, r = 0.28, squash = 1, light = 1.0, minor = false }: { x: number; z: number; bottom: number; r?: number; squash?: number; light?: number; minor?: boolean }) {
   const d = designMaterials()
-  const cy = bottom + r
+  const ry = r * squash // squash < 1 → flattened oval Akari
+  const cy = bottom + ry
   const top = D.ceilingHeight
   const ribs = [-0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75]
   return (
     <group>
-      <mesh position={[x, cy, z]} material={d.paper}>
+      <mesh position={[x, cy, z]} scale={[1, squash, 1]} material={d.paper}>
         <sphereGeometry args={[r, 40, 24]} />
       </mesh>
       {ribs.map((t) => (
-        <mesh key={t} position={[x, cy + t * r, z]} rotation-x={Math.PI / 2} material={d.ceramic}>
+        <mesh key={t} position={[x, cy + t * ry, z]} rotation-x={Math.PI / 2} material={d.ceramic}>
           <torusGeometry args={[r * Math.sqrt(1 - t * t) + 0.001, 0.0012, 4, 48]} />
         </mesh>
       ))}
-      <Cyl x={x} z={z} y0={cy + r} y1={top} r={0.003} m={d.charcoal} seg={6} />
+      <Cyl x={x} z={z} y0={cy + ry} y1={top} r={0.003} m={d.charcoal} seg={6} />
       <Lamp x={x} y={cy} z={z} evening={light} distance={4.5} minor={minor} />
     </group>
   )

@@ -5,7 +5,8 @@ import { designMaterials } from './designMaterials'
 import { layout } from './layout'
 import { useMemo } from 'react'
 import * as THREE from 'three'
-import { AirCon, B, Books, Cyl, Downlight, GlobePendant, Lamp, Legs4, Mirror, Plant, RomanBlind, Soft, Vase } from './primitives'
+import { AirCon, B, Books, Cyl, Downlight, Lamp, Legs4, Mirror, PaperGlobe, RomanBlind, Soft, Vase } from './primitives'
+import { HangingScroll, PhModel } from './zen'
 
 const { x: X, z: Z } = D
 
@@ -78,11 +79,10 @@ export function Master() {
         <B key={z} x0={wallX - 0.001} x1={wallX + 0.004} y0={0.02} y1={hw.y1 - 0.02} z0={z - 0.002} z1={z + 0.002} m={d.woodDark} shadow={false} />
       ))}
       <B x0={X.eastInner - 0.13} x1={X.eastInner} y0={hw.y1} y1={hw.y1 + 0.03} z0={hw.z0} z1={hw.z1} m={d.wood} />
-      {/* ledge styling: a leaning print, a vase, a small stack */}
-      <B x0={X.eastInner - 0.06} x1={X.eastInner - 0.035} y0={hw.y1 + 0.03} y1={hw.y1 + 0.55} z0={bz - 0.55} z1={bz - 0.05} m={d.woodDark} />
-      <B x0={X.eastInner - 0.062} x1={X.eastInner - 0.06} y0={hw.y1 + 0.07} y1={hw.y1 + 0.51} z0={bz - 0.51} z1={bz - 0.09} m={d.linen} shadow={false} />
-      <Vase x={X.eastInner - 0.07} z={bz + 0.35} y={hw.y1 + 0.03} h={0.26} r={0.06} m={d.ceramicDark} neck={0.4} />
-      <Vase x={X.eastInner - 0.07} z={bz + 0.55} y={hw.y1 + 0.03} h={0.12} r={0.05} m={d.earth} />
+      {/* above the bed: an ensō scroll; on the ledge, stoneware and a dry branch */}
+      <HangingScroll at={X.eastInner - 0.003} along={bz - 0.2} y0={hw.y1 + 0.2} y1={hw.y1 + 0.95} w={0.36} face="x-" kind="enso" />
+      <PhModel id="ceramic_vase_03" position={[X.eastInner - 0.07, hw.y1 + 0.03, bz + 0.45]} scale={0.7} finish="black" />
+      <PhModel id="ceramic_vase_02" position={[X.eastInner - 0.07, hw.y1 + 0.03, bz + 0.65]} scale={0.45} />
 
       <group position={[wallX, 0, bz]} rotation-y={-Math.PI / 2}>
         <QueenBed />
@@ -99,7 +99,7 @@ export function Master() {
             <B x0={n.x0 - 0.014} x1={n.x0} y0={n.h - 0.06} y1={n.h - 0.05} z0={nz - 0.04} z1={nz + 0.04} m={d.bronze} />
             <Books x={nx} z={nz + (i ? -0.08 : 0.08)} y={n.h} n={2} w={0.2} dpt={0.14} alongX={false} />
             <Vase x={nx} z={nz + (i ? 0.13 : -0.13)} y={n.h} h={0.1} r={0.04} m={d.ceramic} />
-            <GlobePendant x={nx - 0.02} z={nz} bottom={0.95} r={0.12} light={0.7} minor={i === 1} />
+            <PaperGlobe x={nx - 0.02} z={nz} bottom={0.95} r={0.13} light={0.7} minor={i === 1} />
           </group>
         )
       })}
@@ -393,7 +393,7 @@ export function Studio() {
       <Chair x={chx} z={chz} />
       <Cart />
       <SofaBed />
-      <Plant x={layout.studio.plant[0]} z={layout.studio.plant[1]} h={1.45} />
+      <PhModel id="potted_plant_02" position={[layout.studio.plant[0] - 0.05, 0, layout.studio.plant[1] - 0.05]} scale={1.1} />
       <RomanBlind a0={win.z0} a1={win.z1} at={X.eastInner - 0.03} top={win.head} drop={0.38} alongX={false} />
       <AirCon x={X.eastInner} z={(win.z0 + win.z1) / 2} y={2.4} face="x-" />
       <Downlight x={4.2} z={5.85} />

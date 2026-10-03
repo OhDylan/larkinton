@@ -121,6 +121,9 @@ All positions live in `src/furniture/layout.ts`. Panel buttons: **Design** (empt
 
 Rendering approach (after studying sael.net/interior, which is also three.js): ACES filmic tone mapping with a little extra saturation, ambient occlusion, SMAA, a low warm sun through the windows by day, and "fake" lamp light computed inside every material (src/scene/fakeLamps.ts) instead of real point lights, so all lamps can be lit in the evening cheaply, as pools of warm light. Walkthrough lens narrowed from 70° to 55°. Depth of field was tried and dropped (it blurred the whole frame in this effect chain).
 
+Zen / Japanese accents (v6): bonsai on the window seat and at the genkan (entry) with an incense dish, a sumi-ink landscape kakejiku above the sofa, ensō scrolls above the bed and in the tea niche, a tea set on the window seat and in the tea niche, ikebana (a dry branch in black stoneware) on the island, a stacked-stone pedestal as the living-room side table, black and white stoneware on the dining shelves, a money tree in a clay planter, oval Akari paper lanterns over the island and the dining zone, paper globes at the bedside.
+Real-world detail comes from Poly Haven CC0 assets (public/assets/ph, ~10 MB): scanned walnut / teak veneers, plaster, linen, leather, oak floor, microcement and jute textures (recoloured to the palette), and models for the tea set, vases, wooden bowl, money tree, studio plant and branches.
+
 Style references (from the owner): dark walnut built-ins, grey microcement floor, paper lanterns, black stoneware, dim warm evening light; cream boucle / sand linen in the softer references.
 
 | Space | What's there |

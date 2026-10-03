@@ -5,7 +5,8 @@ import { designMaterials } from './designMaterials'
 import { layout } from './layout'
 import { useMemo } from 'react'
 import * as THREE from 'three'
-import { B, Books, Cyl, DomePendant, Downlight, Lamp, Legs4, Mirror, Soft, Vase } from './primitives'
+import { B, Books, Cyl, Downlight, Lamp, Legs4, Mirror, PaperGlobe, Soft, Vase } from './primitives'
+import { Bonsai, HangingScroll, Ikebana, Incense, PhModel, TeaSet } from './zen'
 
 const GAP = 0.003 // shadow gap between joinery fronts
 
@@ -43,12 +44,9 @@ export function Entry() {
       ))}
       <B x0={s.x0 - 0.01} x1={s.x1 + 0.01} y0={top - 0.03} y1={top} z0={s.z0 - 0.015} z1={s.z1} m={d.stone} />
       <SplitsX xs={[cx]} y0={s.y0 + 0.01} y1={top - 0.04} z={s.z0} />
-      {/* styling: ceramic key dish, bud vase with a stem, small book */}
-      <Cyl x={s.x0 + 0.2} z={s.z0 + 0.17} y0={top} y1={top + 0.025} r={0.08} rTop={0.1} m={d.ceramicDark} />
-      <Vase x={s.x1 - 0.16} z={s.z0 + 0.16} y={top} h={0.24} r={0.055} m={d.earth} neck={0.35} />
-      <mesh position={[s.x1 - 0.17, top + 0.42, s.z0 + 0.16]} rotation-z={0.15} material={d.woodDark}>
-        <cylinderGeometry args={[0.003, 0.004, 0.4, 5]} />
-      </mesh>
+      {/* genkan styling: a small bonsai and an incense dish */}
+      <Bonsai x={s.x1 - 0.2} z={s.z0 + 0.17} y={top} s={0.9} />
+      <Incense x={s.x0 + 0.17} z={s.z0 + 0.17} y={top} />
       {/* round mirror in a thin walnut frame */}
       <Mirror geometry={mirrorGeo} position={[mr.cx, mr.y, faceZ - 0.012]} rotationY={Math.PI} />
       <mesh position={[mr.cx, mr.y, faceZ - 0.014]} material={d.wood}>
@@ -211,13 +209,12 @@ export function Island() {
       {/* chopping board, stoneware fruit bowl, teapot-ish vessel */}
       <B x0={t.x1 - 0.52} x1={t.x1 - 0.12} y0={t.h} y1={t.h + 0.03} z0={t.z1 - 0.34} z1={t.z1 - 0.06} m={d.woodLight} />
       <Cyl x={t.x0 + 0.3} z={cz + 0.05} y0={t.h} y1={t.h + 0.09} r={0.09} rTop={0.15} m={d.earth} />
-      <Vase x={cx - 0.05} z={cz - 0.18} y={t.h} h={0.13} r={0.07} m={d.ceramicDark} neck={0.5} />
+      <Ikebana x={cx - 0.05} z={cz - 0.15} y={t.h} rot={0.6} />
       {i.stools.map(([x, z]) => (
         <Stool key={x} x={x} z={z} h={i.seatH} />
       ))}
-      {/* pair of black dome pendants over the island */}
-      <DomePendant x={t.x0 + 0.35} z={cz} bottom={1.6} light={0.9} />
-      <DomePendant x={t.x1 - 0.35} z={cz} bottom={1.6} light={0.9} minor />
+      {/* one wide oval paper lantern over the island */}
+      <PaperGlobe x={cx} z={cz} bottom={1.62} r={0.36} squash={0.42} light={1.1} />
     </group>
   )
 }
@@ -312,17 +309,16 @@ export function DiningWall() {
   const sx = (w.x0 + face) / 2
   const styling: ReactNode[] = [
     <Books key="b1" x={sx} z={A0 + 0.25} y={baseH + T / 2} n={4} w={0.26} dpt={0.18} alongX={false} />,
-    <Vase key="v1" x={sx} z={A0 + 0.75} y={baseH + T / 2} h={0.3} r={0.1} m={d.ceramicDark} neck={0.4} />,
-    <Vase key="v2" x={sx} z={A0 + 1.2} y={0.9 + T / 2} h={0.18} r={0.08} m={d.earth} />,
+    <PhModel key="v1" id="antique_ceramic_vase_01" position={[sx, baseH + T / 2, A0 + 0.78]} scale={0.8} finish="black" />,
+    <PhModel key="v2" id="ceramic_vase_02" position={[sx, 0.9 + T / 2, A0 + 1.2]} scale={0.6} />,
     <Books key="b2" x={sx} z={A0 + 0.35} y={0.9 + T / 2} n={2} w={0.24} dpt={0.18} alongX={false} />,
-    <Vase key="v3" x={sx} z={A0 + 0.2} y={1.35 + T / 2} h={0.14} r={0.07} m={d.ceramic} />,
-    <Vase key="v4" x={sx} z={A0 + 1.2} y={1.35 + T / 2} h={0.34} r={0.09} m={d.ceramic} neck={0.35} />,
+    <PhModel key="v3" id="wooden_bowl_01" position={[sx, 1.35 + T / 2, A0 + 0.22]} scale={0.7} />,
+    <PhModel key="v4" id="ceramic_vase_01" position={[sx, 1.35 + T / 2, A0 + 1.2]} scale={0.85} />,
     <Books key="b3" x={sx} z={A0 + 1.1} y={1.8 + T / 2} n={3} w={0.22} dpt={0.17} alongX={false} />,
-    <Vase key="v5" x={sx} z={A0 + 0.35} y={1.8 + T / 2} h={0.2} r={0.075} m={d.ceramicDark} />,
-    // niche: tea tray with cups + kettle
-    <B key="tray" x0={w.x0 + 0.08} x1={face - 0.05} y0={nicheBottom} y1={nicheBottom + 0.02} z0={B0 + 0.2} z1={B0 + 0.62} m={d.woodDark} />,
-    ...[0.28, 0.4, 0.52].map((z) => <Cyl key={`c${z}`} x={sx} z={B0 + z} y0={nicheBottom + 0.02} y1={nicheBottom + 0.07} r={0.03} rTop={0.035} m={d.ceramic} />),
-    <Vase key="kettle" x={sx} z={B0 + 0.85} y={nicheBottom} h={0.2} r={0.085} m={d.ceramicDark} neck={0.5} />,
+    <PhModel key="v5" id="ceramic_vase_04" position={[sx, 1.8 + T / 2, A0 + 0.35]} scale={0.7} finish="black" />,
+    // niche: tea ceremony corner — tea set on a tray, a small hanging ensō scroll
+    <TeaSet key="tea" x={sx} z={(B0 + B1) / 2} y={nicheBottom} rot={Math.PI / 2} />,
+    <HangingScroll key="enso" at={w.x0 + 0.003} along={(B0 + B1) / 2} y0={nicheBottom + 0.22} y1={nicheTop - 0.18} w={0.22} face="x+" kind="enso" />,
   ]
   return (
     <group>

@@ -1,8 +1,9 @@
 /** Living room (warm minimal): window seat, 2-seater on the right-hand wall, left wall kept clear for projection / TV. */
 import { dimensions as D } from '../data/dimensions'
 import { designMaterials } from './designMaterials'
+import { Bonsai, HangingScroll, MoneyTree, PhModel, StackedStones, TeaSet } from './zen'
 import { layout } from './layout'
-import { AirCon, B, Books, CeilingFan, Curtain, Cyl, Downlight, Lamp, PaperGlobe, Plant, Soft, TaperedLeg, Vase } from './primitives'
+import { AirCon, B, Books, CeilingFan, Curtain, Cyl, Downlight, Lamp, PaperGlobe, Soft } from './primitives'
 
 function WindowSeat() {
   const d = designMaterials()
@@ -25,11 +26,10 @@ function WindowSeat() {
       <mesh position={[2.6, top + 0.17, s.z0 + 0.22]} rotation-z={Math.PI / 2} material={d.earth} castShadow>
         <cylinderGeometry args={[0.09, 0.09, 0.55, 24]} />
       </mesh>
-      {/* tea tray, cup, books */}
-      <B x0={1.75} x1={2.15} y0={top + 0.09} y1={top + 0.11} z0={s.z1 - 0.34} z1={s.z1 - 0.08} m={d.woodDark} />
-      <Cyl x={1.88} z={s.z1 - 0.2} y0={top + 0.11} y1={top + 0.17} r={0.035} rTop={0.04} m={d.ceramic} />
-      <Vase x={2.04} z={s.z1 - 0.22} y={top + 0.11} h={0.12} r={0.05} m={d.ceramicDark} neck={0.5} />
-      <Books x={1.55} z={s.z1 - 0.22} y={top + 0.09} n={2} w={0.24} dpt={0.17} />
+      {/* tea set on a tray, a bonsai, a couple of books */}
+      <TeaSet x={1.85} z={s.z1 - 0.2} y={top + 0.09} rot={0.1} />
+      <Bonsai x={2.45} z={s.z1 - 0.2} y={top + 0.09} s={1.1} />
+      <Books x={1.4} z={s.z1 - 0.22} y={top + 0.09} n={2} w={0.24} dpt={0.17} />
       {/* sheer linen curtains stacked at both ends, on a slim ceiling track */}
       <B x0={s.x0 + 0.02} x1={s.x1 - 0.02} y0={D.ceilingHeight - 0.03} y1={D.ceilingHeight} z0={s.z0 + 0.06} z1={s.z0 + 0.1} m={d.charcoal} />
       <Curtain a0={s.x0 + 0.04} a1={0.55} at={s.z0 + 0.09} y0={top + 0.1} y1={D.ceilingHeight - 0.03} alongX folds={5} />
@@ -71,26 +71,20 @@ function Sofa() {
   )
 }
 
-/** Walnut tripod side table with a mushroom table lamp (opal shade, brass stem). */
+/** Stacked-stone pedestal (as in the reference) with a small paper table lamp and a stoneware vase. */
 function SideTable() {
   const d = designMaterials()
   const [x, z] = layout.living.sideTable
   const top = 0.5
   return (
     <group>
-      {[0, 1, 2].map((i) => {
-        const a = (i / 3) * Math.PI * 2 + 0.3
-        return <TaperedLeg key={i} x={x + Math.cos(a) * 0.1} z={z + Math.sin(a) * 0.1} top={top - 0.02} splay={[Math.cos(a) * 0.06, Math.sin(a) * 0.06]} r={0.018} />
-      })}
-      <Cyl x={x} z={z} y0={top - 0.025} y1={top} r={0.2} m={d.wood} seg={48} />
-      {/* mushroom lamp */}
-      <Cyl x={x - 0.05} z={z - 0.02} y0={top} y1={top + 0.015} r={0.06} m={d.bronze} />
-      <Cyl x={x - 0.05} z={z - 0.02} y0={top + 0.015} y1={top + 0.22} r={0.008} m={d.bronze} seg={10} />
-      <mesh position={[x - 0.05, top + 0.22, z - 0.02]} scale={[1, 0.6, 1]} material={d.opal}>
-        <sphereGeometry args={[0.13, 32, 16, 0, Math.PI * 2, 0, Math.PI / 2]} />
+      <StackedStones x={x} z={z} top={top} />
+      <Cyl x={x - 0.06} z={z} y0={top} y1={top + 0.015} r={0.04} m={d.charcoal} />
+      <mesh position={[x - 0.06, top + 0.13, z]} scale={[1, 1.15, 1]} material={d.paper}>
+        <sphereGeometry args={[0.1, 32, 20]} />
       </mesh>
-      <Lamp x={x - 0.05} y={top + 0.2} z={z - 0.02} evening={0.9} distance={3} />
-      <Vase x={x + 0.11} z={z + 0.06} y={top} h={0.12} r={0.045} m={d.taupe} neck={0.4} />
+      <Lamp x={x - 0.06} y={top + 0.13} z={z} evening={0.9} distance={3} />
+      <PhModel id="ceramic_vase_04" position={[x + 0.1, top, z + 0.05]} scale={0.45} />
     </group>
   )
 }
@@ -107,8 +101,8 @@ function CoffeeTable() {
       <B x0={t.cx - hx + 0.12} x1={t.cx + hx - 0.12} y0={0} y1={t.h - top} z0={t.cz - hz + 0.12} z1={t.cz + hz - 0.12} m={d.woodDark} />
       <B x0={t.cx - hx} x1={t.cx + hx} y0={t.h - top} y1={t.h} z0={t.cz - hz} z1={t.cz + hz} m={d.wood} />
       <Books x={t.cx - 0.15} z={t.cz - 0.1} y={t.h} n={2} w={0.26} dpt={0.19} />
-      <Cyl x={t.cx + 0.18} z={t.cz + 0.08} y0={t.h} y1={t.h + 0.05} r={0.06} rTop={0.12} m={d.earth} />
-      <Vase x={t.cx - 0.2} z={t.cz + 0.17} y={t.h} h={0.2} r={0.07} m={d.ceramicDark} neck={0.4} />
+      <PhModel id="wooden_bowl_01" position={[t.cx + 0.17, t.h, t.cz + 0.08]} scale={0.8} />
+      <PhModel id="ceramic_vase_02" position={[t.cx - 0.2, t.h, t.cz + 0.16]} scale={0.6} finish="black" />
     </group>
   )
 }
@@ -127,7 +121,9 @@ export function Living() {
       <Sofa />
       <CoffeeTable />
       <SideTable />
-      <Plant x={layout.living.plant[0]} z={layout.living.plant[1]} h={1.7} />
+      <MoneyTree x={layout.living.plant[0]} z={layout.living.plant[1]} />
+      {/* kakejiku: sumi-ink landscape scroll above the sofa */}
+      <HangingScroll at={D.x.partitionW - 0.003} along={(layout.living.sofa.z0 + layout.living.sofa.z1) / 2} y0={1.05} y1={1.95} w={0.42} face="x-" />
       <CeilingFan x={fx} z={fz} />
       {/* split air-con at the existing point: on the header above the hallway opening (IMG_5220) */}
       <AirCon x={D.x.partitionW} z={layout.living.acZ} y={2.6} face="x-" />
@@ -141,7 +137,7 @@ export function Living() {
       ))}
       <Lamp x={1.55} y={2.3} z={1.95} evening={0.5} distance={4} minor />
       {/* dining zone: paper globe lantern (the living room keeps its ceiling fan) */}
-      <PaperGlobe x={1.2} z={4.9} bottom={1.8} r={0.28} light={1.0} />
+      <PaperGlobe x={1.2} z={4.9} bottom={1.85} r={0.32} squash={0.55} light={1.0} />
     </group>
   )
 }
