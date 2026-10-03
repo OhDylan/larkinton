@@ -5,8 +5,8 @@ import { designMaterials } from './designMaterials'
 import { layout } from './layout'
 import { useMemo } from 'react'
 import * as THREE from 'three'
-import { B, Books, Cyl, Downlight, Lamp, Legs4, Mirror, PaperGlobe, Soft, Vase } from './primitives'
-import { Bonsai, HangingScroll, Ikebana, Incense, PhModel, TeaSet } from './zen'
+import { B, Cyl, Downlight, Lamp, Legs4, Mirror, PaperGlobe, Soft } from './primitives'
+import { Ikebana, PhModel, TeaSet } from './zen'
 
 const GAP = 0.003 // shadow gap between joinery fronts
 
@@ -44,9 +44,9 @@ export function Entry() {
       ))}
       <B x0={s.x0 - 0.01} x1={s.x1 + 0.01} y0={top - 0.03} y1={top} z0={s.z0 - 0.015} z1={s.z1} m={d.stone} />
       <SplitsX xs={[cx]} y0={s.y0 + 0.01} y1={top - 0.04} z={s.z0} />
-      {/* genkan styling: a small bonsai and an incense dish */}
-      <Bonsai x={s.x1 - 0.2} z={s.z0 + 0.17} y={top} s={0.9} />
-      <Incense x={s.x0 + 0.17} z={s.z0 + 0.17} y={top} />
+      {/* genkan styling: a small aloe and a slim black vase */}
+      <PhModel id="potted_plant_04" position={[s.x1 - 0.18, top, s.z0 + 0.17]} />
+      <PhModel id="ceramic_vase_03" position={[s.x0 + 0.17, top, s.z0 + 0.17]} scale={0.6} finish="black" />
       {/* round mirror in a thin walnut frame */}
       <Mirror geometry={mirrorGeo} position={[mr.cx, mr.y, faceZ - 0.012]} rotationY={Math.PI} />
       <mesh position={[mr.cx, mr.y, faceZ - 0.014]} material={d.wood}>
@@ -86,9 +86,9 @@ export function Kitchen() {
       <mesh position={[k.hobX, counterY + 0.0065, sinkZ + 0.03]} rotation-x={-Math.PI / 2} material={d.bronze}>
         <ringGeometry args={[0.095, 0.1, 48]} />
       </mesh>
-      {/* styling: board, crock of utensils, stoneware bowls */}
-      <B x0={3.58} x1={3.95} y0={counterY} y1={counterY + 0.025} z0={b.z1 - 0.32} z1={b.z1 - 0.04} m={d.woodLight} />
-      <Vase x={b.x0 + 0.12} z={b.z1 - 0.13} y={counterY} h={0.17} r={0.065} m={d.ceramicDark} neck={0.9} />
+      {/* styling: a wooden bowl and a stoneware jar (Poly Haven) */}
+      <PhModel id="wooden_bowl_01" position={[3.75, counterY, b.z1 - 0.2]} scale={0.8} />
+      <PhModel id="ceramic_vase_02" position={[b.x0 + 0.14, counterY, b.z1 - 0.15]} scale={0.5} />
       <Fridge />
       {[0, 0.06].map((dy, i) => (
         <Cyl key={i} x={3.95} z={b.z0 + 0.25} y0={counterY + dy} y1={counterY + dy + 0.05} r={0.07 - i * 0.012} rTop={0.1 - i * 0.012} m={d.ceramic} />
@@ -206,12 +206,10 @@ export function Island() {
       {flutes}
       {/* thick stone slab */}
       <B x0={t.x0 - 0.02} x1={t.x1} y0={bodyTop} y1={t.h} z0={t.z0} z1={t.z1 + 0.02} m={d.stone} />
-      {/* chopping board, stoneware fruit bowl, teapot-ish vessel */}
-      <B x0={t.x1 - 0.52} x1={t.x1 - 0.12} y0={t.h} y1={t.h + 0.03} z0={t.z1 - 0.34} z1={t.z1 - 0.06} m={d.woodLight} />
-      <Cyl x={t.x0 + 0.3} z={cz + 0.05} y0={t.h} y1={t.h + 0.09} r={0.09} rTop={0.15} m={d.earth} />
+      <PhModel id="wooden_bowl_01" position={[t.x0 + 0.3, t.h, cz + 0.05]} scale={0.9} />
       <Ikebana x={cx - 0.05} z={cz - 0.15} y={t.h} rot={0.6} />
       {i.stools.map(([x, z]) => (
-        <Stool key={x} x={x} z={z} h={i.seatH} />
+        <PhModel key={x} id="chinese_stool" position={[x, 0, z]} rotation={[0, Math.PI / 2, 0]} />
       ))}
       {/* one wide oval paper lantern over the island */}
       <PaperGlobe x={cx} z={cz} bottom={1.62} r={0.36} squash={0.42} light={1.1} />
@@ -219,27 +217,6 @@ export function Island() {
   )
 }
 
-/** Counter stool: wood frame, leather seat, footrest. */
-function Stool({ x, z, h }: { x: number; z: number; h: number }) {
-  const d = designMaterials()
-  return (
-    <group>
-      {[0, 1, 2, 3].map((k) => {
-        const a = Math.PI / 4 + (k * Math.PI) / 2
-        return (
-          <mesh key={k} position={[x + Math.cos(a) * 0.13, h / 2 - 0.02, z + Math.sin(a) * 0.13]} rotation={[Math.sin(a) * 0.07, 0, -Math.cos(a) * 0.07]} material={d.wood} castShadow>
-            <cylinderGeometry args={[0.018, 0.011, h - 0.04, 10]} />
-          </mesh>
-        )
-      })}
-      <Cyl x={x} z={z} y0={h - 0.05} y1={h - 0.03} r={0.17} m={d.woodDark} />
-      <Cyl x={x} z={z} y0={h - 0.035} y1={h + 0.02} r={0.165} rTop={0.17} m={d.leather} seg={40} />
-      <mesh position={[x, 0.24, z]} rotation-x={Math.PI / 2} material={d.bronze}>
-        <torusGeometry args={[0.135, 0.007, 8, 32]} />
-      </mesh>
-    </group>
-  )
-}
 
 // ------------------------------------------------------------------ dining joinery wall
 export function DiningWall() {
@@ -308,17 +285,15 @@ export function DiningWall() {
   // styling on the shelves
   const sx = (w.x0 + face) / 2
   const styling: ReactNode[] = [
-    <Books key="b1" x={sx} z={A0 + 0.25} y={baseH + T / 2} n={4} w={0.26} dpt={0.18} alongX={false} />,
     <PhModel key="v1" id="antique_ceramic_vase_01" position={[sx, baseH + T / 2, A0 + 0.78]} scale={0.8} finish="black" />,
     <PhModel key="v2" id="ceramic_vase_02" position={[sx, 0.9 + T / 2, A0 + 1.2]} scale={0.6} />,
-    <Books key="b2" x={sx} z={A0 + 0.35} y={0.9 + T / 2} n={2} w={0.24} dpt={0.18} alongX={false} />,
     <PhModel key="v3" id="wooden_bowl_01" position={[sx, 1.35 + T / 2, A0 + 0.22]} scale={0.7} />,
     <PhModel key="v4" id="ceramic_vase_01" position={[sx, 1.35 + T / 2, A0 + 1.2]} scale={0.85} />,
-    <Books key="b3" x={sx} z={A0 + 1.1} y={1.8 + T / 2} n={3} w={0.22} dpt={0.17} alongX={false} />,
+    <PhModel key="v6" id="ceramic_vase_03" position={[sx, baseH + T / 2, A0 + 0.25]} scale={0.85} />,
+    <PhModel key="v7" id="wooden_bowl_01" position={[sx, 1.8 + T / 2, A0 + 1.1]} scale={0.7} />,
     <PhModel key="v5" id="ceramic_vase_04" position={[sx, 1.8 + T / 2, A0 + 0.35]} scale={0.7} finish="black" />,
-    // niche: tea ceremony corner — tea set on a tray, a small hanging ensō scroll
+    // niche: tea corner with the Poly Haven tea set
     <TeaSet key="tea" x={sx} z={(B0 + B1) / 2} y={nicheBottom} rot={Math.PI / 2} />,
-    <HangingScroll key="enso" at={w.x0 + 0.003} along={(B0 + B1) / 2} y0={nicheBottom + 0.22} y1={nicheTop - 0.18} w={0.22} face="x+" kind="enso" />,
   ]
   return (
     <group>

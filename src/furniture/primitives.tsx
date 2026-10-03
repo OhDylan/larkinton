@@ -80,45 +80,7 @@ export function Legs4({ x0, x1, z0, z1, top, inset = 0.06, splay = 0.04, r = 0.0
   )
 }
 
-/** Opal glass globe pendant with a brass canopy and stem. */
-export function GlobePendant({ x, z, bottom, r = 0.15, light = 0.9, minor = false }: { x: number; z: number; bottom: number; r?: number; light?: number; minor?: boolean }) {
-  const d = designMaterials()
-  const cy = bottom + r
-  const top = D.ceilingHeight
-  return (
-    <group>
-      <mesh position={[x, cy, z]} material={d.opal}>
-        <sphereGeometry args={[r, 40, 24]} />
-      </mesh>
-      <Cyl x={x} z={z} y0={cy + r * 0.92} y1={cy + r + 0.03} r={0.035} rTop={0.03} m={d.bronze} />
-      <Cyl x={x} z={z} y0={cy + r + 0.03} y1={top - 0.01} r={0.004} m={d.bronze} seg={8} />
-      <Cyl x={x} z={z} y0={top - 0.015} y1={top} r={0.05} m={d.bronze} />
-      <Lamp x={x} y={cy} z={z} evening={light} distance={4} minor={minor} />
-    </group>
-  )
-}
 
-/** Spun-metal dome pendant (black outside, brass inside rim). */
-export function DomePendant({ x, z, bottom, r = 0.18, light = 0.8, minor = false }: { x: number; z: number; bottom: number; r?: number; light?: number; minor?: boolean }) {
-  const d = designMaterials()
-  const h = r * 0.75
-  const top = D.ceilingHeight
-  return (
-    <group>
-      <mesh position={[x, bottom + h / 2, z]} material={d.glossBlack} castShadow>
-        <cylinderGeometry args={[r * 0.18, r, h, 40, 1, true]} />
-      </mesh>
-      <mesh position={[x, bottom + 0.002, z]} rotation-x={Math.PI / 2} material={d.bronze}>
-        <torusGeometry args={[r, 0.006, 8, 48]} />
-      </mesh>
-      <mesh position={[x, bottom + 0.04, z]} material={d.opal}>
-        <sphereGeometry args={[r * 0.28, 24, 16]} />
-      </mesh>
-      <Cyl x={x} z={z} y0={bottom + h} y1={top} r={0.004} m={d.bronze} seg={8} />
-      <Lamp x={x} y={bottom - 0.05} z={z} evening={light} distance={3.5} minor={minor} />
-    </group>
-  )
-}
 
 /** Round paper lantern (Akari-style globe) with fine horizontal ribs. */
 export function PaperGlobe({ x, z, bottom, r = 0.28, squash = 1, light = 1.0, minor = false }: { x: number; z: number; bottom: number; r?: number; squash?: number; light?: number; minor?: boolean }) {
@@ -238,36 +200,6 @@ export function CeilingFan({ x, z, drop = 0.3 }: { x: number; z: number; drop?: 
   )
 }
 
-/** Potted olive-like tree: ceramic pot, slim trunk, clusters of small leaves. */
-export function Plant({ x, z, h = 1.6, r = 0.2, pot }: { x: number; z: number; h?: number; r?: number; pot?: THREE.Material }) {
-  const d = designMaterials()
-  const leaves = useMemo(() => {
-    const out: { p: [number, number, number]; rot: [number, number, number]; s: number }[] = []
-    let seed = 7
-    const rnd = () => ((seed = (seed * 9301 + 49297) % 233280) / 233280)
-    for (let i = 0; i < 140; i++) {
-      const a = rnd() * Math.PI * 2
-      const rr = 0.1 + rnd() * 0.32
-      const y = h * 0.55 + rnd() * h * 0.45
-      out.push({ p: [x + Math.cos(a) * rr, y, z + Math.sin(a) * rr], rot: [rnd() * 3, rnd() * 3, rnd() * 3], s: 0.6 + rnd() * 0.6 })
-    }
-    return out
-  }, [x, z, h])
-  return (
-    <group>
-      <Cyl x={x} z={z} y0={0} y1={0.42} r={r * 0.8} rTop={r} m={pot ?? d.ceramicDark} />
-      <Cyl x={x} z={z} y0={0.4} y1={0.42} r={r * 0.95} m={d.basalt} />
-      <mesh position={[x, 0.42 + (h * 0.7) / 2, z]} rotation-z={0.06} material={d.woodDark}>
-        <cylinderGeometry args={[0.012, 0.02, h * 0.7, 6]} />
-      </mesh>
-      {leaves.map((l, i) => (
-        <mesh key={i} position={l.p} rotation={l.rot} scale={[l.s, l.s * 0.25, l.s * 2.4]} material={d.plant} castShadow>
-          <sphereGeometry args={[0.022, 6, 4]} />
-        </mesh>
-      ))}
-    </group>
-  )
-}
 
 /** Simple ceramic vessel for styling surfaces. */
 export function Vase({ x, z, y, h = 0.22, r = 0.07, m, neck = 0.6 }: { x: number; z: number; y: number; h?: number; r?: number; m?: THREE.Material; neck?: number }) {
@@ -284,24 +216,6 @@ export function Vase({ x, z, y, h = 0.22, r = 0.07, m, neck = 0.6 }: { x: number
   return <mesh geometry={g} position={[x, y, z]} material={m ?? d.ceramic} castShadow receiveShadow />
 }
 
-/** Stack of books (for shelves / tables). */
-export function Books({ x, z, y, n = 3, w = 0.22, dpt = 0.16, alongX = true }: { x: number; z: number; y: number; n?: number; w?: number; dpt?: number; alongX?: boolean }) {
-  const d = designMaterials()
-  let yy = y
-  return (
-    <group>
-      {Array.from({ length: n }, (_, i) => {
-        const t = 0.025 + (i % 2) * 0.012
-        const y0 = yy
-        yy += t
-        const ww = w * (1 - i * 0.06)
-        const hw = (alongX ? ww : dpt) / 2
-        const hd = (alongX ? dpt : ww) / 2
-        return <B key={i} x0={x - hw} x1={x + hw} y0={y0} y1={y0 + t} z0={z - hd} z1={z + hd} m={d.book[(i * 3 + 1) % d.book.length]} />
-      })}
-    </group>
-  )
-}
 
 /**
  * Real planar mirror (renders the scene from the mirrored camera).

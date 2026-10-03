@@ -5,8 +5,8 @@ import { designMaterials } from './designMaterials'
 import { layout } from './layout'
 import { useMemo } from 'react'
 import * as THREE from 'three'
-import { AirCon, B, Books, Cyl, Downlight, Lamp, Legs4, Mirror, PaperGlobe, RomanBlind, Soft, Vase } from './primitives'
-import { HangingScroll, PhModel } from './zen'
+import { AirCon, B, Cyl, Downlight, Lamp, Legs4, Mirror, PaperGlobe, RomanBlind, Soft, Vase } from './primitives'
+import { PhModel } from './zen'
 
 const { x: X, z: Z } = D
 
@@ -79,8 +79,8 @@ export function Master() {
         <B key={z} x0={wallX - 0.001} x1={wallX + 0.004} y0={0.02} y1={hw.y1 - 0.02} z0={z - 0.002} z1={z + 0.002} m={d.woodDark} shadow={false} />
       ))}
       <B x0={X.eastInner - 0.13} x1={X.eastInner} y0={hw.y1} y1={hw.y1 + 0.03} z0={hw.z0} z1={hw.z1} m={d.wood} />
-      {/* above the bed: an ensō scroll; on the ledge, stoneware and a dry branch */}
-      <HangingScroll at={X.eastInner - 0.003} along={bz - 0.2} y0={hw.y1 + 0.2} y1={hw.y1 + 0.95} w={0.36} face="x-" kind="enso" />
+      {/* above the bed: a round East Asian landscape painting; on the ledge, stoneware */}
+      <PhModel id="hanging_picture_frame_03" position={[X.eastInner - 0.02, hw.y1 + 0.3, bz - 0.25]} rotation={[0, -Math.PI / 2, 0]} scale={1.1} />
       <PhModel id="ceramic_vase_03" position={[X.eastInner - 0.07, hw.y1 + 0.03, bz + 0.45]} scale={0.7} finish="black" />
       <PhModel id="ceramic_vase_02" position={[X.eastInner - 0.07, hw.y1 + 0.03, bz + 0.65]} scale={0.45} />
 
@@ -97,8 +97,7 @@ export function Master() {
             <B x0={n.x0} x1={n.x1} y0={n.h - 0.2} y1={n.h} z0={n.z0} z1={n.z1} m={d.wood} />
             <B x0={n.x0 - 0.002} x1={n.x0} y0={n.h - 0.1} y1={n.h - 0.097} z0={n.z0 + 0.02} z1={n.z1 - 0.02} m={d.charcoal} shadow={false} />
             <B x0={n.x0 - 0.014} x1={n.x0} y0={n.h - 0.06} y1={n.h - 0.05} z0={nz - 0.04} z1={nz + 0.04} m={d.bronze} />
-            <Books x={nx} z={nz + (i ? -0.08 : 0.08)} y={n.h} n={2} w={0.2} dpt={0.14} alongX={false} />
-            <Vase x={nx} z={nz + (i ? 0.13 : -0.13)} y={n.h} h={0.1} r={0.04} m={d.ceramic} />
+            <PhModel id="ceramic_vase_01" position={[nx, n.h, nz + (i ? 0.12 : -0.12)]} scale={0.4} />
             <PaperGlobe x={nx - 0.02} z={nz} bottom={0.95} r={0.13} light={0.7} minor={i === 1} />
           </group>
         )
@@ -133,7 +132,7 @@ export function Bath() {
       <mesh position={[vx, top + 0.26, wallZ - 0.07]} rotation-x={Math.PI / 2} material={d.blackMetal}>
         <cylinderGeometry args={[0.01, 0.01, 0.14, 12]} />
       </mesh>
-      <Vase x={v.x1 - 0.06} z={v.z0 + 0.08} y={top} h={0.12} r={0.035} m={d.ceramicDark} neck={0.4} />
+      <PhModel id="potted_plant_04" position={[v.x1 - 0.08, top, v.z0 + 0.1]} scale={0.8} />
 
       {/* one long horizontal mirror, floating 3 cm off the wall with a warm back-glow */}
       <B x0={mr.x0 + 0.03} x1={mr.x1 - 0.03} y0={mr.y0 + 0.03} y1={mr.y1 - 0.03} z0={wallZ - 0.03} z1={wallZ - 0.001} m={d.charcoal} />
@@ -389,7 +388,6 @@ export function Studio() {
         <coneGeometry args={[0.07, 0.12, 24, 1, true]} />
       </mesh>
       <Lamp x={chx + 0.55} y={top + 0.3} z={k.z1 - 0.42} evening={0.6} distance={2} />
-      <Vase x={k.x0 + 0.75} z={k.z1 - 0.12} y={top} h={0.14} r={0.05} m={d.ceramicDark} neck={0.9} />
       <Chair x={chx} z={chz} />
       <Cart />
       <SofaBed />
