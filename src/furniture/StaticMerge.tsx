@@ -3,6 +3,10 @@
  * shadows). Everything inside <StaticMerge> is static, so after it mounts we bake it into one
  * mesh per material (+ shadow flag) and hide the originals. Same look, a few dozen draw calls.
  * Materials are shared, not copied, so day/evening changes to them still apply.
+ *
+ * Loaded models (`userData.noMerge`) are skipped: their geometry is quantized (int16 positions
+ * decoded by the node matrix), which baking would corrupt. They can also arrive before or after
+ * this runs (e.g. on a remount when they are already cached), so they always draw on their own.
  */
 import { useLayoutEffect, useRef, type ReactNode } from 'react'
 import * as THREE from 'three'
@@ -31,9 +35,13 @@ export function StaticMerge({ children }: { children: ReactNode }) {
     const buckets = new Map<string, { material: THREE.Material; cast: boolean; geos: THREE.BufferGeometry[] }>()
     const hidden: THREE.Object3D[] = []
 
-    group.traverse((o) => {
+    const visit = (o: THREE.Object3D) => {
+      if (o.userData.noMerge) return
+      o.children.forEach(visit)
       const mesh = o as THREE.Mesh
       if (!mesh.isMesh || !mesh.visible || Array.isArray(mesh.material)) return
+      // only plain float geometry can be baked safely
+      if (!(mesh.geometry.attributes.position?.array instanceof Float32Array)) return
       // live planar mirrors and custom shaders keep their own draw
       if ((mesh as unknown as { isReflector?: boolean }).isReflector || (mesh.material as THREE.ShaderMaterial).isShaderMaterial) return
       if (mesh.children.length) return
@@ -43,7 +51,8 @@ export function StaticMerge({ children }: { children: ReactNode }) {
       if (!b) buckets.set(key, (b = { material, cast: mesh.castShadow, geos: [] }))
       b.geos.push(prepare(mesh.geometry, new THREE.Matrix4().multiplyMatrices(toLocal, mesh.matrixWorld)))
       hidden.push(mesh)
-    })
+    }
+    visit(group)
 
     const merged: THREE.Mesh[] = []
     for (const b of buckets.values()) {

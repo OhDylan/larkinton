@@ -91,6 +91,7 @@ function Model({ id, pick, position, rotation, scale = 1, recenter = true, finis
   const variantMats = useVariant(parser, scene, variant)
   const obj = useMemo(() => {
     const root = new THREE.Group()
+    root.userData.noMerge = true // see StaticMerge
     scene.updateMatrixWorld(true)
     scene.traverse((o) => {
       const mesh = o as THREE.Mesh
