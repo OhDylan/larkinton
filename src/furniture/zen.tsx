@@ -1,8 +1,8 @@
 /**
  * Real models only (nothing hand-modelled): Poly Haven CC0 stoneware vases, wooden bowl,
  * money tree, plants and dry branch, plus Wayfair's GlamVelvetSofa from the Khronos glTF
- * sample assets, and a stone coffee table and Japandi counter stools from Sketchfab
- * (all CC BY 4.0, credited on screen).
+ * sample assets, and furniture / bath accessories from Sketchfab (all CC BY 4.0, credited on
+ * screen and in public/assets/ph/README.md).
  */
 import { useGLTF } from '@react-three/drei'
 import { Suspense, useEffect, useMemo, useState } from 'react'
@@ -30,6 +30,18 @@ export const MODEL_IDS = [
   'GlamVelvetSofa',
   'stone_coffee_table',
   'japandi_stool',
+  'dark_bed',
+  'office_chair',
+  'desk_lamp',
+  'raskog_cart',
+  'laptop',
+  'robot_arm',
+  'toilet',
+  'bath_accessories',
+  'bath_stool',
+  'towel_folded',
+  'towel_rail',
+  'soap_black',
 ] as const
 export type PhModelId = (typeof MODEL_IDS)[number]
 
@@ -39,9 +51,10 @@ type ModelProps = {
   pick?: string[]
   position: [number, number, number]
   rotation?: [number, number, number]
-  scale?: number
-  /** re-centre the picked pieces so their footprint centre / base sits at `position` */
-  recenter?: boolean
+  /** uniform, or per axis (model axes, before rotation) */
+  scale?: number | [number, number, number]
+  /** re-centre the picked pieces so their footprint centre / base sits at `position`; 'base' only drops them to y = 0 */
+  recenter?: boolean | 'base'
   /**
    * 'black': override the scanned glaze with matte black stoneware (keeps the surface relief).
    * 'charcoal': stain the existing texture dark (keeps the wood grain).
@@ -97,7 +110,8 @@ function Model({ id, pick, position, rotation, scale = 1, recenter = true, finis
     if (recenter) {
       const box = new THREE.Box3().setFromObject(root)
       const centre = box.getCenter(new THREE.Vector3())
-      root.children.forEach((c) => c.position.sub(new THREE.Vector3(centre.x, box.min.y, centre.z)))
+      const shift = recenter === 'base' ? new THREE.Vector3(0, box.min.y, 0) : new THREE.Vector3(centre.x, box.min.y, centre.z)
+      root.children.forEach((c) => c.position.sub(shift))
     }
     return root
   }, [scene, pick, recenter, finish, variantMats])

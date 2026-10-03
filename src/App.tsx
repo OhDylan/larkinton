@@ -14,6 +14,7 @@ import { FakeLampDriver } from './scene/FakeLampDriver'
 import { Backdrop } from './scene/Backdrop'
 import { Lighting, ShadowUpdates } from './scene/Lighting'
 import { useLightMode } from './state/lightMode'
+import { sketchfabCredits } from './furniture/credits'
 
 // Ceiling is hidden by default in the overhead views, shown at eye level.
 const ceilingDefault: Record<CameraMode, boolean> = { dollhouse: false, topdown: false, walkthrough: true }
@@ -55,11 +56,21 @@ export default function App() {
       </Canvas>
       <div ref={labelLayer} className="label-layer" />
       {mode === 'walkthrough' && <Joystick />}
-      <div className="credits">
-        Sofa: “Glam Velvet Sofa” by Eric Chadwick / Wayfair · Coffee table: “17 Stories Coffee Table” by bluejam99 · Stools: “Japandi Bar Stool” by sketchstudio (Sketchfab) ·{' '}
-        <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a> ·
-        Models &amp; textures: <a href="https://polyhaven.com" target="_blank" rel="noreferrer">Poly Haven</a> (CC0)
-      </div>
+      <details className="credits">
+        <summary>Credits</summary>
+        Sofa: “Glam Velvet Sofa” by Eric Chadwick / Wayfair (Khronos glTF samples)
+        {sketchfabCredits.map((c) => (
+          <div key={c.uid}>
+            <a href={`https://sketchfab.com/3d-models/${c.uid}`} target="_blank" rel="noreferrer">“{c.title}”</a> by {c.author} (Sketchfab)
+          </div>
+        ))}
+        <div>
+          Above: <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noreferrer">CC BY 4.0</a>; some models re-coloured or rescaled.
+        </div>
+        <div>
+          Other models &amp; textures: <a href="https://polyhaven.com" target="_blank" rel="noreferrer">Poly Haven</a> (CC0)
+        </div>
+      </details>
       <ControlPanel
         mode={mode}
         setMode={setMode}

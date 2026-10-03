@@ -5,52 +5,12 @@ import { designMaterials } from './designMaterials'
 import { layout } from './layout'
 import { useMemo } from 'react'
 import * as THREE from 'three'
-import { AirCon, B, Cyl, Downlight, Lamp, Legs4, Mirror, PaperGlobe, RomanBlind, Soft, Vase } from './primitives'
+import { AirCon, B, Downlight, Lamp, Mirror, PaperGlobe, RomanBlind, Soft, Vase } from './primitives'
 import { PhModel } from './zen'
 
 const { x: X, z: Z } = D
 
 // ------------------------------------------------------------------ master bedroom
-/**
- * Queen bed in its own frame: headboard at local z = 0, bed runs towards +z, centred on x = 0.
- * Placed with the headboard against the east wall.
- */
-function QueenBed() {
-  const d = designMaterials()
-  const { bed: b, mattress: mt } = layout.master
-  const L = b.x1 - b.x0 // 2.05
-  const W = b.z1 - b.z0 // 1.62
-  const hw = W / 2
-  const my = 0.54 // mattress top
-  const mz0 = 0.12
-  const mz1 = mz0 + mt.l
-  const cols = 6
-  const cw = (W + 0.1) / cols
-  return (
-    <group>
-      {/* walnut frame on splayed tapered legs */}
-      <Legs4 x0={-hw} x1={hw} z0={0.08} z1={L} top={0.16} inset={0.08} splay={0.03} r={0.026} />
-      <B x0={-hw} x1={hw} y0={0.16} y1={0.3} z0={0.08} z1={L} m={d.wood} />
-      {/* channel-tufted forest green velvet headboard on a walnut base rail */}
-      <B x0={-hw - 0.05} x1={hw + 0.05} y0={0.16} y1={0.3} z0={0} z1={0.1} m={d.wood} />
-      {Array.from({ length: cols }, (_, i) => (
-        <Soft key={i} x0={-hw - 0.05 + i * cw + 0.004} x1={-hw - 0.05 + (i + 1) * cw - 0.004} y0={0.3} y1={b.h} z0={0} z1={0.1} m={d.taupe} r={0.045} />
-      ))}
-      <Soft x0={-mt.w / 2} x1={mt.w / 2} y0={0.3} y1={my} z0={mz0} z1={mz1} m={d.linen} r={0.05} />
-      {/* duvet with soft edges spilling over the sides and foot, folded band at the top */}
-      <Soft x0={-mt.w / 2 - 0.05} x1={mt.w / 2 + 0.05} y0={0.36} y1={my + 0.06} z0={mz0 + 0.5} z1={mz1 + 0.05} m={d.linen} r={0.05} />
-      <Soft x0={-mt.w / 2 - 0.05} x1={mt.w / 2 + 0.05} y0={my + 0.04} y1={my + 0.09} z0={mz0 + 0.5} z1={mz0 + 0.78} m={d.cream} r={0.025} />
-      {[-0.37, 0.37].map((x) => (
-        <Soft key={x} x0={x - 0.33} x1={x + 0.33} y0={my} y1={my + 0.15} z0={mz0 + 0.04} z1={mz0 + 0.42} m={d.linen} r={0.06} rot={[-0.3, 0, 0]} />
-      ))}
-      <Soft x0={-0.22} x1={0.22} y0={my + 0.06} y1={my + 0.37} z0={mz0 + 0.33} z1={mz0 + 0.45} m={d.sand} r={0.05} rot={[-0.35, 0, 0]} />
-      {/* knit throw over one corner of the foot */}
-      <Soft x0={0.05} x1={mt.w / 2 + 0.07} y0={my + 0.06} y1={my + 0.09} z0={mz1 - 0.55} z1={mz1 - 0.1} m={d.wool} r={0.012} />
-      <Soft x0={mt.w / 2 + 0.05} x1={mt.w / 2 + 0.08} y0={0.33} y1={my + 0.09} z0={mz1 - 0.55} z1={mz1 - 0.1} m={d.wool} r={0.01} />
-    </group>
-  )
-}
-
 export function Master() {
   const d = designMaterials()
   const { wardrobe: w, bed: b, nightstands, headboardWall: hw, rug: r, ac } = layout.master
@@ -83,9 +43,9 @@ export function Master() {
       <PhModel id="ceramic_vase_03" position={[X.eastInner - 0.07, hw.y1 + 0.03, bz + 0.45]} scale={0.7} finish="black" />
       <PhModel id="ceramic_vase_02" position={[X.eastInner - 0.07, hw.y1 + 0.03, bz + 0.65]} scale={0.45} />
 
-      <group position={[wallX, 0, bz]} rotation-y={-Math.PI / 2}>
-        <QueenBed />
-      </group>
+      {/* low dark upholstered bed (Sketchfab "Dark Modern Bed", CC BY 4.0), headboard against the panelled wall.
+          Model is ~2.14 m wide x 1.99 m long (mm units): fitted to a 1.75 m wide x 2.02 m long queen frame. */}
+      <PhModel id="dark_bed" position={[wallX - 1.01, 0, bz]} rotation={[0, -Math.PI / 2, 0]} scale={[1.75 / 2136.6, 0.00093, 2.02 / 1993.1]} />
 
       {/* floating nightstands with a hanging paper lantern each side */}
       {nightstands.map((n, i) => {
@@ -131,7 +91,14 @@ export function Bath() {
       <mesh position={[vx, top + 0.26, wallZ - 0.07]} rotation-x={Math.PI / 2} material={d.blackMetal}>
         <cylinderGeometry args={[0.01, 0.01, 0.14, 12]} />
       </mesh>
-      <PhModel id="potted_plant_04" position={[v.x1 - 0.08, top, v.z0 + 0.1]} scale={0.8} />
+      {/* matt black pump bottle and a folded towel either side of the basin */}
+      <PhModel id="soap_black" position={[v.x0 + 0.05, top, v.z1 - 0.08]} scale={0.011} />
+      <PhModel id="towel_folded" position={[v.x1 - 0.1, top, vz]} rotation={[0, Math.PI / 2, 0]} scale={[0.0006, 0.0006, 0.0006]} />
+      {/* toilet (Sketchfab, CC BY 4.0) backing onto the bedroom-2 wall, facing north; wooden brush holder beside it */}
+      <PhModel id="toilet" position={[D.bath.toilet.x, 0, wallZ - 0.31]} rotation={[0, Math.PI, 0]} />
+      <PhModel id="bath_accessories" pick={['Object_8', 'Object_10', 'Object_12']} position={[D.bath.toilet.x + 0.32, 0, wallZ - 0.1]} scale={0.032} />
+      {/* hinoki bath stool and bucket in the shower */}
+      <PhModel id="bath_stool" position={[6.25, 0, 3.55]} rotation={[0, 0.4, 0]} scale={1.7} />
 
       {/* one long horizontal mirror, floating 3 cm off the wall with a warm back-glow */}
       <B x0={mr.x0 + 0.03} x1={mr.x1 - 0.03} y0={mr.y0 + 0.03} y1={mr.y1 - 0.03} z0={wallZ - 0.03} z1={wallZ - 0.001} m={d.charcoal} />
@@ -143,150 +110,14 @@ export function Bath() {
       {[-1, 1].map((s) => (
         <B key={s} x0={glassX + s * 0.035 - 0.006} x1={glassX + s * 0.035 + 0.006} y0={0.85} y1={1.3} z0={Z.corridorNorth + 0.2} z1={Z.corridorNorth + 0.212} m={m.stainless} />
       ))}
-      {/* towel on a brass hook rail beside the door */}
-      <B x0={X.bathWestE} x1={X.bathWestE + 0.04} y0={1.36} y1={1.38} z0={4.02} z1={4.4} m={d.bronze} />
-      <Soft x0={X.bathWestE + 0.005} x1={X.bathWestE + 0.04} y0={0.85} y1={1.37} z0={4.06} z1={4.34} m={d.cream} r={0.012} />
+      {/* black towel rail with a linen towel on the wall beside the door */}
+      <PhModel id="towel_rail" recenter={false} position={[X.bathWestE + 0.287 * 0.27, 1.4, 4.2]} scale={0.27} />
       <Downlight x={5.0} z={3.75} />
     </group>
   )
 }
 
 // ------------------------------------------------------------------ studio / workshop
-/** Small desktop 6-axis robot arm, shown in a fixed pose. */
-function RobotArm({ x, z, y, yaw, a1, a2, a3, accent }: { x: number; z: number; y: number; yaw: number; a1: number; a2: number; a3: number; accent: boolean }) {
-  const d = designMaterials()
-  const body = accent ? d.robotAccent : d.robotWhite
-  const joint = accent ? d.charcoal : d.robotAccent
-  return (
-    <group position={[x, y, z]} rotation-y={yaw}>
-      <mesh position-y={0.02} material={d.charcoal} castShadow>
-        <cylinderGeometry args={[0.075, 0.08, 0.04, 32]} />
-      </mesh>
-      <mesh position-y={0.075} material={body} castShadow>
-        <cylinderGeometry args={[0.05, 0.055, 0.07, 32]} />
-      </mesh>
-      <group position-y={0.12} rotation-z={a1}>
-        <mesh material={joint} castShadow>
-          <sphereGeometry args={[0.042, 24, 16]} />
-        </mesh>
-        <mesh position-y={0.13} material={body} castShadow>
-          <capsuleGeometry args={[0.024, 0.22, 6, 16]} />
-        </mesh>
-        <group position-y={0.26} rotation-z={a2}>
-          <mesh material={joint} castShadow>
-            <sphereGeometry args={[0.035, 24, 16]} />
-          </mesh>
-          <mesh position-y={0.11} material={body} castShadow>
-            <capsuleGeometry args={[0.019, 0.19, 6, 16]} />
-          </mesh>
-          <group position-y={0.22} rotation-z={a3}>
-            <mesh position-y={0.02} material={joint} castShadow>
-              <cylinderGeometry args={[0.022, 0.022, 0.04, 16]} />
-            </mesh>
-            {[-1, 1].map((s) => (
-              <mesh key={s} position={[s * 0.015, 0.065, 0]} material={d.charcoal} castShadow>
-                <boxGeometry args={[0.008, 0.05, 0.02]} />
-              </mesh>
-            ))}
-          </group>
-        </group>
-      </group>
-    </group>
-  )
-}
-
-const meshBack = new THREE.MeshStandardMaterial({ color: '#2b2d30', roughness: 0.8, transparent: true, opacity: 0.82, side: THREE.DoubleSide })
-
-/** Ergonomic task chair: 5-star base on casters, gas lift, mesh back with lumbar + headrest, adjustable arms. Faces +z. */
-function Chair({ x, z }: { x: number; z: number }) {
-  const d = designMaterials()
-  const seatY = 0.47
-  return (
-    <group position={[x, 0, z]} rotation-y={0.25}>
-      {/* 5-star base with casters */}
-      {[0, 1, 2, 3, 4].map((i) => {
-        const a = (i / 5) * Math.PI * 2
-        return (
-          <group key={i} rotation-y={a}>
-            <mesh position={[0.15, 0.085, 0]} rotation-z={0.12} material={d.blackMetal} castShadow>
-              <boxGeometry args={[0.3, 0.03, 0.045]} />
-            </mesh>
-            <mesh position={[0.3, 0.03, 0]} material={d.charcoal} castShadow>
-              <sphereGeometry args={[0.03, 16, 12]} />
-            </mesh>
-          </group>
-        )
-      })}
-      <Cyl x={0} z={0} y0={0.08} y1={0.13} r={0.05} m={d.blackMetal} />
-      <Cyl x={0} z={0} y0={0.13} y1={seatY - 0.05} r={0.022} m={d.bronze} seg={16} />
-      <B x0={-0.12} x1={0.12} y0={seatY - 0.06} y1={seatY - 0.03} z0={-0.12} z1={0.12} m={d.blackMetal} />
-      {/* contoured seat */}
-      <Soft x0={-0.25} x1={0.25} y0={seatY - 0.03} y1={seatY + 0.05} z0={-0.22} z1={0.25} m={d.charcoal} r={0.035} />
-      {/* back support spine + mesh back, slightly reclined */}
-      <mesh position={[0, seatY + 0.12, -0.26]} rotation-x={-0.25} material={d.blackMetal} castShadow>
-        <boxGeometry args={[0.06, 0.28, 0.025]} />
-      </mesh>
-      {/* curved mesh panel: an arc of a 0.42 m-radius cylinder whose axis sits in front of the back */}
-      <group position={[0, seatY + 0.42, -0.3 + 0.42]} rotation-x={-0.12}>
-        <mesh material={meshBack} castShadow>
-          <cylinderGeometry args={[0.42, 0.42, 0.55, 32, 1, true, Math.PI - 0.6, 1.2]} />
-        </mesh>
-      </group>
-      {/* lumbar pad */}
-      <Soft x0={-0.14} x1={0.14} y0={seatY + 0.2} y1={seatY + 0.3} z0={-0.29} z1={-0.24} m={d.charcoal} r={0.02} />
-      {/* headrest */}
-      <Soft x0={-0.14} x1={0.14} y0={seatY + 0.76} y1={seatY + 0.9} z0={-0.4} z1={-0.33} m={d.charcoal} r={0.025} rot={[-0.2, 0, 0]} />
-      <mesh position={[0, seatY + 0.72, -0.36]} material={d.blackMetal}>
-        <boxGeometry args={[0.03, 0.12, 0.02]} />
-      </mesh>
-      {/* adjustable arms */}
-      {[-1, 1].map((s) => (
-        <group key={s}>
-          <mesh position={[s * 0.27, seatY + 0.1, -0.02]} material={d.blackMetal} castShadow>
-            <boxGeometry args={[0.03, 0.22, 0.05]} />
-          </mesh>
-          <Soft x0={s * 0.27 - 0.04} x1={s * 0.27 + 0.04} y0={seatY + 0.2} y1={seatY + 0.235} z0={-0.14} z1={0.14} m={d.charcoal} r={0.012} />
-        </group>
-      ))}
-    </group>
-  )
-}
-
-function Cart() {
-  const d = designMaterials()
-  const c = layout.studio.cart
-  const trays = [0.12, 0.44, c.h - 0.02]
-  const cx = (c.x0 + c.x1) / 2
-  const cz = (c.z0 + c.z1) / 2
-  return (
-    <group>
-      {[c.x0 + 0.02, c.x1 - 0.02].flatMap((x) =>
-        [c.z0 + 0.02, c.z1 - 0.02].map((z) => (
-          <group key={`${x}${z}`}>
-            <Cyl x={x} z={z} y0={0.05} y1={c.h} r={0.008} m={d.blackMetal} seg={8} />
-            <mesh position={[x, 0.025, z]} material={d.charcoal}>
-              <sphereGeometry args={[0.025, 12, 8]} />
-            </mesh>
-          </group>
-        )),
-      )}
-      {trays.map((y) => (
-        <group key={y}>
-          <B x0={c.x0} x1={c.x1} y0={y} y1={y + 0.01} z0={c.z0} z1={c.z1} m={d.blackMetal} />
-          <B x0={c.x0} x1={c.x1} y0={y} y1={y + 0.06} z0={c.z0} z1={c.z0 + 0.006} m={d.blackMetal} />
-          <B x0={c.x0} x1={c.x1} y0={y} y1={y + 0.06} z0={c.z1 - 0.006} z1={c.z1} m={d.blackMetal} />
-        </group>
-      ))}
-      {/* parts bins, filament spool, tool roll, spare servo boxes */}
-      <B x0={c.x0 + 0.03} x1={cx - 0.01} y0={0.13} y1={0.25} z0={c.z0 + 0.03} z1={c.z1 - 0.03} m={d.woodLight} />
-      <B x0={cx + 0.01} x1={c.x1 - 0.03} y0={0.13} y1={0.22} z0={c.z0 + 0.03} z1={c.z1 - 0.03} m={d.earth} />
-      <Cyl x={cx - 0.08} z={cz} y0={0.45} y1={0.53} r={0.07} m={d.robotAccent} />
-      <Cyl x={cx + 0.1} z={cz} y0={0.45} y1={0.5} r={0.05} m={d.charcoal} />
-      <Soft x0={c.x0 + 0.04} x1={c.x1 - 0.04} y0={c.h - 0.01} y1={c.h + 0.05} z0={c.z0 + 0.06} z1={c.z1 - 0.06} m={d.sand} r={0.02} />
-    </group>
-  )
-}
-
 function Pegboard() {
   const d = designMaterials()
   const k = layout.studio.desk
@@ -371,24 +202,18 @@ export function Studio() {
       )}
       <B x0={k.x0 + 0.04} x1={k.x1 - 0.04} y0={0.12} y1={0.15} z0={k.z1 - 0.08} z1={k.z1 - 0.04} m={d.blackMetal} />
       <Pegboard />
-      <RobotArm x={k.x1 - 0.35} z={k.z1 - 0.2} y={top} yaw={-0.6} a1={0.5} a2={1.3} a3={0.6} accent={false} />
-      <RobotArm x={k.x0 + 0.3} z={k.z1 - 0.18} y={top} yaw={0.4} a1={0.25} a2={-0.9} a3={-0.7} accent />
-      {/* laptop */}
-      <B x0={chx - 0.16} x1={chx + 0.16} y0={top} y1={top + 0.015} z0={k.z0 + 0.12} z1={k.z0 + 0.34} m={d.charcoal} />
-      <mesh position={[chx, top + 0.11, k.z0 + 0.35]} rotation-x={-0.25} material={d.screen}>
-        <boxGeometry args={[0.32, 0.21, 0.008]} />
-      </mesh>
-      {/* architect task lamp */}
-      <Cyl x={chx + 0.55} z={k.z1 - 0.12} y0={top} y1={top + 0.02} r={0.07} m={d.blackMetal} />
-      <mesh position={[chx + 0.55, top + 0.22, k.z1 - 0.2]} rotation-x={-0.35} material={d.blackMetal}>
-        <cylinderGeometry args={[0.006, 0.006, 0.42, 8]} />
-      </mesh>
-      <mesh position={[chx + 0.55, top + 0.4, k.z1 - 0.36]} rotation-x={0.9} material={d.blackMetal}>
-        <coneGeometry args={[0.07, 0.12, 24, 1, true]} />
-      </mesh>
-      <Lamp x={chx + 0.55} y={top + 0.3} z={k.z1 - 0.42} evening={0.6} distance={2} />
-      <Chair x={chx} z={chz} />
-      <Cart />
+      {/* two desktop 6-axis arms (Sketchfab, CC BY 4.0; 1.29 m industrial model scaled to ~0.45 m), reaching over the bench */}
+      <PhModel id="robot_arm" recenter="base" position={[k.x1 - 0.35, top, k.z1 - 0.2]} rotation={[0, Math.PI - 0.5, 0]} scale={0.35} />
+      <PhModel id="robot_arm" recenter="base" position={[k.x0 + 0.3, top, k.z1 - 0.18]} rotation={[0, Math.PI + 0.4, 0]} scale={0.35} />
+      {/* laptop, keyboard towards the chair */}
+      <PhModel id="laptop" position={[chx, top, k.z0 + 0.2]} rotation={[0, Math.PI, 0]} scale={0.0102} />
+      {/* black architect lamp, head reaching towards the front of the bench */}
+      <PhModel id="desk_lamp" recenter="base" position={[chx + 0.55, top, k.z1 - 0.15]} rotation={[0, Math.PI / 2, 0]} scale={0.193} />
+      <Lamp x={chx + 0.55} y={top + 0.4} z={k.z1 - 0.35} evening={0.6} distance={2} />
+      {/* black mesh ergonomic chair with headrest (~1.2 m), facing the bench */}
+      <PhModel id="office_chair" position={[chx, 0, chz]} rotation={[0, -Math.PI / 2 + 0.25, 0]} scale={1.2 / 8.52} />
+      {/* black 3-tier utility trolley */}
+      <PhModel id="raskog_cart" position={[(layout.studio.cart.x0 + layout.studio.cart.x1) / 2, 0, (layout.studio.cart.z0 + layout.studio.cart.z1) / 2]} />
       <SofaBed />
       <PhModel id="potted_plant_02" position={[layout.studio.plant[0] - 0.05, 0, layout.studio.plant[1] - 0.05]} scale={1.1} />
       <RomanBlind a0={win.z0} a1={win.z1} at={X.eastInner - 0.03} top={win.head} drop={0.38} alongX={false} />

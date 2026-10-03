@@ -82,15 +82,15 @@ function Bathroom({ designed }: { designed: boolean }) {
       <mesh position={[X.showerGlass, b.showerScreenHeight / 2 + 0.05, Z.corridorNorth + glassLen / 2]} material={m.glass}>
         <boxGeometry args={[0.01, b.showerScreenHeight, glassLen]} />
       </mesh>
-      {/* toilet */}
-      <group position={[b.toilet.x, 0, tz]}>
+      {/* toilet (replaced by a real model in design mode) */}
+      {!designed && <group position={[b.toilet.x, 0, tz]}>
         <mesh position={[0, 0.2, -0.38]} material={m.sanitary} castShadow>
           <cylinderGeometry args={[0.19, 0.16, 0.4, 24]} />
         </mesh>
         <mesh position={[0, 0.6, -0.1]} material={m.sanitary} castShadow>
           <boxGeometry args={[0.38, 0.4, 0.17]} />
         </mesh>
-      </group>
+      </group>}
       {/* basin — ASSUMED placeholder, not visible in any reference photo (replaced by the vanity in design mode) */}
       {!designed && <mesh position={[b.basin.x, 0.82, tz - 0.21]} material={m.sanitary} castShadow>
         <boxGeometry args={[0.5, 0.12, 0.4]} />

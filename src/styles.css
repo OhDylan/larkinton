@@ -56,4 +56,6 @@ canvas { touch-action: none; }
   padding: 2px 6px; border-radius: 4px;
 }
 .credits a { color: inherit; }
+.credits summary { cursor: pointer; }
+.credits[open] { max-width: 360px; max-height: 50vh; overflow: auto; line-height: 1.5; }
 @media (max-width: 600px) { .credits { font-size: 9px; left: 8px; right: auto; bottom: 160px; } }

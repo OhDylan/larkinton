@@ -22,7 +22,6 @@ function WindowSeat() {
       <Soft x0={s.x0 + 0.02} x1={s.x1 - 0.02} y0={top} y1={top + 0.09} z0={s.z0 + 0.03} z1={s.z1 + 0.01} m={d.cream} r={0.035} />
       {/* a small aloe and a black stoneware vase on the seat */}
       <PhModel id="potted_plant_04" position={[2.5, top + 0.09, s.z1 - 0.2]} />
-      <PhModel id="ceramic_vase_03" position={[1.9, top + 0.09, s.z1 - 0.22]} scale={0.55} finish="black" />
       {/* sheer linen curtains stacked at both ends, on a slim ceiling track */}
       <B x0={s.x0 + 0.02} x1={s.x1 - 0.02} y0={D.ceilingHeight - 0.03} y1={D.ceilingHeight} z0={s.z0 + 0.06} z1={s.z0 + 0.1} m={d.charcoal} />
       <Curtain a0={s.x0 + 0.04} a1={0.55} at={s.z0 + 0.09} y0={top + 0.1} y1={D.ceilingHeight - 0.03} alongX folds={5} />

@@ -142,8 +142,8 @@ export const walls: Wall[] = [
         window: { cols: 1, transom: true, bottomRow: false } },
     ],
   },
-  // ---- yard | AC ledge
-  { id: 'yard-ac', x0: X.yardAcW, x1: X.yardAcE, z0: Z.kitchenNorth, z1: Z.southInner },
+  // ---- yard | AC ledge: a parapet (half wall), open above — you can see out over it
+  { id: 'yard-ac', x0: X.yardAcW, x1: X.yardAcE, z0: Z.kitchenNorth, z1: Z.southInner, height: D.acLedge.parapetHeight },
   // AC ledge outer edge: plan shows thin lines (louvres/railing) — modelled as a screen
   { id: 'ac-screen', x0: X.eastInner + 0.05, x1: overall.width - 0.05, z0: Z.kitchenNorth, z1: overall.depth, kind: 'screen',
     height: D.acLedge.screenHeight },

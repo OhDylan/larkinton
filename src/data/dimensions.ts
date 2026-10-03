@@ -116,6 +116,7 @@ export const dimensions = {
   acLedge: {
     floorDrop: 0.1, // [ASSUMED] AC ledges usually sit slightly lower than the unit
     screenHeight: 2.75, // [ASSUMED] plan shows a louvred/railed edge on the right
+    parapetHeight: 1.0, // [ASSUMED] yard | AC ledge is a half wall (owner); height not measured
   },
 
   walkthrough: {
