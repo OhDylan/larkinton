@@ -2,7 +2,7 @@
  * Phase 2: interior design / furniture, kept separate from the architectural
  * shell in /scene. Positions live in ./layout.ts.
  *
- * Style: mid-century modern — dark walnut, cognac leather, brass, terrazzo, mustard / forest green / rust accents.
+ * Style: warm minimal between mid-century and wabi-sabi / zen: walnut-teak, cream, sand, stone, black accents.
  */
 import { useEffect } from 'react'
 import { materials, palette } from '../materials/materials'

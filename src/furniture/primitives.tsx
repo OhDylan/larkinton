@@ -5,7 +5,6 @@ import { Reflector } from 'three/examples/jsm/objects/Reflector.js'
 import { dimensions as D } from '../data/dimensions'
 import { metricBox } from '../scene/geometry'
 import { useLightMode } from '../state/lightMode'
-import { useRenderMode } from '../state/renderMode'
 import { designMaterials } from './designMaterials'
 
 type Ext = { x0: number; x1: number; y0: number; y1: number; z0: number; z1: number }
@@ -38,10 +37,9 @@ export function Cyl({ x, z, y0, y1, r, rTop, m, seg = 32 }: { x: number; z: numb
 /** Warm point light whose strength follows the day/evening mode. */
 export function Lamp({ x, y, z, evening = 1.6, distance = 4, shadow = false, minor = false }: { x: number; y: number; z: number; day?: number; evening?: number; distance?: number; shadow?: boolean; minor?: boolean }) {
   const mode = useLightMode()
-  const photo = useRenderMode() === 'photo'
-  // Performance: every point light adds cost to every pixel in the live view. By day the lamps
-  // are off (they added almost nothing), and small accent lamps only light up in photo mode.
-  if (mode !== 'evening' || (minor && !photo)) return null
+  // Performance: every point light adds cost to every pixel. By day the lamps are off (they added
+  // almost nothing), and small accent lamps (`minor`) are skipped; their glowing shades remain.
+  if (mode !== 'evening' || minor) return null
   return (
     <pointLight
       position={[x, y, z]}
@@ -95,9 +93,9 @@ export function GlobePendant({ x, z, bottom, r = 0.15, light = 0.9, minor = fals
       <mesh position={[x, cy, z]} material={d.opal}>
         <sphereGeometry args={[r, 40, 24]} />
       </mesh>
-      <Cyl x={x} z={z} y0={cy + r * 0.92} y1={cy + r + 0.03} r={0.035} rTop={0.03} m={d.brass} />
-      <Cyl x={x} z={z} y0={cy + r + 0.03} y1={top - 0.01} r={0.004} m={d.brass} seg={8} />
-      <Cyl x={x} z={z} y0={top - 0.015} y1={top} r={0.05} m={d.brass} />
+      <Cyl x={x} z={z} y0={cy + r * 0.92} y1={cy + r + 0.03} r={0.035} rTop={0.03} m={d.bronze} />
+      <Cyl x={x} z={z} y0={cy + r + 0.03} y1={top - 0.01} r={0.004} m={d.bronze} seg={8} />
+      <Cyl x={x} z={z} y0={top - 0.015} y1={top} r={0.05} m={d.bronze} />
       <Lamp x={x} y={cy} z={z} evening={light} distance={4} minor={minor} />
     </group>
   )
@@ -113,76 +111,36 @@ export function DomePendant({ x, z, bottom, r = 0.18, light = 0.8, minor = false
       <mesh position={[x, bottom + h / 2, z]} material={d.glossBlack} castShadow>
         <cylinderGeometry args={[r * 0.18, r, h, 40, 1, true]} />
       </mesh>
-      <mesh position={[x, bottom + 0.002, z]} rotation-x={Math.PI / 2} material={d.brass}>
+      <mesh position={[x, bottom + 0.002, z]} rotation-x={Math.PI / 2} material={d.bronze}>
         <torusGeometry args={[r, 0.006, 8, 48]} />
       </mesh>
       <mesh position={[x, bottom + 0.04, z]} material={d.opal}>
         <sphereGeometry args={[r * 0.28, 24, 16]} />
       </mesh>
-      <Cyl x={x} z={z} y0={bottom + h} y1={top} r={0.004} m={d.brass} seg={8} />
+      <Cyl x={x} z={z} y0={bottom + h} y1={top} r={0.004} m={d.bronze} seg={8} />
       <Lamp x={x} y={bottom - 0.05} z={z} evening={light} distance={3.5} minor={minor} />
     </group>
   )
 }
 
-/** Sputnik chandelier: brass sphere with radiating arms, each tipped with a small opal bulb. */
-export function Sputnik({ x, z, cy, arms = 16, reach = 0.36, light = 1.2 }: { x: number; z: number; cy: number; arms?: number; reach?: number; light?: number }) {
+/** Round paper lantern (Akari-style globe) with fine horizontal ribs. */
+export function PaperGlobe({ x, z, bottom, r = 0.28, light = 1.0, minor = false }: { x: number; z: number; bottom: number; r?: number; light?: number; minor?: boolean }) {
   const d = designMaterials()
-  const dirs = useMemo(() => {
-    const out: THREE.Vector3[] = []
-    // Fibonacci sphere: evenly spread arm directions
-    for (let i = 0; i < arms; i++) {
-      const y = 1 - ((i + 0.5) / arms) * 2
-      const rr = Math.sqrt(1 - y * y)
-      const a = i * 2.39996
-      out.push(new THREE.Vector3(Math.cos(a) * rr, y * 0.75, Math.sin(a) * rr).normalize())
-    }
-    return out
-  }, [arms])
-  const up = new THREE.Vector3(0, 1, 0)
-  return (
-    <group position={[x, cy, z]}>
-      <mesh material={d.brass}>
-        <sphereGeometry args={[0.055, 24, 16]} />
-      </mesh>
-      {dirs.map((v, i) => (
-        <group key={i}>
-          <mesh position={v.clone().multiplyScalar(reach / 2)} quaternion={new THREE.Quaternion().setFromUnitVectors(up, v)} material={d.brass}>
-            <cylinderGeometry args={[0.004, 0.004, reach, 6]} />
-          </mesh>
-          <mesh position={v.clone().multiplyScalar(reach + 0.02)} material={d.opal}>
-            <sphereGeometry args={[0.022, 12, 8]} />
-          </mesh>
-        </group>
-      ))}
-      <mesh position={[0, (D.ceilingHeight - cy) / 2, 0]} material={d.brass}>
-        <cylinderGeometry args={[0.006, 0.006, D.ceilingHeight - cy, 8]} />
-      </mesh>
-      <Lamp x={x} y={cy} z={z} evening={light} distance={5} />
-    </group>
-  )
-}
-
-/** Sunburst mirror (plane z = const, facing −z): round mirror centre with brass rays. */
-export function Sunburst({ cx, cy, z, r = 0.2, rays = 24, rayLen = 0.22 }: { cx: number; cy: number; z: number; r?: number; rays?: number; rayLen?: number }) {
-  const d = designMaterials()
-  const geo = useMemo(() => new THREE.CircleGeometry(r, 48), [r])
+  const cy = bottom + r
+  const top = D.ceilingHeight
+  const ribs = [-0.75, -0.5, -0.25, 0, 0.25, 0.5, 0.75]
   return (
     <group>
-      <Mirror geometry={geo} position={[cx, cy, z - 0.012]} rotationY={Math.PI} />
-      <mesh position={[cx, cy, z - 0.012]} material={d.brass}>
-        <torusGeometry args={[r, 0.012, 8, 48]} />
+      <mesh position={[x, cy, z]} material={d.paper}>
+        <sphereGeometry args={[r, 40, 24]} />
       </mesh>
-      {Array.from({ length: rays }, (_, i) => {
-        const a = (i / rays) * Math.PI * 2
-        const len = rayLen * (i % 2 ? 0.7 : 1)
-        const mid = r + 0.01 + len / 2
-        return (
-          <mesh key={i} position={[cx + Math.cos(a) * mid, cy + Math.sin(a) * mid, z - 0.01]} rotation-z={a} material={d.brass} castShadow>
-            <boxGeometry args={[len, 0.008, 0.008]} />
-          </mesh>
-        )
-      })}
+      {ribs.map((t) => (
+        <mesh key={t} position={[x, cy + t * r, z]} rotation-x={Math.PI / 2} material={d.ceramic}>
+          <torusGeometry args={[r * Math.sqrt(1 - t * t) + 0.001, 0.0012, 4, 48]} />
+        </mesh>
+      ))}
+      <Cyl x={x} z={z} y0={cy + r} y1={top} r={0.003} m={d.charcoal} seg={6} />
+      <Lamp x={x} y={cy} z={z} evening={light} distance={4.5} minor={minor} />
     </group>
   )
 }
@@ -357,12 +315,6 @@ export function Mirror({ geometry, position, rotationY = 0 }: { geometry: THREE.
     [geometry],
   )
   useEffect(() => () => mirror.dispose(), [mirror])
-  const live = useRenderMode() === 'live'
-  if (!live)
-    return (
-      <mesh geometry={geometry} position={position} rotation-y={rotationY} material={photoMirror} />
-    )
   return <primitive object={mirror} position={position} rotation-y={rotationY} />
 }
 
-const photoMirror = new THREE.MeshStandardMaterial({ color: '#f2f4f4', metalness: 1, roughness: 0.02 })

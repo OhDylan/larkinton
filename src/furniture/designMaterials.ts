@@ -1,31 +1,33 @@
 /**
- * Phase 2 finishes (v3): mid-century modern — dark walnut joinery, warm white walls, terrazzo,
- * cognac leather, brass, opal glass, and MCM accent colours (mustard, forest green, rust).
+ * Phase 2 finishes (v5): warm minimal — between mid-century and wabi-sabi / zen.
+ * A tight palette: warm walnut-teak wood, cream and sand textiles, soft stone, jute, and black
+ * as the only accent (ceramics, a dome pendant). Paper lanterns and olive trees for softness.
  * All textures are procedural canvases (no downloads). Furniture boxes use
  * metre-scaled UVs, so `repeat` below = how many texture tiles per metre.
  */
 import * as THREE from 'three'
 
 export const designPalette = {
-  wallWarm: '#ece5d8', // warm white paint
-  ceilingWarm: '#f1ece3',
-  wood: '#4f3020', // dark walnut
-  woodDark: '#33201a',
-  woodLight: '#8a5a3a', // lighter walnut accent
-  terrazzo: '#ebe5da', // warm white terrazzo base
+  wallWarm: '#e9e2d6', // warm off-white plaster
+  ceilingWarm: '#efe9df',
+  wood: '#6e4a32', // warm walnut / teak, medium-dark
+  woodDark: '#4b3223',
+  woodLight: '#9a7352',
+  stone: '#ddd3c3', // soft sand-coloured stone
   basalt: '#2b2926',
-  leather: '#7a3f22', // cognac
-  linen: '#efe9df',
-  cream: '#e3d9c6', // cream boucle
-  mustard: '#c4922c',
-  green: '#2f4a3c', // forest green velvet
-  rust: '#a5482a',
+  leather: '#6a4a36',
+  linen: '#ece5da',
+  cream: '#e4dccd', // cream boucle
+  sand: '#cdbda3', // sand linen
+  taupe: '#a39380', // taupe linen
+  earth: '#8a7058', // earthy stoneware
   charcoal: '#2a2826',
-  ceramic: '#ece6da',
-  wool: '#d9cdb8',
+  ceramic: '#e6dfd2',
+  wool: '#d6c9b3',
   paper: '#f5ecdb',
-  plant: '#4f6645',
+  plant: '#55684a',
   birch: '#d8c3a0',
+  jute: '#b9a283',
 }
 
 type Draw = (g: CanvasRenderingContext2D, w: number, h: number) => void
@@ -113,58 +115,6 @@ const mottleDraw = (base: string, amount: number, blob: [number, number], pores 
   }
 }
 
-/** Terrazzo: warm white base with scattered stone chips in the room's accent colours. */
-const terrazzoDraw: Draw = (g, w, h) => {
-  g.fillStyle = designPalette.terrazzo
-  g.fillRect(0, 0, w, h)
-  const chips = ['#c4922c', '#a5482a', '#2f4a3c', '#7d6b57', '#d8cdb9', '#4f3020', '#b9b2a6']
-  for (let i = 0; i < 1400; i++) {
-    g.fillStyle = chips[i % chips.length]
-    g.globalAlpha = rand(0.55, 0.95)
-    g.beginPath()
-    const x = rand(0, w)
-    const y = rand(0, h)
-    const r = rand(1, i % 9 === 0 ? 7 : 3.5)
-    g.moveTo(x + r, y)
-    for (let a = 1; a < 6; a++) g.lineTo(x + Math.cos(a * 1.2 + i) * r * rand(0.6, 1.2), y + Math.sin(a * 1.2 + i) * r * rand(0.6, 1.2))
-    g.closePath()
-    g.fill()
-  }
-  g.globalAlpha = 1
-}
-
-/** Mid-century geometric rug: rust field, cream diamonds, mustard border. */
-const rugDraw: Draw = (g, w, h) => {
-  const P = designPalette
-  g.fillStyle = P.mustard
-  g.fillRect(0, 0, w, h)
-  const m = w * 0.06
-  g.fillStyle = P.rust
-  g.fillRect(m, m, w - 2 * m, h - 2 * m)
-  g.strokeStyle = P.cream
-  g.lineWidth = w * 0.012
-  const n = 6
-  const cw = (w - 2 * m) / n
-  const ch = (h - 2 * m) / n
-  for (let i = 0; i < n; i++)
-    for (let j = 0; j < n; j++) {
-      const cx = m + cw * (i + 0.5)
-      const cy = m + ch * (j + 0.5)
-      g.beginPath()
-      g.moveTo(cx, cy - ch * 0.38)
-      g.lineTo(cx + cw * 0.38, cy)
-      g.lineTo(cx, cy + ch * 0.38)
-      g.lineTo(cx - cw * 0.38, cy)
-      g.closePath()
-      g.stroke()
-    }
-  // wool fibre noise
-  for (let i = 0; i < 20000; i++) {
-    g.fillStyle = `rgba(${Math.random() > 0.5 ? '255,255,255' : '0,0,0'},${rand(0.02, 0.08)})`
-    g.fillRect(rand(0, w), rand(0, h), 1.5, 1.5)
-  }
-}
-
 /** Medium oak floorboards, 180 mm wide, staggered lengths (one texture tile = 1.2 x 1.2 m). */
 const floorDraw: Draw = (g, w, h) => {
   const boards = 1.2 / 0.18
@@ -237,7 +187,7 @@ function make() {
   const P = designPalette
   // smooth painted wall: only a whisper of texture
   const limewash = canvasTex(512, 512, mottleDraw(P.wallWarm, 0.006, [4, 30]), [0.6, 0.6])
-  const terrazzoMap = canvasTex(1024, 1024, terrazzoDraw, [1.4, 1.4])
+  const stoneMap = canvasTex(512, 512, mottleDraw(P.stone, 0.035, [6, 40], 120, 10), [1.2, 1.2])
   const linenMap = canvasTex(256, 256, weaveDraw(P.linen, 0.06), [8, 8])
   const woolMap = canvasTex(256, 256, weaveDraw(P.wool, 0.1), [6, 6])
   const leatherMap = canvasTex(256, 256, mottleDraw(P.leather, 0.025, [2, 8]), [4, 4])
@@ -247,7 +197,7 @@ function make() {
     wood: wood(P.wood, P.woodDark),
     woodDark: wood(P.woodDark, '#1e120b', 0.6),
     woodLight: wood(P.woodLight, P.wood, 0.6),
-    terrazzo: std({ map: terrazzoMap, roughness: 0.3 }),
+    stone: std({ map: stoneMap, roughness: 0.5 }),
     basalt: std({ map: canvasTex(256, 256, mottleDraw(P.basalt, 0.08, [4, 20]), [2, 2]), roughness: 0.85 }),
     leather: std({ map: leatherMap, bumpMap: leatherMap, bumpScale: 0.15, roughness: 0.42 }),
     linen: std({ map: linenMap, bumpMap: linenMap, bumpScale: 0.3, roughness: 1 }),
@@ -256,19 +206,22 @@ function make() {
       const t = canvasTex(256, 256, mottleDraw(P.cream, 0.12, [1.5, 3.5]), [10, 10])
       return std({ map: t, bumpMap: t, bumpScale: 1.2, roughness: 1 })
     })(),
-    // velvets: soft sheen
-    mustard: new THREE.MeshPhysicalMaterial({ map: canvasTex(256, 256, weaveDraw(P.mustard, 0.05), [8, 8]), roughness: 0.75, sheen: 1, sheenColor: new THREE.Color('#f2cf7a'), sheenRoughness: 0.4 }),
-    green: new THREE.MeshPhysicalMaterial({ map: canvasTex(256, 256, weaveDraw(P.green, 0.05), [8, 8]), roughness: 0.75, sheen: 1, sheenColor: new THREE.Color('#6f9a82'), sheenRoughness: 0.4 }),
-    rug: std({ map: canvasTex(1024, 1024, rugDraw, [1, 1]), roughness: 1 }),
+    sand: std({ map: canvasTex(256, 256, weaveDraw(P.sand, 0.07), [8, 8]), roughness: 1 }),
+    taupe: std({ map: canvasTex(256, 256, weaveDraw(P.taupe, 0.07), [8, 8]), roughness: 1 }),
+    // jute rug: coarse woven fibre
+    rug: (() => {
+      const t = canvasTex(256, 256, weaveDraw(P.jute, 0.22), [3, 3])
+      return std({ map: t, bumpMap: t, bumpScale: 1.5, roughness: 1 })
+    })(),
     opal: std({ color: '#fbf7ef', emissive: '#ffd9a6', emissiveIntensity: 0.25, roughness: 0.25 }),
     glossBlack: std({ color: '#151413', roughness: 0.15, metalness: 0.2 }),
     wool: std({ map: woolMap, bumpMap: woolMap, bumpScale: 0.8, roughness: 1 }),
-    rust: std({ map: canvasTex(256, 256, mottleDraw(P.rust, 0.06, [3, 18], 20), [3, 3]), roughness: 0.55 }),
+    earth: std({ map: canvasTex(256, 256, mottleDraw(P.earth, 0.1, [3, 18], 60), [3, 3]), roughness: 0.8 }),
     ceramic: std({ map: canvasTex(256, 256, mottleDraw(P.ceramic, 0.07, [3, 18], 40), [4, 4]), roughness: 0.4 }),
     ceramicDark: std({ map: canvasTex(256, 256, mottleDraw('#3b3631', 0.1, [3, 18], 40), [4, 4]), roughness: 0.5 }),
     charcoal: std({ color: P.charcoal, roughness: 0.6 }),
     blackMetal: std({ color: '#1f1e1c', roughness: 0.4, metalness: 0.6 }),
-    brass: std({ color: '#c39a52', roughness: 0.28, metalness: 1 }),
+    bronze: std({ color: '#3a3129', roughness: 0.45, metalness: 0.6 }), // dark aged bronze
     curtain: new THREE.MeshStandardMaterial({
       map: canvasTex(256, 256, weaveDraw('#f1ebe1', 0.05), [6, 6]),
       roughness: 1,
@@ -287,7 +240,7 @@ function make() {
     robotWhite: std({ color: '#efeeea', roughness: 0.3 }),
     robotAccent: std({ color: '#d4833f', roughness: 0.45 }),
     screen: std({ color: '#15171a', roughness: 0.15, emissive: '#1b2330', emissiveIntensity: 0.4 }),
-    book: ['#a5482a', '#2f4a3c', '#c4922c', '#2a2826', '#e6dccb', '#6b4a36', '#3d5a6b'].map((c) => std({ color: c, roughness: 0.9 })),
+    book: ['#2a2826', '#e6dccb', '#b8a68c', '#6b4a36', '#d8cfbf', '#8a7a66', '#3e3a35'].map((c) => std({ color: c, roughness: 0.9 })),
   }
 }
 

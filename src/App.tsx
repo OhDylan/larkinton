@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber'
-import { lazy, Suspense, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 import * as THREE from 'three'
 import { ControlPanel } from './components/ControlPanel'
 import { Joystick } from './components/Joystick'
@@ -10,13 +10,9 @@ import { CameraRig, type CameraMode } from './controls/CameraRig'
 import { Furniture } from './furniture'
 import { Apartment } from './scene/Apartment'
 import { Effects } from './scene/Effects'
-import { useRenderMode } from './state/renderMode'
 import { Backdrop } from './scene/Backdrop'
 import { Lighting, ShadowUpdates } from './scene/Lighting'
 import { useLightMode } from './state/lightMode'
-
-// photo (path-traced) mode is loaded on demand so the first page load stays light
-const PathTracer = lazy(() => import('./scene/PathTracer').then((m) => ({ default: m.PathTracer })))
 
 // Ceiling is hidden by default in the overhead views, shown at eye level.
 const ceilingDefault: Record<CameraMode, boolean> = { dollhouse: false, topdown: false, walkthrough: true }
@@ -28,7 +24,6 @@ export default function App() {
   const [showLabels, setShowLabels] = useState(true)
   const [showDesign, setShowDesign] = useState(true)
   const lightModeKey = useLightMode()
-  const renderMode = useRenderMode()
   const labelLayer = useRef<HTMLDivElement>(null!)
 
   const setMode = (m: CameraMode) => {
@@ -53,13 +48,7 @@ export default function App() {
           {showLabels && <RoomLabels layer={labelLayer} height={mode === 'walkthrough' ? 2.0 : 0.05} />}
         </group>
         <CameraRig mode={mode} resetKey={resetKey} />
-        {renderMode === 'live' ? (
-          <Effects />
-        ) : (
-          <Suspense fallback={null}>
-            <PathTracer designed={showDesign} inside={mode === 'walkthrough'} />
-          </Suspense>
-        )}
+        <Effects />
       </Canvas>
       <div ref={labelLayer} className="label-layer" />
       {mode === 'walkthrough' && <Joystick />}
@@ -81,7 +70,5 @@ export default function App() {
 /** Sky seen through the windows: pale by day, dusk blue-grey in the evening. */
 function Background() {
   const evening = useLightMode() === 'evening'
-  // in photo mode the path tracer supplies the sky as the background
-  if (useRenderMode() === 'photo') return null
   return <color attach="background" args={[evening ? '#3a4150' : '#e4e8ec']} />
 }

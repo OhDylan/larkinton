@@ -1,7 +1,6 @@
 import type { CameraMode } from '../controls/CameraRig'
 import { setAllDoors, useDoorState } from '../scene/doorState'
 import { setLightMode, useLightMode } from '../state/lightMode'
-import { setRenderMode, usePhotoStatus, useRenderMode } from '../state/renderMode'
 import { setFloorFinish, useFloorFinish } from '../state/floorMode'
 
 type Props = {
@@ -26,8 +25,6 @@ export function ControlPanel(p: Props) {
   const doors = useDoorState()
   const allOpen = Object.values(doors).every(Boolean)
   const light = useLightMode()
-  const render = useRenderMode()
-  const photo = usePhotoStatus()
   const floor = useFloorFinish()
   return (
     <div className="panel">
@@ -56,22 +53,7 @@ export function ControlPanel(p: Props) {
           Wood Floor
         </button>
         <button onClick={() => setAllDoors(!allOpen)}>{allOpen ? 'Close Doors' : 'Open Doors'}</button>
-        <button className={render === 'photo' ? 'active photo' : 'photo'} onClick={() => setRenderMode(render === 'photo' ? 'live' : 'photo')}>
-          Photo Render
-        </button>
       </div>
-      {render === 'photo' && (
-        <div className="photo-status">
-          {photo.phase === 'rendering'
-            ? `Rendering · ${photo.samples} samples — hold still, it sharpens over time`
-            : photo.phase === 'done'
-              ? `Done · ${photo.samples} samples (move the camera to render a new view)`
-              : 'Preparing the photo render…'}
-        </div>
-      )}
-      {render === 'live' && photo.phase === 'failed' && (
-        <div className="photo-status">Photo render stopped: this device's graphics ran out of resources.</div>
-      )}
       <div className="hint">
         {p.mode === 'walkthrough'
           ? 'WASD / arrows or joystick to move · drag to look · tap a door to open/close'

@@ -49,10 +49,10 @@ function Sills() {
   const p = 0.05 // projection into the room
   return (
     <group>
-      <B x0={W.master.x0 - 0.03} x1={W.master.x1 + 0.03} y0={W.master.sill - t} y1={W.master.sill} z0={Z.northInner - 0.02} z1={Z.northInner + p} m={d.terrazzo} />
-      <B x0={X.eastInner - p} x1={X.eastInner + 0.02} y0={W.bed2.sill - t} y1={W.bed2.sill} z0={W.bed2.z0 - 0.03} z1={W.bed2.z1 + 0.03} m={d.terrazzo} />
-      <B x0={X.eastInner - p} x1={X.eastInner + 0.02} y0={W.bath.sill - t} y1={W.bath.sill} z0={W.bath.z0 - 0.03} z1={W.bath.z1 + 0.03} m={d.terrazzo} />
-      <B x0={X.kitchenYardW - p} x1={X.kitchenYardW + 0.02} y0={W.kitchen.sill - t} y1={W.kitchen.sill} z0={W.kitchen.z0 - 0.02} z1={W.kitchen.z1 + 0.02} m={d.terrazzo} />
+      <B x0={W.master.x0 - 0.03} x1={W.master.x1 + 0.03} y0={W.master.sill - t} y1={W.master.sill} z0={Z.northInner - 0.02} z1={Z.northInner + p} m={d.stone} />
+      <B x0={X.eastInner - p} x1={X.eastInner + 0.02} y0={W.bed2.sill - t} y1={W.bed2.sill} z0={W.bed2.z0 - 0.03} z1={W.bed2.z1 + 0.03} m={d.stone} />
+      <B x0={X.eastInner - p} x1={X.eastInner + 0.02} y0={W.bath.sill - t} y1={W.bath.sill} z0={W.bath.z0 - 0.03} z1={W.bath.z1 + 0.03} m={d.stone} />
+      <B x0={X.kitchenYardW - p} x1={X.kitchenYardW + 0.02} y0={W.kitchen.sill - t} y1={W.kitchen.sill} z0={W.kitchen.z0 - 0.02} z1={W.kitchen.z1 + 0.02} m={d.stone} />
     </group>
   )
 }

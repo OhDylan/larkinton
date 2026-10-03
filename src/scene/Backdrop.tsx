@@ -9,7 +9,6 @@ import type { CameraMode } from '../controls/CameraRig'
 import { planCenter } from '../data/floorplan'
 import { materials } from '../materials/materials'
 import { useLightMode } from '../state/lightMode'
-import { useRenderMode } from '../state/renderMode'
 
 const [cx, cz] = planCenter
 const GROUND_BELOW = 35 // metres below the unit's floor (assumed mid-level floor)
@@ -81,8 +80,6 @@ function mergeGeometries(list: THREE.BufferGeometry[]) {
 
 export function Backdrop({ mode }: { mode: CameraMode }) {
   const evening = useLightMode() === 'evening'
-  // photo mode: the path tracer can't run custom shaders or fog; it uses its own sky texture instead
-  const live = useRenderMode() === 'live'
   if (mode !== 'walkthrough')
     return (
       <mesh rotation-x={-Math.PI / 2} position={[cx, -0.15, cz]} material={materials().ground} receiveShadow>
@@ -91,9 +88,9 @@ export function Backdrop({ mode }: { mode: CameraMode }) {
     )
   return (
     <group>
-      {live && <Sky evening={evening} />}
+      <Sky evening={evening} />
       <Skyline evening={evening} />
-      {live && <fog attach="fog" args={[evening ? '#5b5a63' : '#e3e9ee', 120, 600]} />}
+      <fog attach="fog" args={[evening ? '#5b5a63' : '#e3e9ee', 120, 600]} />
       <mesh rotation-x={-Math.PI / 2} position={[cx, -GROUND_BELOW, cz]}>
         <planeGeometry args={[1000, 1000]} />
         <meshStandardMaterial color={evening ? '#3c3d40' : '#c2c6c0'} roughness={1} />

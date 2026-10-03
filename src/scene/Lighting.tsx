@@ -4,7 +4,6 @@ import * as THREE from 'three'
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment.js'
 import { planCenter } from '../data/floorplan'
 import { useLightMode } from '../state/lightMode'
-import { useRenderMode } from '../state/renderMode'
 import { MIRRORED } from '../data/mirror'
 import { openness } from './doorState'
 
@@ -42,7 +41,7 @@ export function Lighting() {
   const evening = useLightMode() === 'evening'
   return (
     <>
-      {useRenderMode() === 'live' && <Environment intensity={evening ? 0.1 : 0.5} />}
+      <Environment intensity={evening ? 0.1 : 0.5} />
       <hemisphereLight args={['#f7f9fc', '#e6dfd3', evening ? 0.12 : 1.15]} />
       <ambientLight intensity={evening ? 0.05 : 0.3} />
       <directionalLight

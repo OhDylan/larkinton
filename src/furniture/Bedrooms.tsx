@@ -33,7 +33,7 @@ function QueenBed() {
       {/* channel-tufted forest green velvet headboard on a walnut base rail */}
       <B x0={-hw - 0.05} x1={hw + 0.05} y0={0.16} y1={0.3} z0={0} z1={0.1} m={d.wood} />
       {Array.from({ length: cols }, (_, i) => (
-        <Soft key={i} x0={-hw - 0.05 + i * cw + 0.004} x1={-hw - 0.05 + (i + 1) * cw - 0.004} y0={0.3} y1={b.h} z0={0} z1={0.1} m={d.green} r={0.045} />
+        <Soft key={i} x0={-hw - 0.05 + i * cw + 0.004} x1={-hw - 0.05 + (i + 1) * cw - 0.004} y0={0.3} y1={b.h} z0={0} z1={0.1} m={d.taupe} r={0.045} />
       ))}
       <Soft x0={-mt.w / 2} x1={mt.w / 2} y0={0.3} y1={my} z0={mz0} z1={mz1} m={d.linen} r={0.05} />
       {/* duvet with soft edges spilling over the sides and foot, folded band at the top */}
@@ -42,7 +42,7 @@ function QueenBed() {
       {[-0.37, 0.37].map((x) => (
         <Soft key={x} x0={x - 0.33} x1={x + 0.33} y0={my} y1={my + 0.15} z0={mz0 + 0.04} z1={mz0 + 0.42} m={d.linen} r={0.06} rot={[-0.3, 0, 0]} />
       ))}
-      <Soft x0={-0.22} x1={0.22} y0={my + 0.06} y1={my + 0.37} z0={mz0 + 0.33} z1={mz0 + 0.45} m={d.mustard} r={0.05} rot={[-0.35, 0, 0]} />
+      <Soft x0={-0.22} x1={0.22} y0={my + 0.06} y1={my + 0.37} z0={mz0 + 0.33} z1={mz0 + 0.45} m={d.sand} r={0.05} rot={[-0.35, 0, 0]} />
       {/* knit throw over one corner of the foot */}
       <Soft x0={0.05} x1={mt.w / 2 + 0.07} y0={my + 0.06} y1={my + 0.09} z0={mz1 - 0.55} z1={mz1 - 0.1} m={d.wool} r={0.012} />
       <Soft x0={mt.w / 2 + 0.05} x1={mt.w / 2 + 0.08} y0={0.33} y1={my + 0.09} z0={mz1 - 0.55} z1={mz1 - 0.1} m={d.wool} r={0.01} />
@@ -69,7 +69,7 @@ export function Master() {
       ))}
       <B x0={w.x1} x1={w.x1 + 0.002} y0={2.2} y1={2.203} z0={w.z0} z1={w.z1} m={d.charcoal} shadow={false} />
       {[w.z0 + 0.06, ...doorZs.map((z) => z + 0.06)].map((z) => (
-        <B key={z} x0={w.x1} x1={w.x1 + 0.02} y0={0.8} y1={1.5} z0={z} z1={z + 0.012} m={d.brass} />
+        <B key={z} x0={w.x1} x1={w.x1 + 0.02} y0={0.8} y1={1.5} z0={z} z1={z + 0.012} m={d.bronze} />
       ))}
 
       {/* wood-panelled headboard wall with vertical reveals and a slim display ledge */}
@@ -82,7 +82,7 @@ export function Master() {
       <B x0={X.eastInner - 0.06} x1={X.eastInner - 0.035} y0={hw.y1 + 0.03} y1={hw.y1 + 0.55} z0={bz - 0.55} z1={bz - 0.05} m={d.woodDark} />
       <B x0={X.eastInner - 0.062} x1={X.eastInner - 0.06} y0={hw.y1 + 0.07} y1={hw.y1 + 0.51} z0={bz - 0.51} z1={bz - 0.09} m={d.linen} shadow={false} />
       <Vase x={X.eastInner - 0.07} z={bz + 0.35} y={hw.y1 + 0.03} h={0.26} r={0.06} m={d.ceramicDark} neck={0.4} />
-      <Vase x={X.eastInner - 0.07} z={bz + 0.55} y={hw.y1 + 0.03} h={0.12} r={0.05} m={d.rust} />
+      <Vase x={X.eastInner - 0.07} z={bz + 0.55} y={hw.y1 + 0.03} h={0.12} r={0.05} m={d.earth} />
 
       <group position={[wallX, 0, bz]} rotation-y={-Math.PI / 2}>
         <QueenBed />
@@ -96,7 +96,7 @@ export function Master() {
           <group key={i}>
             <B x0={n.x0} x1={n.x1} y0={n.h - 0.2} y1={n.h} z0={n.z0} z1={n.z1} m={d.wood} />
             <B x0={n.x0 - 0.002} x1={n.x0} y0={n.h - 0.1} y1={n.h - 0.097} z0={n.z0 + 0.02} z1={n.z1 - 0.02} m={d.charcoal} shadow={false} />
-            <B x0={n.x0 - 0.014} x1={n.x0} y0={n.h - 0.06} y1={n.h - 0.05} z0={nz - 0.04} z1={nz + 0.04} m={d.brass} />
+            <B x0={n.x0 - 0.014} x1={n.x0} y0={n.h - 0.06} y1={n.h - 0.05} z0={nz - 0.04} z1={nz + 0.04} m={d.bronze} />
             <Books x={nx} z={nz + (i ? -0.08 : 0.08)} y={n.h} n={2} w={0.2} dpt={0.14} alongX={false} />
             <Vase x={nx} z={nz + (i ? 0.13 : -0.13)} y={n.h} h={0.1} r={0.04} m={d.ceramic} />
             <GlobePendant x={nx - 0.02} z={nz} bottom={0.95} r={0.12} light={0.7} minor={i === 1} />
@@ -128,7 +128,7 @@ export function Bath() {
     <group>
       {/* floating wood vanity, terrazzo top, stoneware vessel basin, wall spout */}
       <B x0={v.x0} x1={v.x1} y0={v.y0} y1={top - 0.03} z0={v.z0} z1={v.z1} m={d.wood} />
-      <B x0={v.x0 - 0.01} x1={v.x1 + 0.01} y0={top - 0.03} y1={top} z0={v.z0 - 0.015} z1={v.z1} m={d.terrazzo} />
+      <B x0={v.x0 - 0.01} x1={v.x1 + 0.01} y0={top - 0.03} y1={top} z0={v.z0 - 0.015} z1={v.z1} m={d.stone} />
       <Vase x={vx} z={vz - 0.02} y={top} h={0.13} r={0.19} m={d.ceramic} neck={1} />
       <mesh position={[vx, top + 0.26, wallZ - 0.07]} rotation-x={Math.PI / 2} material={d.blackMetal}>
         <cylinderGeometry args={[0.01, 0.01, 0.14, 12]} />
@@ -146,7 +146,7 @@ export function Bath() {
         <B key={s} x0={glassX + s * 0.035 - 0.006} x1={glassX + s * 0.035 + 0.006} y0={0.85} y1={1.3} z0={Z.corridorNorth + 0.2} z1={Z.corridorNorth + 0.212} m={m.stainless} />
       ))}
       {/* towel on a brass hook rail beside the door */}
-      <B x0={X.bathWestE} x1={X.bathWestE + 0.04} y0={1.36} y1={1.38} z0={4.02} z1={4.4} m={d.brass} />
+      <B x0={X.bathWestE} x1={X.bathWestE + 0.04} y0={1.36} y1={1.38} z0={4.02} z1={4.4} m={d.bronze} />
       <Soft x0={X.bathWestE + 0.005} x1={X.bathWestE + 0.04} y0={0.85} y1={1.37} z0={4.06} z1={4.34} m={d.cream} r={0.012} />
       <Downlight x={5.0} z={3.75} />
     </group>
@@ -220,7 +220,7 @@ function Chair({ x, z }: { x: number; z: number }) {
         )
       })}
       <Cyl x={0} z={0} y0={0.08} y1={0.13} r={0.05} m={d.blackMetal} />
-      <Cyl x={0} z={0} y0={0.13} y1={seatY - 0.05} r={0.022} m={d.brass} seg={16} />
+      <Cyl x={0} z={0} y0={0.13} y1={seatY - 0.05} r={0.022} m={d.bronze} seg={16} />
       <B x0={-0.12} x1={0.12} y0={seatY - 0.06} y1={seatY - 0.03} z0={-0.12} z1={0.12} m={d.blackMetal} />
       {/* contoured seat */}
       <Soft x0={-0.25} x1={0.25} y0={seatY - 0.03} y1={seatY + 0.05} z0={-0.22} z1={0.25} m={d.charcoal} r={0.035} />
@@ -281,10 +281,10 @@ function Cart() {
       ))}
       {/* parts bins, filament spool, tool roll, spare servo boxes */}
       <B x0={c.x0 + 0.03} x1={cx - 0.01} y0={0.13} y1={0.25} z0={c.z0 + 0.03} z1={c.z1 - 0.03} m={d.woodLight} />
-      <B x0={cx + 0.01} x1={c.x1 - 0.03} y0={0.13} y1={0.22} z0={c.z0 + 0.03} z1={c.z1 - 0.03} m={d.rust} />
+      <B x0={cx + 0.01} x1={c.x1 - 0.03} y0={0.13} y1={0.22} z0={c.z0 + 0.03} z1={c.z1 - 0.03} m={d.earth} />
       <Cyl x={cx - 0.08} z={cz} y0={0.45} y1={0.53} r={0.07} m={d.robotAccent} />
       <Cyl x={cx + 0.1} z={cz} y0={0.45} y1={0.5} r={0.05} m={d.charcoal} />
-      <Soft x0={c.x0 + 0.04} x1={c.x1 - 0.04} y0={c.h - 0.01} y1={c.h + 0.05} z0={c.z0 + 0.06} z1={c.z1 - 0.06} m={d.mustard} r={0.02} />
+      <Soft x0={c.x0 + 0.04} x1={c.x1 - 0.04} y0={c.h - 0.01} y1={c.h + 0.05} z0={c.z0 + 0.06} z1={c.z1 - 0.06} m={d.sand} r={0.02} />
     </group>
   )
 }
@@ -305,7 +305,7 @@ function Pegboard() {
           <B x0={k.x0 + 0.15 + i * 0.5} x1={k.x0 + 0.95 + i * 0.5} y0={y} y1={y + 0.02} z0={z - 0.17} z1={z - 0.007} m={d.wood} />
           {[0, 1, 2].map((j) => (
             <B key={j} x0={k.x0 + 0.2 + i * 0.5 + j * 0.25} x1={k.x0 + 0.4 + i * 0.5 + j * 0.25} y0={y + 0.02} y1={y + 0.12} z0={z - 0.15} z1={z - 0.03}
-              m={[d.green, d.ceramic, d.rust][(i + j) % 3]} />
+              m={[d.taupe, d.ceramic, d.earth][(i + j) % 3]} />
           ))}
         </group>
       ))}
@@ -336,7 +336,7 @@ function SofaBed() {
       {/* trundle front (pulls out into a second mattress) with two brass pulls */}
       <B x0={s.x0 + 0.04} x1={s.x1 - 0.04} y0={0.09} y1={baseTop - 0.03} z0={s.z1} z1={s.z1 + 0.003} m={d.woodDark} />
       {[cx - 0.4, cx + 0.4].map((x) => (
-        <B key={x} x0={x - 0.08} x1={x + 0.08} y0={0.2} y1={0.212} z0={s.z1 + 0.003} z1={s.z1 + 0.02} m={d.brass} />
+        <B key={x} x0={x - 0.08} x1={x + 0.08} y0={0.2} y1={0.212} z0={s.z1 + 0.003} z1={s.z1 + 0.02} m={d.bronze} />
       ))}
       {/* mattress + fitted cover */}
       <Soft x0={s.x0 + 0.02} x1={s.x1 - 0.02} y0={baseTop} y1={matTop} z0={s.z0 + 0.02} z1={s.z1 - 0.01} m={d.cream} r={0.05} />
@@ -346,11 +346,11 @@ function SofaBed() {
       ))}
       {/* bolsters at each end */}
       {[s.x0 + 0.1, s.x1 - 0.1].map((x) => (
-        <mesh key={x} position={[x, matTop + 0.09, (s.z0 + s.z1) / 2]} rotation-x={Math.PI / 2} material={d.mustard} castShadow>
+        <mesh key={x} position={[x, matTop + 0.09, (s.z0 + s.z1) / 2]} rotation-x={Math.PI / 2} material={d.sand} castShadow>
           <capsuleGeometry args={[0.09, 0.5, 8, 24]} />
         </mesh>
       ))}
-      <Soft x0={cx + 0.1} x1={cx + 0.5} y0={matTop} y1={matTop + 0.32} z0={s.z0 + 0.22} z1={s.z0 + 0.34} m={d.green} r={0.05} rot={[-0.3, 0, 0]} />
+      <Soft x0={cx + 0.1} x1={cx + 0.5} y0={matTop} y1={matTop + 0.32} z0={s.z0 + 0.22} z1={s.z0 + 0.34} m={d.taupe} r={0.05} rot={[-0.3, 0, 0]} />
       {/* folded guest blanket + pillow */}
       <Soft x0={s.x0 + 0.3} x1={s.x0 + 0.78} y0={matTop} y1={matTop + 0.08} z0={s.z1 - 0.42} z1={s.z1 - 0.08} m={d.wool} r={0.02} />
       <Soft x0={s.x0 + 0.32} x1={s.x0 + 0.76} y0={matTop + 0.08} y1={matTop + 0.16} z0={s.z1 - 0.4} z1={s.z1 - 0.12} m={d.linen} r={0.035} />

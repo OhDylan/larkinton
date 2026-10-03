@@ -112,11 +112,12 @@ All numbers live in `src/data/dimensions.ts` (metres). Layout topology is in `sr
 
 ---
 
-# Phase 2 — Interior design (v4: mid-century modern)
+# Phase 2 — Interior design (v5: warm minimal, between mid-century and wabi-sabi / zen)
 
-Style: **mid-century modern, dark and chic** — dark walnut joinery, warm white walls, white terrazzo tops, cognac leather, brass, opal glass; accent colours mustard, forest green and rust. Layout is unchanged from the previous pass; the furniture forms and finishes changed (tapered splayed legs, Sputnik chandelier, dome and globe pendants, sunburst mirror, geometric rug, green velvet channel-tufted headboard, oval walnut coffee table, tripod side table with mushroom lamp).
+Style: a restrained palette of warm walnut-teak wood, cream boucle, sand and taupe linen, soft stone tops, a jute rug, and black only as an accent (stoneware, the island dome pendants). Paper globe lanterns, olive trees, warm LED strips under the open dining shelves. Mid-century touches stay in the forms (tapered legs on the side table, shoe cabinet and bed; dome pendants), not in the colours.
+Living: low cream boucle sofa on a recessed walnut plinth, chunky solid-wood coffee table. Entry: round mirror in a thin walnut frame. Master: taupe linen channel-tufted headboard.
 Floors: porcelain tiles by default; the **Wood Floor** button switches the dry areas to medium oak boards (bath and yard keep their tiles).
-All positions live in `src/furniture/layout.ts`. Panel buttons: **Design** (empty shell vs furnished), **Evening**, **Wood Floor**, **Photo Render**.
+All positions live in `src/furniture/layout.ts`. Panel buttons: **Design** (empty shell vs furnished), **Evening**, **Wood Floor**.
 
 | Space | What's there |
 |---|---|
@@ -134,9 +135,7 @@ Finishes: slim painted skirting, travertine window sills, light switches and soc
 
 Rendering: procedural environment lighting, full-resolution ambient occlusion (N8AO), 4K sun shadows, bloom for lamps, neutral tone mapping, vignette, planar mirrors, sky + illustrative distant skyline outside the windows in Walkthrough (assumes a mid-level floor; not the real view).
 
-**Photo Render** (panel button): progressive path tracing of the current view (three-gpu-pathtracer), i.e. the same light simulation offline renderers use — real bounce light, soft shadows, light glowing through the paper lamps. The image starts grainy and sharpens while the camera stays still (seconds on a desktop GPU, longer on phones); moving restarts it. Daylight comes from a sky dome plus soft "sky portal" area lights in the windows; exposure is set higher at eye level than in the dollhouse view, like a camera indoors. Loaded on demand, so it doesn't slow the first page load.
-
-Performance: static furniture and the shell are merged into one mesh per material after mounting (~900 → ~110 meshes; draw calls per frame cut by ~70%); the sun's shadow map only re-renders when something changes; lamps are off by day and small accent lamps only light up in photo mode; AO at half resolution; bloom only in the evening; pixel ratio capped at 1.5. Photo mode renders a fixed pixel budget split into tiles, stops at 768 samples (192 on phones), and falls back to the live view if the GPU context is lost.
+Performance: static furniture and the shell are merged into one mesh per material after mounting (~900 → ~110 meshes; draw calls per frame cut by ~70%); the sun's shadow map only re-renders when something changes; lamps are off by day and small accent lamps are skipped (their glowing shades remain); AO at half resolution; bloom only in the evening; pixel ratio capped at 1.5.
 
 Walkthrough look: drag left to turn right, drag up to look down ("grab the view", like 360° tours). On phones/tablets: on-screen joystick (bottom-left) to walk, one-finger drag to look; both can be used at once.
 
